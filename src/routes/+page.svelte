@@ -771,12 +771,11 @@
 			>
 				<h3 class="mb-2 text-lg font-semibold text-slate-900">How to use</h3>
 				<ol class="list-decimal space-y-2 pl-5 text-sm text-slate-600">
-					<li>Open the CRS portal and view a course's section table.</li>
-					<li>Copy the full HTML of the table (right-click → Inspect → copy the <code>&lt;table&gt;</code> element).</li>
-					<li>Paste it into the CRS table HTML field, give the course a name, and click Add Course.</li>
-					<li>Repeat for every course you want to schedule.</li>
-					<li>Click Generate Schedules to find all non-overlapping combinations.</li>
-					<li>Compare schedules by checking the boxes and clicking Compare.</li>
+					<li><strong>Add courses:</strong> Enter a course name, paste the full HTML of the CRS section table (right-click → Inspect → copy <code>&lt;table&gt;</code>), and click Add Course. Or use <strong>Fetch</strong> with a CRS URL to auto-import.</li>
+					<li><strong>Set priorities:</strong> Use the P1↑–P5↓ dropdown on each course to rank importance. Higher-priority courses get weighted more heavily when generating schedules.</li>
+					<li><strong>Customize:</strong> Set <em>Avoid classes before</em> to penalize early classes, and use the <strong>Refresh All</strong> button to re-scrape all courses for updated section data.</li>
+					<li><strong>Manage exclusions:</strong> Auto-excluded sections appear below the course list. Click <em>Include</em> to add them back, or <em>Exclude</em> on any schedule result card to remove a section.</li>
+					<li><strong>Generate and compare:</strong> Click <em>Generate Schedules</em> to find all non-overlapping combinations. Check the boxes on result cards and click <em>Compare</em> to view two schedules side-by-side.</li>
 				</ol>
 				<button
 					onclick={() => showInstructions = false}

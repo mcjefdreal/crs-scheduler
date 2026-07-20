@@ -32,3 +32,8 @@ export interface Schedule {
 	sections: Section[]; // one per course
 	score: number; // higher = better chance
 }
+
+export interface ScheduleResult {
+	schedules: Schedule[];
+	lockedConflict?: boolean; // true when locked CRNs overlap with each other
+}

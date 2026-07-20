@@ -299,9 +299,9 @@
 						existingCourse.sections = merged;
 						existingCourse.sourceUrl = url;
 						existingCourse.scrapedAt = Date.now();
-						await db.courses.put(existingCourse);
-					}
-					refreshed++;
+					await db.courses.put(JSON.parse(JSON.stringify(existingCourse)));
+				}
+				refreshed++;
 				}
 			} catch (err) {
 				failed++;
@@ -349,8 +349,8 @@
 		if (!course) return;
 		const section = course.sections.find((s) => s.crn === crn);
 		if (!section) return;
-		section.excluded = exclude;
-		await db.courses.put(course);
+	section.excluded = exclude;
+	await db.courses.put(JSON.parse(JSON.stringify(course)));
 		courses = await db.courses.toArray();
 		schedules = [];
 		expandedSchedule = null;

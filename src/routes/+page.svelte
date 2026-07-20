@@ -323,7 +323,7 @@
 					const matched = sections.filter((s) => {
 						const parts = s.code.split(/\s+/);
 						const prefix = parts.slice(0, 2).join(' ');
-						return prefix.toLowerCase().startsWith(name.toLowerCase());
+						return prefix.toLowerCase() === name.toLowerCase();
 					});
 					if (matched.length > 0) {
 						const id = `${sanitizeCourseId(name)}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
@@ -374,7 +374,7 @@
 					const matched = allSections.filter((s) => {
 						const parts = s.code.split(/\s+/);
 						const prefix = parts.slice(0, 2).join(' ');
-						return prefix.toLowerCase().startsWith(name.toLowerCase());
+						return prefix.toLowerCase() === name.toLowerCase();
 					});
 					if (matched.length > 0) {
 						const id = `${sanitizeCourseId(name)}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;

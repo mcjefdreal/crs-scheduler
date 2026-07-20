@@ -1,5 +1,10 @@
 import type { Course, Meeting, Schedule, Section } from './types';
 
+export interface ScheduleOptions {
+	/** Minutes from midnight — meetings starting before this are penalized. */
+	earliestStartMin?: number;
+}
+
 /**
  * Check if two meetings overlap in time.
  * Overlap = share any day AND time ranges intersect.
@@ -10,9 +15,21 @@ export function doMeetingsOverlap(a: Meeting, b: Meeting): boolean {
 	return a.startMin < b.endMin && b.startMin < a.endMin;
 }
 
-/** Score a section: how likely student gets in. Higher = better. */
+/** Score a section: how likely student gets in. Higher = better, capped at 1.0. */
 export function sectionScore(section: Section): number {
-	return section.slotsLeft / Math.max(section.demand, 1);
+	return Math.min(section.slotsLeft, section.demand) / Math.max(section.demand, 1);
+}
+
+const TIME_PENALTY = 0.5;
+
+function scoreSection(section: Section, opts?: ScheduleOptions): number {
+	let score = Math.min(section.slotsLeft, section.demand) / Math.max(section.demand, 1);
+	const earliest = opts?.earliestStartMin;
+	if (earliest !== undefined) {
+		const hasEarly = section.meetings.some((m) => m.startMin < earliest);
+		if (hasEarly) score *= TIME_PENALTY;
+	}
+	return score;
 }
 
 function sectionsOverlap(a: Section, b: Section): boolean {
@@ -31,7 +48,7 @@ const MAX_SCHEDULES = 50;
  * Uses backtracking with MRV ordering and overlap pruning.
  * Returns top 50 schedules sorted by score descending.
  */
-export function generateSchedules(courses: Course[]): Schedule[] {
+export function generateSchedules(courses: Course[], opts?: ScheduleOptions): Schedule[] {
 	// Filter to only non-excluded sections with remaining slots
 	const filtered = courses.map((c) => ({
 		...c,
@@ -49,7 +66,7 @@ export function generateSchedules(courses: Course[]): Schedule[] {
 		if (results.length >= MAX_SCHEDULES) return;
 
 		if (courseIdx === sorted.length) {
-			const score = selected.reduce((sum, s) => sum + sectionScore(s), 0);
+			const score = selected.reduce((sum, s) => sum + scoreSection(s, opts), 0);
 			results.push({ sections: [...selected], score });
 			return;
 		}

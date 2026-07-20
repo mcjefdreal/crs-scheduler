@@ -111,14 +111,22 @@ export function parseCRSHtml(html: string): Section[] {
 		const cells = row.querySelectorAll('td');
 		if (cells.length < 8) continue;
 
+		// Detect format: public schedule pages have 9+ columns.
+		// Auth format: [0]=CRN [1]=code [2]=units [3]=schedule [4]=remarks [5]=restrictions [6]=capacity [7]=demand
+		// Public format: [0]=CRN [1]=code [2]=units [3]=schedule [4]=remarks [5]=SKIP [6]=capacity [7]=demand [8]=restrictions
+		const isPublicFormat = cells.length >= 9;
+		const restrictionIdx = isPublicFormat ? 8 : 5;
+
 		// td[0]: CRN
 		const crnText = (cells[0].textContent ?? '').trim();
 		const crn = parseInt(crnText.split('\n')[0].trim(), 10);
 		if (isNaN(crn)) continue;
 
-		// td[1]: Section code
+		// td[1]: Section code — public format may not have <strong>
 		const codeEl = cells[1].querySelector('strong');
-		const code = (codeEl?.textContent ?? cells[1].textContent ?? '').trim();
+		const code = isPublicFormat && !codeEl
+			? (cells[1].textContent ?? '').replace(/\s+/g, ' ').trim()
+			: (codeEl?.textContent ?? cells[1].textContent ?? '').trim();
 		if (!code) continue;
 
 		// td[2]: Units
@@ -131,8 +139,8 @@ export function parseCRSHtml(html: string): Section[] {
 		// td[4]: Remarks — may contain restriction info
 		const remarksText = (cells[4]?.textContent ?? '').trim();
 
-		// td[5]: Restrictions — department/college codes
-		let restrictionsText = (cells[5]?.textContent ?? '').trim();
+		// td[restrictionIdx]: Restrictions — department/college codes
+		let restrictionsText = (cells[restrictionIdx]?.textContent ?? '').trim();
 		restrictionsText = restrictionsText.replace(/<!--[\s\S]*?-->/g, '').trim();
 
 		// Merge both sources — but only include remarks if they contain restriction-like text

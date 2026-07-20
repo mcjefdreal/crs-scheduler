@@ -38,6 +38,7 @@
 	onMount(async () => {
 		courses = await db.courses.toArray();
 		loadCrsCookie();
+		loadPrefs();
 	});
 
 	const totalSections = $derived(courses.reduce((sum, c) => sum + c.sections.length, 0));
@@ -45,6 +46,26 @@
 
 	function loadCrsCookie() { crsCookie = localStorage.getItem('crs-session-cookie') ?? ''; }
 	function saveCrsCookie() { if (crsCookie.trim()) localStorage.setItem('crs-session-cookie', crsCookie.trim()); else localStorage.removeItem('crs-session-cookie'); }
+
+	function loadPrefs() {
+		const stored = localStorage.getItem('showExcluded');
+		if (stored === 'true') showExcluded = true;
+		const earliest = localStorage.getItem('earliestStartMin');
+		if (earliest && earliest !== 'undefined') earliestStartMin = parseInt(earliest);
+	}
+
+	function saveShowExcluded(v: boolean) {
+		showExcluded = v;
+		localStorage.setItem('showExcluded', String(v));
+	}
+
+	function saveEarliestStartMin() {
+		if (earliestStartMin !== undefined) {
+			localStorage.setItem('earliestStartMin', String(earliestStartMin));
+		} else {
+			localStorage.removeItem('earliestStartMin');
+		}
+	}
 
 	function sanitizeCourseId(name: string) {
 		return name
@@ -442,11 +463,11 @@
      							<h2 class="text-sm font-semibold uppercase tracking-wide text-amber-700">
         								Excluded ({totalExcluded})
      							</h2>
-     							<button
-        								onclick={() => (showExcluded = !showExcluded)}
-        								class="text-xs font-medium text-amber-700 hover:text-amber-900"
-     							>
-        								{showExcluded ? 'Hide' : 'Show'}
+<button
+								onclick={() => saveShowExcluded(!showExcluded)}
+								class="text-xs font-medium text-amber-700 hover:text-amber-900"
+							>
+								{showExcluded ? 'Hide' : 'Show'}
      							</button>
       						</div>
       						{#if showExcluded}
@@ -569,6 +590,7 @@
 						<label class="mb-1 block text-sm font-medium text-slate-700">Avoid classes before</label>
 						<select
 							bind:value={earliestStartMin}
+							onchange={saveEarliestStartMin}
 							class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none ring-blue-500/20 transition focus:border-blue-500 focus:ring-4"
 						>
 							<option value={undefined}>None</option>

@@ -6,26 +6,45 @@
 
 ---
 
-You are able to use the Svelte MCP server, where you have access to comprehensive Svelte 5 and SvelteKit documentation. Here's how to use the available tools effectively:
+## Project: CRS Scheduler
 
-## Available Svelte MCP Tools:
+SvelteKit web app that parses UPD CRS class schedule HTML (pasted by user), generates non-overlapping schedule combinations, and ranks them by `slotsLeft / demand`. Client-side only, data persisted in IndexedDB via Dexie.
 
-### 1. list-sections
+User is BS CS / COE / Engg.
 
-Use this FIRST to discover all available documentation sections. Returns a structured list with titles, use_cases, and paths.
-When asked about Svelte or SvelteKit topics, ALWAYS use this tool at the start of the chat to find relevant sections.
+### Stack
+Svelte 5 + Tailwind CSS 4 + TypeScript + Dexie (IndexedDB)
 
-### 2. get-documentation
+### Commands
+```sh
+pnpm dev      # dev server
+pnpm check    # type-check + svelte-check
+pnpm build    # production build
+```
 
-Retrieves full documentation content for specific sections. Accepts single or multiple sections.
-After calling the list-sections tool, you MUST analyze the returned documentation sections (especially the use_cases field) and then use the get-documentation tool to fetch ALL documentation sections that are relevant for the user's task.
+### Architecture
 
-### 3. svelte-autofixer
+**Core library** (`src/lib/`):
+- `types.ts` — `Section`, `Course`, `Schedule`, `Meeting` interfaces. `Section.excluded` drives auto-exclude.
+- `parser.ts` — Parses CRS portal `<table>` HTML via `DOMParser`. Handles at least 2 table formats (differing column layouts). Dual time notation (`10-11:30AM` vs `11:30AM-1PM`). Reads cells[4] (Remarks) + cells[5] (Restrictions), merges restriction-relevant text, auto-sets `excluded` boolean. Hardcoded `ALLOWED_PROGRAMS = ['BS CS', 'Engg', 'COE']` — sections with `For:` clause naming these programs are auto-included.
+- `scheduler.ts` — `generateSchedules()`, backtracking with MRV ordering (fewest sections first), overlap pruning via `doMeetingsOverlap()`, top 50 results by score descending. Filters `excluded` sections and `slotsLeft === 0` sections before backtracking.
+- `db.ts` — Dexie `CRSDatabase` with `courses` table.
+- `index.ts` — barrel exports.
 
-Analyzes Svelte code and returns issues and suggestions.
-You MUST use this tool whenever writing Svelte code before sending it to the user. Keep calling it until no issues or suggestions are returned.
+**UI** (`src/routes/`):
+- `+page.svelte` — Single-page app: HTML paste input, course list, schedule results, instructions modal, excluded sections sidebar with include toggles, exclude buttons on result cards.
+- `components/TimelineGrid.svelte` — Mon-Sat 7AM-9PM visual calendar grid.
 
-### 4. playground-link
+### Key Decisions
+- Auto-exclude is regex-based: `for\s*:|reserved|^D\b` on restrictions column, `for\s+.*only|reserved` on remarks. Program-aware override checks `For:` clause against `ALLOWED_PROGRAMS`.
+- Remarks text only merges into `restrictions` display if it contains `for\s+|reserved` patterns. "Prerequisite: None" excluded.
+- Existing IndexedDB data doesn't auto-update on parser changes — user must re-import HTML.
+- Scheduler filters happen pre-backtracking (excluded + 0-slot), not during.
 
-Generates a Svelte Playground link with the provided code.
-After completing the code, ask the user if they want a playground link. Only call this tool after user confirmation and NEVER if code was written to files in their project.
+### Known Issues
+- 4 a11y warnings (dialog tabindex, click handlers) — harmless
+- No multi-format auto-detection — fixed column indices assumed
+- `ALLOWED_PROGRAMS` hardcoded, not configurable via UI
+
+### Svelte MCP Tools
+When writing Svelte code, use the Svelte MCP server tools: `list-sections` first, then `get-documentation` for relevant sections, and `svelte-autofixer` to validate before sending code.

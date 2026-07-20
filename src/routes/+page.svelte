@@ -363,10 +363,10 @@
 		</div>
 	</header>
 
-	<div class="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
-		<div class="grid gap-8 lg:grid-cols-[360px_1fr]">
+	<div class="mx-auto max-w-[95vw] px-4 py-8 sm:px-6 lg:px-8">
+		<div class="grid gap-8 lg:grid-cols-[1fr_1fr_2fr]">
 			<!-- Sidebar -->
-			<section>
+			<section class="min-w-0 space-y-6">
     			<!-- Courses section -->
     			<section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
     				<div class="mb-4 flex items-center justify-between">

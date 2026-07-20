@@ -286,7 +286,7 @@
 				for (const name of courseNames) {
 					const matched = sections.filter((s) => {
 						const prefix = s.code.split(/\s+/).slice(0, 2).join(' ');
-						return prefix.toLowerCase().startsWith(name.toLowerCase());
+						return prefix.toLowerCase() === name.toLowerCase();
 					});
 
 					const existingCourse = courses.find((c) => c.name === name);

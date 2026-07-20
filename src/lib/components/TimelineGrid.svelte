@@ -69,7 +69,7 @@
 
 <div class="overflow-hidden rounded-lg border border-slate-200 bg-white pb-4 text-slate-700">
 	<!-- Header -->
-	<div class="grid grid-cols-[3rem_repeat(6,1fr)] border-b border-slate-200 bg-slate-50">
+	<div class="grid grid-cols-[4rem_repeat(6,1fr)] border-b border-slate-200 bg-slate-50">
 		<div class="border-r border-slate-200"></div>
 		{#each DAYS as day}
 			<div class="py-2 text-center text-xs font-semibold tracking-wide text-slate-600">{day}</div>
@@ -77,7 +77,7 @@
 	</div>
 
 	<!-- Body -->
-	<div class="grid grid-cols-[3rem_repeat(6,1fr)]">
+	<div class="grid grid-cols-[4rem_repeat(6,1fr)]">
 		<!-- Time labels -->
 		<div class="relative border-r border-slate-200 bg-slate-50" style="height: {HOURS * 48}px">
 			{#each { length: HOURS + 1 } as _, i}

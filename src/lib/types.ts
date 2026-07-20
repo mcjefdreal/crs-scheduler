@@ -25,6 +25,7 @@ export interface Course {
 	sections: Section[];
 	sourceUrl: string; // URL where this was scraped from
 	scrapedAt: number; // timestamp
+	priority: number; // 0-5, higher = preferred (0 = no priority)
 }
 
 export interface Schedule {

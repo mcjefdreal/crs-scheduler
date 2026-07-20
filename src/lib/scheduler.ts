@@ -22,12 +22,15 @@ export function sectionScore(section: Section): number {
 
 const TIME_PENALTY = 0.5;
 
-function scoreSection(section: Section, opts?: ScheduleOptions): number {
+function scoreSection(section: Section, opts?: ScheduleOptions, priority = 0): number {
 	let score = Math.min(section.slotsLeft, section.demand) / Math.max(section.demand, 1);
 	const earliest = opts?.earliestStartMin;
 	if (earliest !== undefined) {
 		const hasEarly = section.meetings.some((m) => m.startMin < earliest);
 		if (hasEarly) score *= TIME_PENALTY;
+	}
+	if (priority > 0) {
+		score *= 1 + priority * 0.5;
 	}
 	return score;
 }
@@ -57,6 +60,15 @@ export function generateSchedules(courses: Course[], opts?: ScheduleOptions): Sc
 	const valid = filtered.filter((c) => c.sections.length > 0);
 	if (valid.length === 0) return [];
 
+	// Build crn → course priority map
+	const crnToPriority = new Map<number, number>();
+	for (const course of courses) {
+		for (const section of course.sections) {
+			// Invert: P1 (value 1) = highest → effective weight 5
+			crnToPriority.set(section.crn, course.priority ? 6 - course.priority : 0);
+		}
+	}
+
 	// MRV: sort courses by section count ascending
 	const sorted = [...valid].sort((a, b) => a.sections.length - b.sections.length);
 
@@ -66,7 +78,7 @@ export function generateSchedules(courses: Course[], opts?: ScheduleOptions): Sc
 		if (results.length >= MAX_SCHEDULES) return;
 
 		if (courseIdx === sorted.length) {
-			const score = selected.reduce((sum, s) => sum + scoreSection(s, opts), 0);
+			const score = selected.reduce((sum, s) => sum + scoreSection(s, opts, crnToPriority.get(s.crn) ?? 0), 0);
 			results.push({ sections: [...selected], score });
 			return;
 		}

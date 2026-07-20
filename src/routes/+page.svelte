@@ -30,6 +30,11 @@
 	);
 	const totalExcluded = $derived(excludedSections.length);
 
+	async function saveCoursePriority(courseId: string, priority: number) {
+		await db.courses.update(courseId, { priority });
+		courses = await db.courses.toArray();
+	}
+
 	onMount(async () => {
 		courses = await db.courses.toArray();
 		loadCrsCookie();
@@ -77,7 +82,8 @@
 				name,
 				sections,
 				sourceUrl: sourceUrl.trim(),
-				scrapedAt: Date.now()
+				scrapedAt: Date.now(),
+				priority: 0
 			};
 
 			await db.courses.put(course);
@@ -150,7 +156,7 @@
 					});
 					if (matched.length > 0) {
 						const id = `${sanitizeCourseId(name)}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
-						const course: Course = { id, name, sections: matched, sourceUrl: sourceUrl.trim(), scrapedAt: Date.now() };
+						const course: Course = { id, name, sections: matched, sourceUrl: sourceUrl.trim(), scrapedAt: Date.now(), priority: 0 };
 						await db.courses.put(course);
 						fetchSuccess += `${name}: ${matched.length} sections loaded. `;
 					} else {
@@ -194,7 +200,7 @@
 					});
 					if (matched.length > 0) {
 						const id = `${sanitizeCourseId(name)}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
-						const course: Course = { id, name, sections: matched, sourceUrl: '', scrapedAt: Date.now() };
+						const course: Course = { id, name, sections: matched, sourceUrl: '', scrapedAt: Date.now(), priority: 0 };
 						await db.courses.put(course);
 						fetchSuccess += `${name}: ${matched.length} sections loaded. `;
 					} else {
@@ -386,29 +392,44 @@
     					</div>
     				{:else}
     					<ul class="space-y-2">
-    						{#each courses as course}
-    							<li class="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
-    								<div>
-    									<p class="text-sm font-medium text-slate-800">{course.name}</p>
-    									<p class="text-xs text-slate-500">{course.sections.length} section{course.sections.length === 1 ? '' : 's'}
-    										{#if course.sections.some((s) => s.restrictions)}
-    											<span class="text-amber-700">
-    												• {course.sections.filter((s) => s.restrictions).length} section{course.sections.filter((s) => s.restrictions).length === 1 ? '' : 's'} restricted
-    											</span>
-    										{/if}
-    									</p>
-    								</div>
-    								<button
-    									onclick={() => removeCourse(course.id)}
-    									class="rounded-md p-1.5 text-slate-400 hover:bg-red-100 hover:text-red-600"
-    									aria-label="Remove {course.name}"
-    								>
-    									<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-    										<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-    									</svg>
-    								</button>
-    							</li>
-    						{/each}
+   						{#each courses as course}
+   							<li class="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+   								<div>
+   									<p class="text-sm font-medium text-slate-800">{course.name}</p>
+   									<p class="text-xs text-slate-500">{course.sections.length} section{course.sections.length === 1 ? '' : 's'}
+   										{#if course.sections.some((s) => s.restrictions)}
+   											<span class="text-amber-700">
+   												• {course.sections.filter((s) => s.restrictions).length} section{course.sections.filter((s) => s.restrictions).length === 1 ? '' : 's'} restricted
+   											</span>
+   										{/if}
+   									</p>
+   								</div>
+   								<div class="flex items-center gap-2">
+   									<select
+   										value={course.priority ?? 0}
+   										onchange={async (e) => { const p = parseInt(e.currentTarget.value); course.priority = p; await saveCoursePriority(course.id, p); }}
+   										class="rounded-md border border-slate-300 px-2 py-1 text-xs text-slate-700 outline-none"
+   										aria-label="Priority for {course.name}"
+   									>
+   										<option value={0}>—</option>
+   										<option value={1}>P1 ↑</option>
+   										<option value={2}>P2</option>
+   										<option value={3}>P3</option>
+   										<option value={4}>P4</option>
+   										<option value={5}>P5 ↓</option>
+   									</select>
+   									<button
+   										onclick={() => removeCourse(course.id)}
+   										class="rounded-md p-1.5 text-slate-400 hover:bg-red-100 hover:text-red-600"
+   										aria-label="Remove {course.name}"
+   									>
+   										<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+   											<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+   										</svg>
+   									</button>
+   								</div>
+   							</li>
+   						{/each}
     					</ul>
     				{/if}
     			</section>

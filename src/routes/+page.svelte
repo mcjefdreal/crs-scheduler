@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { parseCRSHtml, generateSchedules, db, sectionScore, type Course, type Schedule, type Section } from '$lib';
+	import { parseCRSHtml, generateSchedules, db, sectionScore, type Course, type Schedule, type Section, type ScheduleOptions } from '$lib';
 	import TimelineGrid from '$lib/components/TimelineGrid.svelte';
+	import ScheduleCompare from '$lib/components/ScheduleCompare.svelte';
 
 	let courses = $state<Course[]>([]);
 	let htmlInput = $state('');
@@ -14,6 +15,16 @@
 	let showInstructions = $state(false);
 	let showExcluded = $state(false);
 
+	let crsCookie = $state('');
+	let isFetching = $state(false);
+	let fetchError = $state<string | null>(null);
+	let fetchSuccess = $state('');
+	let fetchProgress = $state('');
+	let earliestStartMin = $state<number | undefined>(undefined);
+	let refreshProgress = $state('');
+	let selectedForCompare = $state<number[]>([]);
+	let showCompare = $state(false);
+
 	const excludedSections = $derived(
 		courses.flatMap((c) => c.sections.filter((s) => s.excluded).map((s) => ({ ...s, courseName: c.name, courseId: c.id })))
 	);
@@ -21,10 +32,14 @@
 
 	onMount(async () => {
 		courses = await db.courses.toArray();
+		loadCrsCookie();
 	});
 
 	const totalSections = $derived(courses.reduce((sum, c) => sum + c.sections.length, 0));
 	const canGenerate = $derived(courses.length > 0 && !isGenerating);
+
+	function loadCrsCookie() { crsCookie = localStorage.getItem('crs-session-cookie') ?? ''; }
+	function saveCrsCookie() { if (crsCookie.trim()) localStorage.setItem('crs-session-cookie', crsCookie.trim()); else localStorage.removeItem('crs-session-cookie'); }
 
 	function sanitizeCourseId(name: string) {
 		return name
@@ -35,6 +50,9 @@
 
 	async function addCourse() {
 		parseError = null;
+		fetchError = null;
+		fetchSuccess = '';
+		fetchProgress = '';
 		const name = courseName.trim();
 		const html = htmlInput.trim();
 		if (!name) {
@@ -66,6 +84,8 @@
 			courses = await db.courses.toArray();
 			schedules = [];
 			expandedSchedule = null;
+			selectedForCompare = [];
+			showCompare = false;
 			htmlInput = '';
 			courseName = '';
 			sourceUrl = '';
@@ -79,6 +99,8 @@
 		courses = await db.courses.toArray();
 		schedules = [];
 		expandedSchedule = null;
+		selectedForCompare = [];
+		showCompare = false;
 	}
 
 	async function handleGenerate() {
@@ -86,9 +108,193 @@
 		isGenerating = true;
 		schedules = [];
 		expandedSchedule = null;
+		selectedForCompare = [];
+		showCompare = false;
 		await new Promise((resolve) => setTimeout(resolve, 0));
-		schedules = generateSchedules(courses);
+		const opts: ScheduleOptions | undefined = earliestStartMin !== undefined ? { earliestStartMin } : undefined;
+		schedules = generateSchedules(courses, opts);
 		isGenerating = false;
+	}
+
+	async function fetchFromCrs() {
+		fetchError = null;
+		fetchSuccess = '';
+		fetchProgress = '';
+		isFetching = true;
+
+		const names = courseName.trim().split(',').map((n) => n.trim()).filter(Boolean);
+		if (names.length === 0) {
+			fetchError = 'Enter at least one course name.';
+			isFetching = false;
+			return;
+		}
+
+		try {
+			if (sourceUrl.trim()) {
+				// Single URL mode
+				fetchProgress = 'Fetching...';
+				const res = await fetch('/api/fetch-crs', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ url: sourceUrl.trim(), cookies: crsCookie.trim() || undefined })
+				});
+				if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+				const data = await res.json();
+				const sections = parseCRSHtml(data.html);
+
+				for (const name of names) {
+					const matched = sections.filter((s) => {
+						const parts = s.code.split(/\s+/);
+						const prefix = parts.slice(0, 2).join(' ');
+						return prefix.toLowerCase().startsWith(name.toLowerCase());
+					});
+					if (matched.length > 0) {
+						const id = `${sanitizeCourseId(name)}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+						const course: Course = { id, name, sections: matched, sourceUrl: sourceUrl.trim(), scrapedAt: Date.now() };
+						await db.courses.put(course);
+						fetchSuccess += `${name}: ${matched.length} sections loaded. `;
+					} else {
+						fetchSuccess += `${name}: No sections found. `;
+					}
+				}
+			} else {
+				// Batch mode
+				fetchProgress = 'Preparing batch fetch...';
+				const letters = [...new Set(names.map((n) => n.trim()[0]?.toUpperCase()).filter(Boolean))];
+				const urls = letters.map((l) => `https://crs.upd.edu.ph/schedule/120261/${l}`);
+
+				const results = await Promise.allSettled(
+					urls.map((url) =>
+						fetch('/api/fetch-crs', {
+							method: 'POST',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({ url, cookies: crsCookie.trim() || undefined })
+						}).then((r) => {
+							if (!r.ok) throw new Error(`HTTP ${r.status}`);
+							return r.json();
+						})
+					)
+				);
+
+				let allSections: Section[] = [];
+				for (const [i, result] of results.entries()) {
+					if (result.status === 'fulfilled') {
+						const parsed = parseCRSHtml(result.value.html);
+						allSections.push(...parsed);
+					} else {
+						fetchError = `Failed to fetch letter ${letters[i]}: ${result.reason?.message || 'Unknown error'}`;
+					}
+				}
+
+				for (const name of names) {
+					const matched = allSections.filter((s) => {
+						const parts = s.code.split(/\s+/);
+						const prefix = parts.slice(0, 2).join(' ');
+						return prefix.toLowerCase().startsWith(name.toLowerCase());
+					});
+					if (matched.length > 0) {
+						const id = `${sanitizeCourseId(name)}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+						const course: Course = { id, name, sections: matched, sourceUrl: '', scrapedAt: Date.now() };
+						await db.courses.put(course);
+						fetchSuccess += `${name}: ${matched.length} sections loaded. `;
+					} else {
+						fetchSuccess += `${name}: No sections found. `;
+					}
+				}
+			}
+
+			courses = await db.courses.toArray();
+			schedules = [];
+			expandedSchedule = null;
+			selectedForCompare = [];
+			showCompare = false;
+			htmlInput = '';
+			courseName = '';
+			sourceUrl = '';
+		} catch (err) {
+			if (!fetchError) fetchError = err instanceof Error ? err.message : 'Failed to fetch from CRS.';
+		}
+		fetchProgress = '';
+		isFetching = false;
+	}
+
+	async function refreshAllCourses() {
+		if (isFetching || isGenerating) return;
+		refreshProgress = 'Preparing...';
+		fetchError = null;
+		fetchSuccess = '';
+
+		const urlMap = new Map<string, string[]>();
+		for (const course of courses) {
+			if (course.sourceUrl) {
+				const existing = urlMap.get(course.sourceUrl) || [];
+				existing.push(course.name);
+				urlMap.set(course.sourceUrl, existing);
+			} else {
+				const letter = course.name.trim()[0]?.toUpperCase();
+				if (!letter) continue;
+				const url = `https://crs.upd.edu.ph/schedule/120261/${letter}`;
+				const existing = urlMap.get(url) || [];
+				existing.push(course.name);
+				urlMap.set(url, existing);
+			}
+		}
+
+		let refreshed = 0;
+		let failed = 0;
+		const errors: string[] = [];
+
+		for (const [url, courseNames] of urlMap) {
+			refreshProgress = `Fetching ${url.split('/').pop()}...`;
+			try {
+				const res = await fetch('/api/fetch-crs', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ url, cookies: crsCookie.trim() || undefined })
+				});
+				if (!res.ok) throw new Error(`HTTP ${res.status}`);
+				const data = await res.json();
+				const sections = parseCRSHtml(data.html);
+
+				for (const name of courseNames) {
+					const matched = sections.filter((s) => {
+						const prefix = s.code.split(/\s+/).slice(0, 2).join(' ');
+						return prefix.toLowerCase().startsWith(name.toLowerCase());
+					});
+
+					const existingCourse = courses.find((c) => c.name === name);
+					if (existingCourse) {
+						const merged = matched.map((newS) => {
+							const old = existingCourse.sections.find((s) => s.crn === newS.crn);
+							if (old) return { ...newS, excluded: old.excluded };
+							return { ...newS, excluded: newS.excluded };
+						});
+						existingCourse.sections = merged;
+						existingCourse.sourceUrl = url;
+						existingCourse.scrapedAt = Date.now();
+						await db.courses.put(existingCourse);
+					}
+					refreshed++;
+				}
+			} catch (err) {
+				failed++;
+				errors.push(`${url.split('/').pop()}: ${err instanceof Error ? err.message : 'Unknown error'}`);
+			}
+		}
+
+		courses = await db.courses.toArray();
+		schedules = [];
+		expandedSchedule = null;
+		selectedForCompare = [];
+		showCompare = false;
+
+		if (failed > 0) {
+			refreshProgress = `Refreshed ${refreshed} course(s), ${failed} failed. ${errors.join('; ')}`;
+		} else {
+			refreshProgress = `All ${refreshed} course(s) refreshed.`;
+		}
+
+		setTimeout(() => { refreshProgress = ''; }, 3000);
 	}
 
 	function formatTime(min: number) {
@@ -121,6 +327,8 @@
 		courses = await db.courses.toArray();
 		schedules = [];
 		expandedSchedule = null;
+		selectedForCompare = [];
+		showCompare = false;
 	}
 </script>
 
@@ -131,7 +339,7 @@
 
 <main class="flex min-h-screen flex-col">
 	<header class="border-b border-slate-200 bg-white">
-		<div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+		<div class="mx-auto flex max-w-3xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
 			<div class="flex items-center gap-3">
 				<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
 					<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -149,10 +357,104 @@
 		</div>
 	</header>
 
-	<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+	<div class="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
 		<div class="grid gap-8 lg:grid-cols-[360px_1fr]">
-			<!-- Input panel -->
+			<!-- Sidebar -->
+			<section>
+    			<!-- Courses section -->
+    			<section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    				<div class="mb-4 flex items-center justify-between">
+    					<h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">Courses</h2>
+    					<div class="flex items-center gap-2">
+    						<button
+    							onclick={refreshAllCourses}
+    							disabled={isFetching || isGenerating}
+    							class="text-sm font-medium text-blue-600 hover:text-blue-800 disabled:text-slate-400"
+    						>
+    							Refresh All
+    						</button>
+    						<span class="text-xs text-slate-500">{courses.length} course{courses.length === 1 ? '' : 's'} • {totalSections} section{totalSections === 1 ? '' : 's'}</span>
+    					</div>
+    				</div>
+    				{#if refreshProgress}
+    					<div class="mb-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-700">{refreshProgress}</div>
+    				{/if}
+    				{#if courses.length === 0}
+    					<div class="rounded-lg border border-dashed border-slate-300 bg-slate-50 py-8 text-center">
+    						<p class="text-sm font-medium text-slate-500">Add courses to get started</p>
+    						<p class="mt-1 text-xs text-slate-400">Paste CRS HTML and click Add Course.</p>
+    					</div>
+    				{:else}
+    					<ul class="space-y-2">
+    						{#each courses as course}
+    							<li class="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+    								<div>
+    									<p class="text-sm font-medium text-slate-800">{course.name}</p>
+    									<p class="text-xs text-slate-500">{course.sections.length} section{course.sections.length === 1 ? '' : 's'}
+    										{#if course.sections.some((s) => s.restrictions)}
+    											<span class="text-amber-700">
+    												• {course.sections.filter((s) => s.restrictions).length} section{course.sections.filter((s) => s.restrictions).length === 1 ? '' : 's'} restricted
+    											</span>
+    										{/if}
+    									</p>
+    								</div>
+    								<button
+    									onclick={() => removeCourse(course.id)}
+    									class="rounded-md p-1.5 text-slate-400 hover:bg-red-100 hover:text-red-600"
+    									aria-label="Remove {course.name}"
+    								>
+    									<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    										<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+    									</svg>
+    								</button>
+    							</li>
+    						{/each}
+    					</ul>
+    				{/if}
+    			</section>
+
+    			<!-- Excluded section -->
+    			<section>
+        				{#if totalExcluded > 0}
+       					<section class="rounded-xl border border-amber-200 bg-amber-50 p-5">
+      						<div class="mb-3 flex items-center justify-between">
+     							<h2 class="text-sm font-semibold uppercase tracking-wide text-amber-700">
+        								Excluded ({totalExcluded})
+     							</h2>
+     							<button
+        								onclick={() => (showExcluded = !showExcluded)}
+        								class="text-xs font-medium text-amber-700 hover:text-amber-900"
+     							>
+        								{showExcluded ? 'Hide' : 'Show'}
+     							</button>
+      						</div>
+      						{#if showExcluded}
+     							<ul class="max-h-64 space-y-1 overflow-y-auto">
+        								{#each excludedSections as section}
+       									<li class="flex items-center justify-between rounded border border-amber-200 bg-white px-2 py-1.5 text-xs">
+      										<div class="min-w-0 flex-1">
+     											<p class="truncate font-medium text-slate-800">{section.code}</p>
+     											<p class="truncate text-slate-500">{section.courseName} • CRN {section.crn}</p>
+     											{#if section.restrictions}
+        												<p class="truncate text-amber-600">{section.restrictions}</p>
+     											{/if}
+      										</div>
+      										<button
+     											onclick={async () => { await toggleSectionExclusion(section.courseId, section.crn, false); }}
+     											class="ml-2 shrink-0 rounded bg-emerald-600 px-2 py-0.5 text-xs font-medium text-white hover:bg-emerald-700"
+      										>
+     											Include
+      										</button>
+       									</li>
+        								{/each}
+     							</ul>
+      						{/if}
+       					</section>
+        				{/if}
+    			</section>
+			</section>
 			<aside class="space-y-6">
+				<!-- Add Course section -->
 				<section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
 					<h2 class="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">Add Course</h2>
 					<div class="space-y-4">
@@ -162,19 +464,57 @@
 								id="course-name"
 								type="text"
 								bind:value={courseName}
-								placeholder="e.g. Eng 13"
+								placeholder="e.g. Eng 13, CS 133, Math 21"
 								class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none ring-blue-500/20 transition focus:border-blue-500 focus:ring-4"
 							/>
+							<p class="mt-1 text-xs text-slate-500">Separate multiple courses with commas for batch fetch</p>
 						</div>
 						<div>
-							<label for="source-url" class="mb-1 block text-sm font-medium text-slate-700">Source URL</label>
-							<input
-								id="source-url"
-								type="url"
-								bind:value={sourceUrl}
-								placeholder="https://crs.upd.edu.ph/..."
-								class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none ring-blue-500/20 transition focus:border-blue-500 focus:ring-4"
-							/>
+							<div class="flex gap-2">
+								<input
+									id="source-url"
+									type="url"
+									bind:value={sourceUrl}
+									placeholder="https://crs.upd.edu.ph/..."
+									class="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none ring-blue-500/20 transition focus:border-blue-500 focus:ring-4"
+								/>
+								<button
+									onclick={fetchFromCrs}
+									disabled={isFetching}
+									class="shrink-0 rounded-lg border border-blue-300 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50 active:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-50"
+								>
+									{isFetching ? (fetchProgress || 'Fetching...') : 'Fetch'}
+								</button>
+							</div>
+							{#if fetchError}
+								<div class="mt-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+									<p>{fetchError}</p>
+								</div>
+							{/if}
+							{#if fetchSuccess}
+								<div class="mt-2 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
+									<p>{fetchSuccess}</p>
+								</div>
+							{/if}
+						</div>
+						<div>
+							<details class="group rounded-lg border border-slate-200 bg-slate-50">
+								<summary class="cursor-pointer px-3 py-2 text-xs font-medium text-slate-600 hover:text-slate-800">
+									<span class="group-open:hidden">Advanced ▼</span>
+									<span class="hidden group-open:inline">Advanced ▲</span>
+								</summary>
+								<div class="border-t border-slate-200 px-3 py-2">
+									<label class="mb-1 block text-xs font-medium text-slate-600">CRS session cookie</label>
+									<textarea
+										bind:value={crsCookie}
+										onblur={saveCrsCookie}
+										rows="2"
+										placeholder="Paste Cookie header value..."
+										class="w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-xs outline-none ring-blue-500/20 transition focus:border-blue-500 focus:ring-4"
+									></textarea>
+									<p class="mt-1 text-xs text-slate-500">Required for fetching via proxy. Copy from browser DevTools → Network → Request headers.</p>
+								</div>
+							</details>
 						</div>
 						<div>
 							<label for="crs-html" class="mb-1 block text-sm font-medium text-slate-700">CRS table HTML</label>
@@ -201,46 +541,27 @@
 					</div>
 				</section>
 
+				<!-- Preferences section -->
 				<section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-					<div class="mb-4 flex items-center justify-between">
-						<h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">Courses</h2>
-						<span class="text-xs text-slate-500">{courses.length} course{courses.length === 1 ? '' : 's'} • {totalSections} section{totalSections === 1 ? '' : 's'}</span>
+					<h2 class="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">Preferences</h2>
+					<div>
+						<label class="mb-1 block text-sm font-medium text-slate-700">Avoid classes before</label>
+						<select
+							bind:value={earliestStartMin}
+							class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none ring-blue-500/20 transition focus:border-blue-500 focus:ring-4"
+						>
+							<option value={undefined}>None</option>
+							<option value={420}>7:00 AM</option>
+							<option value={480}>8:00 AM</option>
+							<option value={540}>9:00 AM</option>
+							<option value={600}>10:00 AM</option>
+						</select>
+						<p class="mt-1 text-xs text-slate-500">Early classes get a score penalty. Only affects new schedule generation.</p>
 					</div>
-
-					{#if courses.length === 0}
-						<div class="rounded-lg border border-dashed border-slate-300 bg-slate-50 py-8 text-center">
-							<p class="text-sm font-medium text-slate-500">Add courses to get started</p>
-							<p class="mt-1 text-xs text-slate-400">Paste CRS HTML and click Add Course.</p>
-						</div>
-					{:else}
-						<ul class="space-y-2">
-							{#each courses as course}
-								<li class="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
-									<div>
-										<p class="text-sm font-medium text-slate-800">{course.name}</p>
-										<p class="text-xs text-slate-500">{course.sections.length} section{course.sections.length === 1 ? '' : 's'}
-											{#if course.sections.some((s) => s.restrictions)}
-												<span class="text-amber-700">
-													• {course.sections.filter((s) => s.restrictions).length} section{course.sections.filter((s) => s.restrictions).length === 1 ? '' : 's'} restricted
-												</span>
-											{/if}
-										</p>
-									</div>
-									<button
-										onclick={() => removeCourse(course.id)}
-										class="rounded-md p-1.5 text-slate-400 hover:bg-red-100 hover:text-red-600"
-										aria-label="Remove {course.name}"
-									>
-										<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-											<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-										</svg>
-									</button>
-								</li>
-							{/each}
-						</ul>
-					{/if}
 				</section>
 
+
+				<!-- Generate button -->
 				<button
 					onclick={handleGenerate}
 					disabled={!canGenerate}
@@ -256,44 +577,11 @@
 						<span>Generate Schedules</span>
 					{/if}
 				</button>
-
-				{#if totalExcluded > 0}
-					<section class="rounded-xl border border-amber-200 bg-amber-50 p-5">
-						<div class="mb-3 flex items-center justify-between">
-							<h2 class="text-sm font-semibold uppercase tracking-wide text-amber-700">
-								Excluded ({totalExcluded})
-							</h2>
-							<button
-								onclick={() => (showExcluded = !showExcluded)}
-								class="text-xs font-medium text-amber-700 hover:text-amber-900"
-							>
-								{showExcluded ? 'Hide' : 'Show'}
-							</button>
-						</div>
-						{#if showExcluded}
-							<ul class="max-h-64 space-y-1 overflow-y-auto">
-								{#each excludedSections as section}
-									<li class="flex items-center justify-between rounded border border-amber-200 bg-white px-2 py-1.5 text-xs">
-										<div class="min-w-0 flex-1">
-											<p class="truncate font-medium text-slate-800">{section.code}</p>
-											<p class="truncate text-slate-500">{section.restrictions || 'No details'}</p>
-										</div>
-										<button
-											onclick={async () => { await toggleSectionExclusion(section.courseId, section.crn, false); }}
-											class="ml-2 shrink-0 rounded bg-emerald-600 px-2 py-0.5 text-xs font-medium text-white hover:bg-emerald-700"
-										>
-											Include
-										</button>
-									</li>
-								{/each}
-							</ul>
-						{/if}
-					</section>
-				{/if}
 			</aside>
 
 			<!-- Results panel -->
 			<section class="space-y-6">
+
 				{#if schedules.length === 0}
 					<div class="flex h-64 flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white text-center">
 						<p class="text-sm font-medium text-slate-500">Click Generate to see schedules</p>
@@ -302,7 +590,17 @@
 				{:else}
 					<div class="mb-2 flex items-center justify-between">
 						<h2 class="text-lg font-semibold text-slate-900">Top schedules</h2>
-						<span class="text-sm text-slate-500">{schedules.length} result{schedules.length === 1 ? '' : 's'}</span>
+						<div class="flex items-center gap-3">
+							<span class="text-sm text-slate-500">{schedules.length} result{schedules.length === 1 ? '' : 's'}</span>
+							{#if selectedForCompare.length >= 2}
+								<button
+									onclick={() => showCompare = true}
+									class="rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
+								>
+									Compare ({selectedForCompare.length})
+								</button>
+							{/if}
+						</div>
 					</div>
 
 					<div class="space-y-6">
@@ -310,6 +608,12 @@
 							<article class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
 								<div class="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-5 py-3">
 									<div class="flex items-center gap-3">
+										<input
+											type="checkbox"
+											bind:group={selectedForCompare}
+											value={idx}
+											class="h-4 w-4 rounded border-slate-300 text-blue-600"
+										/>
 										<span class="text-sm font-semibold text-slate-500">#{idx + 1}</span>
 										<div class="flex items-center gap-2">
 											<span class="text-sm font-medium text-slate-700">Score</span>
@@ -395,13 +699,21 @@
 	</div>
 
 	<footer class="border-t border-slate-200 bg-white">
-		<div class="mx-auto max-w-7xl px-4 py-6 text-center text-xs text-slate-500 sm:px-6 lg:px-8">
+		<div class="mx-auto max-w-3xl px-4 py-6 text-center text-xs text-slate-500 sm:px-6 lg:px-8">
 			<p>
 				CRS Scheduler — built for University of the Philippines Diliman students.
 				<button onclick={() => showInstructions = true} class="font-medium text-blue-600 hover:underline">How to use</button>
 			</p>
 		</div>
 	</footer>
+
+	{#if showCompare}
+		<ScheduleCompare
+			schedules={selectedForCompare.map(i => schedules[i])}
+			courses={courses}
+			onclose={() => showCompare = false}
+		/>
+	{/if}
 
 	{#if showInstructions}
 		<div
@@ -420,11 +732,12 @@
 					<li>Copy the full HTML of the table (right-click → Inspect → copy the <code>&lt;table&gt;</code> element).</li>
 					<li>Paste it into the CRS table HTML field, give the course a name, and click Add Course.</li>
 					<li>Repeat for every course you want to schedule.</li>
-					<li>Click Generate Schedules to see conflict-free combinations ranked by enrollment chance.</li>
+					<li>Click Generate Schedules to find all non-overlapping combinations.</li>
+					<li>Compare schedules by checking the boxes and clicking Compare.</li>
 				</ol>
 				<button
 					onclick={() => showInstructions = false}
-					class="mt-6 w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+					class="mt-4 w-full rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-800"
 				>
 					Got it
 				</button>

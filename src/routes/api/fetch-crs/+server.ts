@@ -64,10 +64,15 @@ export const POST: RequestHandler = async ({ request }) => {
 		if (response.status >= 300 && response.status < 400) {
 			const location = response.headers.get('location') || '';
 			// Auth redirects: Google OAuth, or back to CRS homepage (login gate)
-			if (/accounts\.google\.com|login/i.test(location) ||
+			if (
+				/accounts\.google\.com|login/i.test(location) ||
 				location === 'https://crs.upd.edu.ph/' ||
-				location === 'http://crs.upd.edu.ph/') {
-				throw error(401, 'CRS authentication required. Provide session cookies or use a public schedule URL (/schedule/...).');
+				location === 'http://crs.upd.edu.ph/'
+			) {
+				throw error(
+					401,
+					'CRS authentication required. Provide session cookies or use a public schedule URL (/schedule/...).'
+				);
 			}
 			throw error(502, `CRS redirected unexpectedly to: ${location}`);
 		}

@@ -96,7 +96,7 @@
 				<!-- Hour grid lines -->
 				{#each { length: HOURS }, i}
 					<div
-						class="absolute left-0 right-0 border-t border-slate-100"
+						class="absolute right-0 left-0 border-t border-slate-100"
 						style="top: {((i + 1) / HOURS) * 100}%"
 					></div>
 				{/each}
@@ -104,7 +104,8 @@
 				<!-- Meeting blocks -->
 				{#each blocks.filter((b) => b.day === dayIdx) as block}
 					<div
-						class="absolute inset-x-1 overflow-hidden rounded border px-1 py-0.5 text-[10px] leading-tight shadow-sm {block.color.bg} {block.color.border} {block.color.text}"
+						class="absolute inset-x-1 overflow-hidden rounded border px-1 py-0.5 text-[10px] leading-tight shadow-sm {block
+							.color.bg} {block.color.border} {block.color.text}"
 						style="top: {Math.max(0, block.top)}%; height: {Math.max(4, block.height)}%;"
 					>
 						<div class="truncate font-semibold">{block.section.code}</div>

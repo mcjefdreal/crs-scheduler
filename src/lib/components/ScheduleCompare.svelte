@@ -24,7 +24,9 @@
 	const courseNames = $derived(
 		[
 			...new Set(
-				schedules.flatMap((s) => s.sections.map((section) => courseByCrn[section.crn]?.name ?? section.code))
+				schedules.flatMap((s) =>
+					s.sections.map((section) => courseByCrn[section.crn]?.name ?? section.code)
+				)
 			)
 		].sort()
 	);
@@ -43,9 +45,7 @@
 	const differingCourses = $derived(
 		new Set(
 			courseNames.filter((name) => {
-				const codes = new Set(
-					sectionByCourse.map((map) => map[name]?.code).filter(Boolean)
-				);
+				const codes = new Set(sectionByCourse.map((map) => map[name]?.code).filter(Boolean));
 				return codes.size > 1;
 			})
 		)
@@ -106,7 +106,11 @@
 							</div>
 							<div class="h-2 w-full overflow-hidden rounded-full bg-slate-200">
 								<div
-									class="h-full rounded-full {idx === 0 ? 'bg-blue-600' : idx === 1 ? 'bg-emerald-600' : 'bg-amber-500'}"
+									class="h-full rounded-full {idx === 0
+										? 'bg-blue-600'
+										: idx === 1
+											? 'bg-emerald-600'
+											: 'bg-amber-500'}"
 									style="width: {Math.min(100, Math.max(0, schedule.score * 10))}%"
 								></div>
 							</div>

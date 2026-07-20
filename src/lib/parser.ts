@@ -124,9 +124,10 @@ export function parseCRSHtml(html: string): Section[] {
 
 		// td[1]: Section code — public format may not have <strong>
 		const codeEl = cells[1].querySelector('strong');
-		const code = isPublicFormat && !codeEl
-			? (cells[1].textContent ?? '').replace(/\s+/g, ' ').trim()
-			: (codeEl?.textContent ?? cells[1].textContent ?? '').trim();
+		const code =
+			isPublicFormat && !codeEl
+				? (cells[1].textContent ?? '').replace(/\s+/g, ' ').trim()
+				: (codeEl?.textContent ?? cells[1].textContent ?? '').trim();
 		if (!code) continue;
 
 		// td[2]: Units
@@ -153,14 +154,16 @@ export function parseCRSHtml(html: string): Section[] {
 		const allowedProgram = (text: string) => {
 			const m = text.match(/for\s*:\s*(.+?)(?:\||$)/i);
 			if (!m) return false;
-			const programs = m[1].split(/[,\/]/).map(p => p.replace(/\(\d+\s*slots?\)/i, '').trim());
-			return programs.some(p => ALLOWED_PROGRAMS.includes(p));
+			const programs = m[1].split(/[,\/]/).map((p) => p.replace(/\(\d+\s*slots?\)/i, '').trim());
+			return programs.some((p) => ALLOWED_PROGRAMS.includes(p));
 		};
 
 		// Auto-exclude: restrictions column has restriction codes the user does NOT match
 		const excluded =
-			(restrictionsText.length > 0 && /for\s*:|reserved|^D\b/i.test(restrictionsText) && !allowedProgram(restrictionsText)) ||
-			/for\s+.*only|reserved/i.test(remarksText) && !allowedProgram(remarksText);
+			(restrictionsText.length > 0 &&
+				/for\s*:|reserved|^D\b/i.test(restrictionsText) &&
+				!allowedProgram(restrictionsText)) ||
+			(/for\s+.*only|reserved/i.test(remarksText) && !allowedProgram(remarksText));
 
 		// td[6]: Enrolled / Capacity
 		const enrolledText = (cells[6]?.textContent ?? '').trim();

@@ -126,7 +126,9 @@ export function generateSchedules(courses: Course[], opts?: ScheduleOptions): Sc
 			(s) =>
 				!s.excluded &&
 				s.slotsLeft > 0 &&
-				!(opts?.excludedInstructors?.some((excl) => s.instructor.toLowerCase() === excl.toLowerCase()))
+				!opts?.excludedInstructors?.some(
+					(excl) => s.instructor.toLowerCase() === excl.toLowerCase()
+				)
 		)
 	}));
 	let valid = filtered.filter((c) => c.sections.length > 0 && !lockedCourseIds.has(c.id));
@@ -154,7 +156,10 @@ export function generateSchedules(courses: Course[], opts?: ScheduleOptions): Sc
 		if (results.length >= MAX_SCHEDULES) return;
 
 		if (courseIdx === sorted.length) {
-			let score = selected.reduce((sum, s) => sum + scoreSection(s, opts, crnToPriority.get(s.crn) ?? 0), 0);
+			let score = selected.reduce(
+				(sum, s) => sum + scoreSection(s, opts, crnToPriority.get(s.crn) ?? 0),
+				0
+			);
 
 			// ---- Day-off penalty ----
 			if (opts?.daysOff && opts.daysOff.length > 0) {

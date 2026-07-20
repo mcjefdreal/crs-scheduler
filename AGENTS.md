@@ -25,14 +25,14 @@ pnpm build    # production build
 ### Architecture
 
 **Core library** (`src/lib/`):
-- `types.ts` — `Section`, `Course`, `Schedule`, `Meeting` interfaces. `Section.excluded` drives auto-exclude.
+- `types.ts` — `Section`, `Course`, `Schedule`, `Meeting` interfaces. `Section.excluded` drives auto-exclude. `Course.priority` (0-5, 0=no priority) weights schedule scoring — P1 is highest, P5 lowest.
 - `parser.ts` — Parses CRS portal `<table>` HTML via `DOMParser`. Handles at least 2 table formats (differing column layouts). Dual time notation (`10-11:30AM` vs `11:30AM-1PM`). Reads cells[4] (Remarks) + cells[5] (Restrictions), merges restriction-relevant text, auto-sets `excluded` boolean. Hardcoded `ALLOWED_PROGRAMS = ['BS CS', 'Engg', 'COE']` — sections with `For:` clause naming these programs are auto-included.
-- `scheduler.ts` — `generateSchedules()`, backtracking with MRV ordering (fewest sections first), overlap pruning via `doMeetingsOverlap()`, top 50 results by score descending. Filters `excluded` sections and `slotsLeft === 0` sections before backtracking.
+- `scheduler.ts` — `generateSchedules()`, backtracking with MRV ordering (fewest sections first), overlap pruning via `doMeetingsOverlap()`, top 50 results by score descending. Filters `excluded` sections and `slotsLeft === 0` sections before backtracking. Course priority weights section scores: `score *= 1 + (6 - priority) * 0.5` — P1 effective weight 5 (3.5×), P5 weight 1 (1.5×).
 - `db.ts` — Dexie `CRSDatabase` with `courses` table.
 - `index.ts` — barrel exports.
 
 **UI** (`src/routes/`):
-- `+page.svelte` — Single-page app: HTML paste input, course list, schedule results, instructions modal, excluded sections sidebar with include toggles, exclude buttons on result cards.
+- `+page.svelte` — Single-page app with 3-column layout (left: courses + excluded, middle: add-course form + preferences, right: schedule results). Course priority select (P1↑–P5↓) per course. Excluded sections sidebar with include toggles, exclude buttons on result cards. `showExcluded` and `earliestStartMin` persist in localStorage.
 - `components/TimelineGrid.svelte` — Mon-Sat 7AM-9PM visual calendar grid.
 
 ### Key Decisions
@@ -40,9 +40,13 @@ pnpm build    # production build
 - Remarks text only merges into `restrictions` display if it contains `for\s+|reserved` patterns. "Prerequisite: None" excluded.
 - Existing IndexedDB data doesn't auto-update on parser changes — user must re-import HTML.
 - Scheduler filters happen pre-backtracking (excluded + 0-slot), not during.
+- Course priority is P1=highest, P5=lowest (1-5 scale). Internally mapped to `6 - priority` for scoring weights.
+- Layout: 3-column grid (`1fr 1fr 2fr` on lg), 95vw max-width. Left sidebar has `min-w-0` to prevent column-width shifts from excluded section toggle.
+- UI preferences (`showExcluded`, `earliestStartMin`) persist in localStorage.
+- Svelte 5 `$state` proxies cannot be sent to IndexedDB (structured clone fails). Course objects from `courses.find()` must be deep-cloned via `JSON.parse(JSON.stringify(...))` before `db.courses.put()`.
 
 ### Known Issues
-- 4 a11y warnings (dialog tabindex, click handlers) — harmless
+- 10 a11y warnings (dialog tabindex, click handlers) — harmless
 - No multi-format auto-detection — fixed column indices assumed
 - `ALLOWED_PROGRAMS` hardcoded, not configurable via UI
 

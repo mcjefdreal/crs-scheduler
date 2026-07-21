@@ -1,42 +1,50 @@
-# sv
+# CRS Scheduler
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Schedule generator for UPD CRS — fetches class schedules via server proxy, finds non-overlapping combinations, and ranks them by `slotsLeft / demand`.
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
+## Setup
 
 ```sh
-# create a new project
-npx sv create my-app
+pnpm install
+pnpm dev      # starts dev server at http://localhost:5173
+pnpm build    # production build
+pnpm check    # type-check + lint
 ```
 
-To recreate this project with the same configuration:
+## Usage
 
-```sh
-# recreate this project
-pnpm dlx sv@0.16.3 create --template minimal --types ts --add prettier eslint tailwindcss="plugins:none" sveltekit-adapter="adapter:auto" mcp="ide:opencode" --install pnpm .
-```
+### Add courses
 
-## Developing
+Two ways to add courses:
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+1. **URL fetch (single course)** — Enter a course name and paste the CRS schedule page URL, then click **Fetch**. The URL takes full priority: only sections from that page are imported.
+2. **Batch fetch (no URL)** — Enter one or more course names separated by commas (e.g. `Eng 13, Math 21, CS 133`) and leave the URL field empty. The app fetches CRS schedule pages by your course prefixes and matches sections automatically.
 
-```sh
-npm run dev
+> Providing a URL overrides batch mode — even with multiple names, only the URL's page content is used. Leave the URL empty for multi-course batch import.
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+Courses are saved to your browser's IndexedDB and persist across sessions.
 
-## Building
+### Set priorities
 
-To create a production version of your app:
+Use the **P1↑–P5↓** dropdown on each course to rank importance. Higher-priority courses are weighted more heavily in schedule scoring.
 
-```sh
-npm run build
-```
+### Customize
 
-You can preview the production build with `npm run preview`.
+- **Avoid classes before** — penalizes schedules with early classes
+- **Days off** — exclude specific days from generated schedules
+- **Excluded instructors** — filter out sections by instructor name
+- **Min gap between classes** — minimum minutes between consecutive classes
+- **Refresh All** — re-fetch all courses for updated section data
+- **Lock CRN** — pin a specific section to force it into all results
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+### Manage exclusions
+
+Auto-excluded sections (full, reserved, restricted) appear in the **Excluded** sidebar. Click **Include** to bring them back, or **Exclude** on any schedule result card to remove a section.
+
+To see all sections including excluded ones in results, toggle **Show excluded**.
+
+### Generate and compare
+
+Click **Generate Schedules** to find all non-overlapping combinations (top 50 by score). Check boxes on result cards and click **Compare** to view two schedules side-by-side.
+
+Use the schedule filter to find results by instructor or course code.

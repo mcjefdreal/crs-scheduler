@@ -16,18 +16,15 @@
 	import RefreshDiff from '$lib/components/RefreshDiff.svelte';
 
 	let courses = $state<Course[]>([]);
-	let htmlInput = $state('');
 	let courseName = $state('');
 	let sourceUrl = $state('');
 	let isGenerating = $state(false);
 	let schedules = $state<Schedule[]>([]);
 	let lockedConflict = $state(false);
-	let parseError = $state<string | null>(null);
 	let expandedSchedule = $state<number | null>(null);
 	let showInstructions = $state(false);
 	let showExcluded = $state(false);
 
-	let crsCookie = $state('');
 	let isFetching = $state(false);
 	let fetchError = $state<string | null>(null);
 	let fetchSuccess = $state('');
@@ -74,7 +71,6 @@
 
 	onMount(async () => {
 		courses = await db.courses.toArray();
-		loadCrsCookie();
 		loadPrefs();
 	});
 
@@ -94,13 +90,6 @@
 			: schedules
 	);
 
-	function loadCrsCookie() {
-		crsCookie = localStorage.getItem('crs-session-cookie') ?? '';
-	}
-	function saveCrsCookie() {
-		if (crsCookie.trim()) localStorage.setItem('crs-session-cookie', crsCookie.trim());
-		else localStorage.removeItem('crs-session-cookie');
-	}
 
 	function loadPrefs() {
 		const stored = localStorage.getItem('showExcluded');
@@ -206,53 +195,6 @@
 			.replace(/^-|-$/g, '');
 	}
 
-	async function addCourse() {
-		parseError = null;
-		fetchError = null;
-		fetchSuccess = '';
-		fetchProgress = '';
-		const name = courseName.trim();
-		const html = htmlInput.trim();
-		if (!name) {
-			parseError = 'Enter a course name.';
-			return;
-		}
-		if (!html) {
-			parseError = 'Paste the CRS HTML first.';
-			return;
-		}
-
-		try {
-			const sections = parseCRSHtml(html);
-			if (sections.length === 0) {
-				parseError = 'No valid sections found. Make sure you pasted the full table HTML from CRS.';
-				return;
-			}
-
-			const id = `${sanitizeCourseId(name)}-${Date.now()}`;
-			const course: Course = {
-				id,
-				name,
-				sections,
-				sourceUrl: sourceUrl.trim(),
-				scrapedAt: Date.now(),
-				priority: 0
-			};
-
-			await db.courses.put(course);
-			courses = await db.courses.toArray();
-			schedules = [];
-			lockedConflict = false;
-			expandedSchedule = null;
-			selectedForCompare = [];
-			showCompare = false;
-			htmlInput = '';
-			courseName = '';
-			sourceUrl = '';
-		} catch (err) {
-			parseError = err instanceof Error ? err.message : 'Failed to parse CRS HTML.';
-		}
-	}
 
 	async function removeCourse(id: string) {
 		await db.courses.delete(id);
@@ -313,7 +255,7 @@
 				const res = await fetch('/api/fetch-crs', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ url: sourceUrl.trim(), cookies: crsCookie.trim() || undefined })
+					body: JSON.stringify({ url: sourceUrl.trim() })
 				});
 				if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
 				const data = await res.json();
@@ -322,7 +264,7 @@
 				for (const name of names) {
 					const matched = sections.filter((s) => {
 						const parts = s.code.split(/\s+/);
-						const prefix = parts.slice(0, 2).join(' ');
+						const prefix = parts.slice(0, name.split(/\s+/).length).join(' ');
 						return prefix.toLowerCase() === name.toLowerCase();
 					});
 					if (matched.length > 0) {
@@ -352,7 +294,7 @@
 						fetch('/api/fetch-crs', {
 							method: 'POST',
 							headers: { 'Content-Type': 'application/json' },
-							body: JSON.stringify({ url, cookies: crsCookie.trim() || undefined })
+							body: JSON.stringify({ url })
 						}).then((r) => {
 							if (!r.ok) throw new Error(`HTTP ${r.status}`);
 							return r.json();
@@ -373,7 +315,7 @@
 				for (const name of names) {
 					const matched = allSections.filter((s) => {
 						const parts = s.code.split(/\s+/);
-						const prefix = parts.slice(0, 2).join(' ');
+						const prefix = parts.slice(0, name.split(/\s+/).length).join(' ');
 						return prefix.toLowerCase() === name.toLowerCase();
 					});
 					if (matched.length > 0) {
@@ -400,7 +342,6 @@
 			expandedSchedule = null;
 			selectedForCompare = [];
 			showCompare = false;
-			htmlInput = '';
 			courseName = '';
 			sourceUrl = '';
 		} catch (err) {
@@ -459,7 +400,7 @@
 				const res = await fetch('/api/fetch-crs', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ url, cookies: crsCookie.trim() || undefined })
+					body: JSON.stringify({ url })
 				});
 				if (!res.ok) throw new Error(`HTTP ${res.status}`);
 				const data = await res.json();
@@ -864,56 +805,10 @@
 								</div>
 							{/if}
 						</div>
-						<div>
-							<details class="group rounded-lg border border-slate-200 bg-slate-50">
-								<summary
-									class="cursor-pointer px-3 py-2 text-xs font-medium text-slate-600 hover:text-slate-800"
-								>
-									<span class="group-open:hidden">Advanced ▼</span>
-									<span class="hidden group-open:inline">Advanced ▲</span>
-								</summary>
-								<div class="border-t border-slate-200 px-3 py-2">
-									<label class="mb-1 block text-xs font-medium text-slate-600"
-										>CRS session cookie</label
-									>
-									<textarea
-										bind:value={crsCookie}
-										onblur={saveCrsCookie}
-										rows="2"
-										placeholder="Paste Cookie header value..."
-										class="w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-xs ring-blue-500/20 transition outline-none focus:border-blue-500 focus:ring-4"
-									></textarea>
-									<p class="mt-1 text-xs text-slate-500">
-										Required for fetching via proxy. Copy from browser DevTools → Network → Request
-										headers.
-									</p>
-								</div>
-							</details>
-						</div>
-						<div>
-							<label for="crs-html" class="mb-1 block text-sm font-medium text-slate-700"
-								>CRS table HTML</label
-							>
-							<textarea
-								id="crs-html"
-								bind:value={htmlInput}
-								rows="10"
-								placeholder="Paste the raw HTML of the CRS course table here..."
-								class="w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-xs leading-relaxed ring-blue-500/20 transition outline-none focus:border-blue-500 focus:ring-4"
-							></textarea>
-						</div>
-						{#if parseError}
-							<div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-								<p class="font-medium">Parse error</p>
-								<p class="mt-1">{parseError}</p>
-							</div>
-						{/if}
-						<button
-							onclick={addCourse}
-							class="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 active:bg-blue-800"
-						>
-							Add Course
-						</button>
+
+
+
+
 					</div>
 				</section>
 
@@ -1333,10 +1228,7 @@
 				<h3 class="mb-2 text-lg font-semibold text-slate-900">How to use</h3>
 				<ol class="list-decimal space-y-2 pl-5 text-sm text-slate-600">
 					<li>
-						<strong>Add courses:</strong> Enter a course name, paste the full HTML of the CRS
-						section table (right-click → Inspect → copy <code>&lt;table&gt;</code>), and click Add
-						Course. Or use <strong>Fetch</strong> with the course name to auto import. Separate
-						multiple courses with commas for batch fetch (e.g. <em>Eng 13, Math 21</em>).
+						<strong>Add courses:</strong> Enter a course name and optionally paste a CRS schedule URL, then click <strong>Fetch</strong>. For batch import, separate multiple course names with commas (e.g. <em>Eng 13, Math 21</em>).
 					</li>
 					<li>
 						<strong>Set priorities:</strong> Use the P1↑–P5↓ dropdown on each course to rank importance.

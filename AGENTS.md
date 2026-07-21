@@ -8,7 +8,7 @@
 
 ## Project: CRS Scheduler
 
-SvelteKit web app that parses UPD CRS class schedule HTML (pasted by user), generates non-overlapping schedule combinations, and ranks them by `slotsLeft / demand`. Client-side only, data persisted in IndexedDB via Dexie.
+SvelteKit web app that fetches UPD CRS class schedule HTML via server proxy, generates non-overlapping schedule combinations, and ranks them by `slotsLeft / demand`. Client-side only, data persisted in IndexedDB via Dexie.
 
 User is BS CS / COE / Engg.
 
@@ -36,14 +36,14 @@ pnpm build    # production build
 
 **UI** (`src/routes/`):
 
-- `+page.svelte` — Single-page app with 3-column layout (left: courses + excluded, middle: add-course form + preferences, right: schedule results). Course priority select (P1↑–P5↓) per course. Excluded sections sidebar with include toggles, exclude buttons on result cards. `showExcluded` and `earliestStartMin` persist in localStorage.
+- `+page.svelte` — Single-page app with 3-column layout (left: courses + excluded, middle: course fetch form + preferences, right: schedule results). Course priority select (P1↑–P5↓) per course. Excluded sections sidebar with include toggles, exclude buttons on result cards. `showExcluded` and `earliestStartMin` persist in localStorage.
 - `components/TimelineGrid.svelte` — Mon-Sat 7AM-9PM visual calendar grid.
 
 ### Key Decisions
 
 - Auto-exclude is regex-based: `for\s*:|reserved|^D\b` on restrictions column, `for\s+.*only|reserved` on remarks. Program-aware override checks `For:` clause against `ALLOWED_PROGRAMS`.
 - Remarks text only merges into `restrictions` display if it contains `for\s+|reserved` patterns. "Prerequisite: None" excluded.
-- Existing IndexedDB data doesn't auto-update on parser changes — user must re-import HTML.
+- Existing IndexedDB data doesn't auto-update on parser changes — user must re-fetch courses.
 - Scheduler filters happen pre-backtracking (excluded + 0-slot), not during.
 - Course priority is P1=highest, P5=lowest (1-5 scale). Internally mapped to `6 - priority` for scoring weights.
 - Layout: 3-column grid (`1fr 1fr 2fr` on lg), 95vw max-width. Left sidebar has `min-w-0` to prevent column-width shifts from excluded section toggle.

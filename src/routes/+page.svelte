@@ -14,6 +14,7 @@
 	import TimelineGrid from '$lib/components/TimelineGrid.svelte';
 	import ScheduleCompare from '$lib/components/ScheduleCompare.svelte';
 	import RefreshDiff from '$lib/components/RefreshDiff.svelte';
+	import Pe2Monitor from '$lib/components/Pe2Monitor.svelte';
 
 	let courses = $state<Course[]>([]);
 	let courseName = $state('');
@@ -679,6 +680,9 @@
 						</ul>
 					{/if}
 				</section>
+
+				<!-- PE 2 monitor -->
+				<Pe2Monitor />
 
 				<!-- Excluded section -->
 				<section>

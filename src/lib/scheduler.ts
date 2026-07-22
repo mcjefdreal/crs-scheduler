@@ -156,19 +156,32 @@ export function generateSchedules(courses: Course[], opts?: ScheduleOptions): Sc
 		if (results.length >= MAX_SCHEDULES) return;
 
 		if (courseIdx === sorted.length) {
-			let score = selected.reduce(
-				(sum, s) => sum + scoreSection(s, opts, crnToPriority.get(s.crn) ?? 0),
-				0
+			// Raw probability: product of section scores WITHOUT priority boost
+			let probability = selected.reduce(
+				(prod, s) => prod * scoreSection(s, opts, 0),
+				1
 			);
 
-			// ---- Day-off penalty ----
+			// Day-off penalty
+			let dayoffPenalty = 1;
 			if (opts?.daysOff && opts.daysOff.length > 0) {
 				const occupiedDays = new Set(selected.flatMap((s) => s.meetings.flatMap((m) => m.days)));
 				const violations = opts.daysOff.filter((d) => occupiedDays.has(d)).length;
-				score *= Math.pow(0.7, violations);
+				dayoffPenalty = Math.pow(0.7, violations);
 			}
+			probability *= dayoffPenalty;
 
-			results.push({ sections: [...selected], score });
+			// Priority multiplier (kept separate for ranking only)
+			const priorityMult = selected.reduce(
+				(prod, s) => prod * (1 + (crnToPriority.get(s.crn) ?? 0) * 0.5),
+				1
+			);
+
+			results.push({
+				sections: [...selected],
+				score: probability * priorityMult,
+				probability
+			});
 			return;
 		}
 

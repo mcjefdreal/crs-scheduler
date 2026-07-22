@@ -1071,16 +1071,16 @@
 									/>
 									<span class="text-sm font-semibold text-slate-500">#{idx + 1}</span>
 									<div class="flex items-center gap-2">
-										<span class="text-sm font-medium text-slate-700">Score</span>
-										<div class="h-2 w-24 overflow-hidden rounded-full bg-slate-200">
-											<div
-												class="h-full rounded-full bg-blue-600"
-												style="width: {Math.min(100, Math.max(0, schedule.score * 10))}%"
-											></div>
-										</div>
-										<span class="text-sm font-semibold text-slate-900"
-											>{schedule.score.toFixed(2)}</span
-										>
+								<span class="text-sm font-medium text-slate-700">Chance</span>
+									<div class="h-2 w-24 overflow-hidden rounded-full bg-slate-200">
+										<div
+											class="h-full rounded-full bg-blue-600"
+											style="width: {Math.min(100, Math.max(0, schedule.probability * 100))}%"
+										></div>
+									</div>
+									<span class="text-sm font-semibold text-slate-900"
+										>{(schedule.probability * 100).toFixed(1)}%</span
+									>
 									</div>
 								</div>
 								<button

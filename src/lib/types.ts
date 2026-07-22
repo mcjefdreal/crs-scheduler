@@ -30,7 +30,8 @@ export interface Course {
 
 export interface Schedule {
 	sections: Section[]; // one per course
-	score: number; // higher = better chance
+	score: number; // priority-weighted score for ranking (background)
+	probability: number; // raw probability 0–1 for display
 }
 
 export interface ScheduleResult {

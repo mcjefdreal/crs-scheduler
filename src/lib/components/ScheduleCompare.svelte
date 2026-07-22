@@ -101,8 +101,8 @@
 								>
 									#{idx + 1}
 								</span>
-								<span class="text-sm font-medium text-slate-700">Score</span>
-								<span class="text-base font-bold text-slate-900">{schedule.score.toFixed(2)}</span>
+								<span class="text-sm font-medium text-slate-700">Chance</span>
+								<span class="text-base font-bold text-slate-900">{(schedule.probability * 100).toFixed(1)}%</span>
 							</div>
 							<div class="h-2 w-full overflow-hidden rounded-full bg-slate-200">
 								<div
@@ -111,7 +111,7 @@
 										: idx === 1
 											? 'bg-emerald-600'
 											: 'bg-amber-500'}"
-									style="width: {Math.min(100, Math.max(0, schedule.score * 10))}%"
+									style="width: {Math.min(100, Math.max(0, schedule.probability * 100))}%"
 								></div>
 							</div>
 						</div>

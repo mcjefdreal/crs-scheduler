@@ -123,11 +123,15 @@ export function parseCRSHtml(html: string): Section[] {
 		if (isNaN(crn)) continue;
 
 		// td[1]: Section code — public format may not have <strong>
+		// Some electives have "<br>" + description (e.g. "CS 174 WFZ<br>Offensive Security…")
+		// — keep only the part before any <br> tag
 		const codeEl = cells[1].querySelector('strong');
-		const code =
-			isPublicFormat && !codeEl
-				? (cells[1].textContent ?? '').replace(/\s+/g, ' ').trim()
-				: (codeEl?.textContent ?? cells[1].textContent ?? '').trim();
+		const sourceHtml = codeEl?.innerHTML ?? cells[1].innerHTML;
+		const brIdx = sourceHtml.search(/<br\s*\/?>/i);
+		const code = (brIdx === -1 ? sourceHtml : sourceHtml.slice(0, brIdx))
+			.replace(/<[^>]+>/g, '')
+			.replace(/\s+/g, ' ')
+			.trim();
 		if (!code) continue;
 
 		// td[2]: Units

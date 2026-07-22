@@ -109,7 +109,11 @@ export function parseCRSHtml(html: string): Section[] {
 
 	for (const row of rows) {
 		const cells = row.querySelectorAll('td');
-		if (cells.length < 8) continue;
+		if (cells.length < 8) {
+			// Row collapsed by rowspan on earlier columns — still consume demand carry-over
+			if (rowspanRemaining > 0) rowspanRemaining--;
+			continue;
+		}
 
 		// Detect format: public schedule pages have 9+ columns.
 		// Auth format: [0]=CRN [1]=code [2]=units [3]=schedule [4]=remarks [5]=restrictions [6]=capacity [7]=demand

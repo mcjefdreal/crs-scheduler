@@ -774,7 +774,7 @@
 
 				<!-- Zero-slot sections -->
 				{#if totalZeroSlot > 0}
-					<section class="rounded-xl border border-purple-200 bg-purple-50 p-5">
+					<section class="mt-6 rounded-xl border border-purple-200 bg-purple-50 p-5">
 						<div class="mb-3 flex items-center justify-between">
 							<h2 class="text-sm font-semibold tracking-wide text-purple-700 uppercase">
 								Zero Slots ({totalZeroSlot})
@@ -1019,18 +1019,44 @@
 				</section>
 
 				{#if lockedCrns.length > 0}
-					<div
-						class="flex items-center justify-between rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-sm"
-					>
-						<span class="font-medium text-blue-700"
-							>{lockedCrns.length} section{lockedCrns.length === 1 ? '' : 's'} locked</span
-						>
-						<button
-							onclick={clearLocks}
-							class="text-xs font-medium text-blue-600 hover:text-blue-800"
-						>
-							Clear all locks
-						</button>
+					<div class="rounded-lg border border-blue-200 bg-blue-50 p-3">
+						<div class="mb-2 flex items-center justify-between">
+							<span class="text-sm font-medium text-blue-700"
+								>{lockedCrns.length} section{lockedCrns.length === 1 ? '' : 's'} locked</span
+							>
+							<button
+								onclick={clearLocks}
+								class="text-xs font-medium text-blue-600 hover:text-blue-800"
+							>
+								Clear all
+							</button>
+						</div>
+						<ul class="space-y-1">
+							{#each lockedCrns as crn}
+								{@const info = findCourseForSection(crn)}
+								<li class="flex items-center justify-between rounded border border-blue-100 bg-white px-2 py-1 text-xs">
+									{#if info}
+										<div class="min-w-0 flex-1">
+											<p class="truncate font-medium text-slate-800">{info.section.code}</p>
+											<p class="truncate text-slate-500">{info.course.name} • CRN {crn}</p>
+										</div>
+									{:else}
+										<div class="min-w-0 flex-1">
+											<p class="truncate text-slate-500">CRN {crn} (not in any course)</p>
+										</div>
+									{/if}
+									<button
+										onclick={() => toggleLock(crn)}
+										class="ml-2 shrink-0 rounded p-1 text-slate-400 hover:bg-red-100 hover:text-red-600"
+										title="Unlock"
+									>
+										<svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+										</svg>
+									</button>
+								</li>
+							{/each}
+						</ul>
 					</div>
 				{/if}
 

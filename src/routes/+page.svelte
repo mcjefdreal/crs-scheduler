@@ -25,6 +25,7 @@
 	let expandedSchedule = $state<number | null>(null);
 	let showInstructions = $state(false);
 	let showExcluded = $state(false);
+	let showZeroSlot = $state(false);
 
 	let isFetching = $state(false);
 	let fetchError = $state<string | null>(null);
@@ -64,6 +65,15 @@
 		)
 	);
 	const totalExcluded = $derived(excludedSections.length);
+
+	const zeroSlotSections = $derived(
+		courses.flatMap((c) =>
+			c.sections
+				.filter((s) => s.slotsLeft === 0 && !s.excluded)
+				.map((s) => ({ ...s, courseName: c.name, courseId: c.id }))
+		)
+	);
+	const totalZeroSlot = $derived(zeroSlotSections.length);
 
 	async function saveCoursePriority(courseId: string, priority: number) {
 		await db.courses.update(courseId, { priority });
@@ -123,11 +133,18 @@
 				lockedCrns = [];
 			}
 		}
+		const zs = localStorage.getItem('showZeroSlot');
+		if (zs === 'true') showZeroSlot = true;
 	}
 
 	function saveShowExcluded(v: boolean) {
 		showExcluded = v;
 		localStorage.setItem('showExcluded', String(v));
+	}
+
+	function saveShowZeroSlot(v: boolean) {
+		showZeroSlot = v;
+		localStorage.setItem('showZeroSlot', String(v));
 	}
 
 	function saveEarliestStartMin() {
@@ -221,7 +238,8 @@
 			minGapMinutes,
 			daysOff: daysOff.length > 0 ? daysOff : undefined,
 			lockedCrns: lockedCrns.length > 0 ? lockedCrns : undefined,
-			excludedInstructors: excludedInstructors.length > 0 ? excludedInstructors : undefined
+			excludedInstructors: excludedInstructors.length > 0 ? excludedInstructors : undefined,
+			includeZeroSlot: showZeroSlot
 		};
 		const result: ScheduleResult = generateSchedules(courses, opts);
 		schedules = result.schedules;
@@ -753,6 +771,73 @@
 							{/if}
 						</section>
 					{/if}
+
+				<!-- Zero-slot sections -->
+				{#if totalZeroSlot > 0}
+					<section class="rounded-xl border border-purple-200 bg-purple-50 p-5">
+						<div class="mb-3 flex items-center justify-between">
+							<h2 class="text-sm font-semibold tracking-wide text-purple-700 uppercase">
+								Zero Slots ({totalZeroSlot})
+							</h2>
+							<button
+								onclick={() => saveShowZeroSlot(!showZeroSlot)}
+								class="text-xs font-medium text-purple-700 hover:text-purple-900"
+							>
+								{showZeroSlot ? 'Hide' : 'Show'}
+							</button>
+						</div>
+						<p class="mb-3 text-xs text-purple-600">
+							Sections with 0 slots remaining. Toggle to include in schedule generation.
+						</p>
+						{#if showZeroSlot}
+							<ul class="max-h-64 space-y-1 overflow-y-auto">
+								{#each zeroSlotSections as section}
+									<li
+										class="flex items-center justify-between rounded border border-purple-200 bg-white px-2 py-1.5 text-xs {lockedCrns.includes(
+											section.crn
+										)
+											? 'border-l-2 border-blue-300 bg-blue-50'
+											: ''}"
+									>
+										<div class="min-w-0 flex-1">
+											<p class="truncate font-medium text-slate-800">{section.code}</p>
+											<p class="truncate text-slate-500">
+												{section.courseName} • CRN {section.crn}
+											</p>
+											<p class="truncate text-slate-400">
+												{section.slotsLeft}/{section.capacity} slots • Demand: {section.demand}
+											</p>
+											{#if section.restrictions}
+												<p class="truncate text-purple-600">{section.restrictions}</p>
+											{/if}
+										</div>
+										<div class="ml-2 flex shrink-0 items-center gap-1">
+											<button
+												onclick={() => toggleLock(section.crn)}
+												class="rounded p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-600"
+												title={lockedCrns.includes(section.crn) ? 'Unlock' : 'Lock section'}
+											>
+												{#if lockedCrns.includes(section.crn)}
+													<svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
+														<path
+															d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"
+														/>
+													</svg>
+												{:else}
+													<svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
+														<path
+															d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"
+														/>
+													</svg>
+												{/if}
+											</button>
+										</div>
+									</li>
+								{/each}
+							</ul>
+						{/if}
+					</section>
+				{/if}
 				</section>
 			</section>
 			<aside class="space-y-6">

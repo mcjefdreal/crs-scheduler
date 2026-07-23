@@ -11,6 +11,8 @@ export interface ScheduleOptions {
 	lockedCrns?: number[];
 	/** Instructor names to exclude. Case-insensitive match. */
 	excludedInstructors?: string[];
+	/** When true, include sections with 0 slots left (for scheduling around enlisted classes). */
+	includeZeroSlot?: boolean;
 }
 
 /**
@@ -125,7 +127,7 @@ export function generateSchedules(courses: Course[], opts?: ScheduleOptions): Sc
 		sections: c.sections.filter(
 			(s) =>
 				!s.excluded &&
-				s.slotsLeft > 0 &&
+				(opts?.includeZeroSlot || s.slotsLeft > 0) &&
 				!opts?.excludedInstructors?.some(
 					(excl) => s.instructor.toLowerCase() === excl.toLowerCase()
 				)

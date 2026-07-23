@@ -45,6 +45,8 @@
 	let zeroSlotSearch = $state('');
 	let excludedSearch = $state('');
 	let showDiff = $state(false);
+	let expandedCourseId = $state<string | null>(null);
+	let sectionSearch = $state('');
 	let diffData = $state<{
 		added: Array<{ crn: number; code: string; courseName: string }>;
 		removed: Array<{ crn: number; code: string; courseName: string }>;
@@ -553,6 +555,16 @@
 		return `${h12}:${m.toString().padStart(2, '0')} ${ampm}`;
 	}
 
+	function meetingSummary(section: Section): string {
+		const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+		return section.meetings
+			.map((m) => {
+				const days = m.days.map((d) => dayLabels[d]).join('');
+				return `${days} ${formatTime(m.startMin)}-${formatTime(m.endMin)}`;
+			})
+			.join(', ');
+	}
+
 	function slotsLeft(section: Section) {
 		return section.slotsLeft;
 	}
@@ -655,49 +667,26 @@
 					{:else}
 						<ul class="space-y-2">
 							{#each courses as course}
-								<li
-									class="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2"
-								>
-									<div>
-										<p class="text-sm font-medium text-slate-800">{course.name}</p>
-										<p class="text-xs text-slate-500">
-											{course.sections.length} section{course.sections.length === 1 ? '' : 's'}
-											{#if course.sections.some((s) => s.restrictions)}
-												<span class="text-amber-700">
-													• {course.sections.filter((s) => s.restrictions).length} section{course.sections.filter(
-														(s) => s.restrictions
-													).length === 1
-														? ''
-														: 's'} restricted
-												</span>
-											{/if}
-										</p>
-									</div>
-									<div class="flex items-center gap-2">
-										<select
-											value={course.priority ?? 0}
-											onchange={async (e) => {
-												const p = parseInt(e.currentTarget.value);
-												course.priority = p;
-												await saveCoursePriority(course.id, p);
-											}}
-											class="rounded-md border border-slate-300 px-2 py-1 text-xs text-slate-700 outline-none"
-											aria-label="Priority for {course.name}"
-										>
-											<option value={0}>—</option>
-											<option value={1}>P1 ↑</option>
-											<option value={2}>P2</option>
-											<option value={3}>P3</option>
-											<option value={4}>P4</option>
-											<option value={5}>P5 ↓</option>
-										</select>
+								<li class="overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+									<div class="flex items-center justify-between px-3 py-2">
 										<button
-											onclick={() => removeCourse(course.id)}
-											class="rounded-md p-1.5 text-slate-400 hover:bg-red-100 hover:text-red-600"
-											aria-label="Remove {course.name}"
+											onclick={() => {
+												if (expandedCourseId === course.id) {
+													expandedCourseId = null;
+												} else {
+													expandedCourseId = course.id;
+													sectionSearch = '';
+												}
+											}}
+											class="flex min-w-0 flex-1 items-center gap-2 text-left"
+											aria-expanded={expandedCourseId === course.id}
+											aria-label="{expandedCourseId === course.id ? 'Collapse' : 'Expand'} {course.name} sections"
 										>
 											<svg
-												class="h-4 w-4"
+												class="h-4 w-4 shrink-0 text-slate-400 transition-transform {expandedCourseId ===
+												course.id
+													? 'rotate-180'
+													: ''}"
 												fill="none"
 												stroke="currentColor"
 												stroke-width="2"
@@ -706,11 +695,143 @@
 												<path
 													stroke-linecap="round"
 													stroke-linejoin="round"
-													d="M6 18 18 6M6 6l12 12"
+													d="M19.5 8.25l-7.5 7.5-7.5-7.5"
 												/>
 											</svg>
+											<div class="min-w-0">
+												<p class="truncate text-sm font-medium text-slate-800">{course.name}</p>
+												<p class="text-xs text-slate-500">
+													{course.sections.length} section{course.sections.length === 1
+														? ''
+														: 's'}
+													{#if course.sections.some((s) => s.restrictions)}
+														<span class="text-amber-700">
+															• {course.sections.filter((s) => s.restrictions).length} section{course.sections.filter(
+																(s) => s.restrictions
+															).length === 1
+																? ''
+																: 's'} restricted
+														</span>
+													{/if}
+												</p>
+											</div>
 										</button>
+										<div class="flex items-center gap-2">
+											<select
+												value={course.priority ?? 0}
+												onchange={async (e) => {
+													const p = parseInt(e.currentTarget.value);
+													course.priority = p;
+													await saveCoursePriority(course.id, p);
+												}}
+												class="rounded-md border border-slate-300 px-2 py-1 text-xs text-slate-700 outline-none"
+												aria-label="Priority for {course.name}"
+											>
+												<option value={0}>—</option>
+												<option value={1}>P1 ↑</option>
+												<option value={2}>P2</option>
+												<option value={3}>P3</option>
+												<option value={4}>P4</option>
+												<option value={5}>P5 ↓</option>
+											</select>
+											<button
+												onclick={() => removeCourse(course.id)}
+												class="rounded-md p-1.5 text-slate-400 hover:bg-red-100 hover:text-red-600"
+												aria-label="Remove {course.name}"
+											>
+												<svg
+													class="h-4 w-4"
+													fill="none"
+													stroke="currentColor"
+													stroke-width="2"
+													viewBox="0 0 24 24"
+												>
+													<path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														d="M6 18 18 6M6 6l12 12"
+													/>
+												</svg>
+											</button>
+										</div>
 									</div>
+									{#if expandedCourseId === course.id}
+										{@const filteredSections = sectionSearch.trim()
+											? course.sections.filter(
+													(s) =>
+														s.code.toLowerCase().includes(sectionSearch.toLowerCase()) ||
+														String(s.crn).includes(sectionSearch) ||
+														(s.instructor &&
+															s.instructor.toLowerCase().includes(sectionSearch.toLowerCase()))
+											)
+											: course.sections}
+										<div class="border-t border-slate-200 bg-white px-3 py-2">
+											<div class="mb-2">
+												<input
+													type="text"
+													bind:value={sectionSearch}
+													placeholder="Search sections..."
+													class="w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none"
+												/>
+												{#if sectionSearch.trim()}
+													<p class="mt-1 text-xs text-slate-500">
+														{filteredSections.length} of {course.sections.length} sections
+													</p>
+												{/if}
+											</div>
+											<ul class="max-h-56 space-y-1 overflow-y-auto">
+												{#each filteredSections as section}
+													<li
+														class="rounded border border-slate-200 px-2 py-1.5 text-xs {lockedCrns.includes(
+															section.crn
+														)
+															? 'border-l-2 border-blue-300 bg-blue-50'
+															: ''}"
+													>
+														<div class="flex items-start justify-between gap-2">
+															<div class="min-w-0 flex-1">
+																<p class="truncate font-medium text-slate-800">{section.code}</p>
+																<p class="truncate text-slate-500">
+																	CRN {section.crn} • {section.instructor || 'TBA'}
+																</p>
+																<p class="truncate text-slate-400">{meetingSummary(section)}</p>
+															</div>
+															<div class="flex shrink-0 flex-col items-end gap-1">
+																<span class="whitespace-nowrap text-slate-600"
+																	>{section.slotsLeft}/{section.capacity} slots</span
+																>
+																<button
+																	onclick={() => toggleLock(section.crn)}
+																	class="rounded p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-600"
+																	title={lockedCrns.includes(section.crn) ? 'Unlock' : 'Lock section'}
+																>
+																	{#if lockedCrns.includes(section.crn)}
+																		<svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
+																			<path
+																				d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"
+																			/>
+																		</svg>
+																	{:else}
+																		<svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
+																			<path
+																				d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"
+																			/>
+																		</svg>
+																	{/if}
+																</button>
+															</div>
+														</div>
+													</li>
+												{:else}
+													<li
+														class="rounded border border-dashed border-slate-200 bg-slate-50 py-2 text-center text-xs text-slate-500"
+													>
+														No sections match
+													</li>
+												{/each}
+											</ul>
+										</div>
+									{/if}
 								</li>
 							{:else}
 								<li class="rounded border border-dashed border-amber-300 bg-amber-50/50 py-3 text-center text-xs text-amber-600">

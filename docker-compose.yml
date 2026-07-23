@@ -3,7 +3,17 @@ services:
     build: .
     container_name: crs-scheduler
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3002:3002"
     restart: unless-stopped
     environment:
       - NODE_ENV=production
+      - PORT=3002
+      - ORIGIN=https://crs-scheduler.mcjefd.dev
+      - PROTOCOL_HEADER=x-forwarded-proto
+      - HOST_HEADER=x-forwarded-host
+    networks:
+      - caddy-net
+
+networks:
+  caddy-net:
+    external: true

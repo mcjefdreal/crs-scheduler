@@ -1,0 +1,9 @@
+services:
+  crs-scheduler:
+    build: .
+    container_name: crs-scheduler
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production

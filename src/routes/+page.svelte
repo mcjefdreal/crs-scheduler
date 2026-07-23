@@ -43,6 +43,7 @@
 	let lockedCrns = $state<number[]>([]);
 	let scheduleFilter = $state('');
 	let zeroSlotSearch = $state('');
+	let excludedSearch = $state('');
 	let showDiff = $state(false);
 	let diffData = $state<{
 		added: Array<{ crn: number; code: string; courseName: string }>;
@@ -66,6 +67,14 @@
 		)
 	);
 	const totalExcluded = $derived(excludedSections.length);
+
+	const filteredExcludedSections = $derived(
+		excludedSections.filter((s) => {
+			const term = excludedSearch.trim().toLowerCase();
+			if (!term) return true;
+			return s.code.toLowerCase().includes(term) || s.courseName.toLowerCase().includes(term);
+		})
+	);
 
 	const zeroSlotSections = $derived(
 		courses.flatMap((c) =>
@@ -703,6 +712,10 @@
 										</button>
 									</div>
 								</li>
+							{:else}
+								<li class="rounded border border-dashed border-amber-300 bg-amber-50/50 py-3 text-center text-xs text-amber-600">
+									No sections match "{excludedSearch}"
+								</li>
 							{/each}
 						</ul>
 					{/if}
@@ -726,10 +739,23 @@
 									{showExcluded ? 'Hide' : 'Show'}
 								</button>
 							</div>
-							{#if showExcluded}
-								<ul class="max-h-64 space-y-1 overflow-y-auto">
-									{#each excludedSections as section}
-										<li
+						{#if showExcluded}
+							<div class="mb-2">
+								<input
+									type="text"
+									bind:value={excludedSearch}
+									placeholder="Search code or course..."
+									class="w-full rounded-lg border border-amber-200 bg-white px-3 py-1.5 text-xs text-slate-700 placeholder:text-amber-300 focus:border-amber-400 focus:outline-none"
+								/>
+								{#if excludedSearch.trim()}
+									<p class="mt-1 text-xs text-amber-600">
+										{filteredExcludedSections.length} of {totalExcluded} sections
+									</p>
+								{/if}
+							</div>
+							<ul class="max-h-64 space-y-1 overflow-y-auto">
+								{#each filteredExcludedSections as section}
+									<li
 											class="flex items-center justify-between rounded border border-amber-200 bg-white px-2 py-1.5 text-xs {lockedCrns.includes(
 												section.crn
 											)

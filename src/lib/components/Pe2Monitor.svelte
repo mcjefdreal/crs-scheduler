@@ -165,7 +165,7 @@
 		<input
 			type="text"
 			bind:value={pe2Search}
-			placeholder="Search code..."
+			placeholder="Search course code or section..."
 			class="w-full rounded-lg border border-emerald-200 bg-white px-3 py-1.5 text-xs text-slate-700 placeholder:text-emerald-300 focus:border-emerald-400 focus:outline-none"
 		/>
 		{#if pe2Search.trim()}

@@ -744,7 +744,7 @@
 								<input
 									type="text"
 									bind:value={excludedSearch}
-									placeholder="Search code or course..."
+									placeholder="Search course code or section..."
 									class="w-full rounded-lg border border-amber-200 bg-white px-3 py-1.5 text-xs text-slate-700 placeholder:text-amber-300 focus:border-amber-400 focus:outline-none"
 								/>
 								{#if excludedSearch.trim()}
@@ -829,7 +829,7 @@
 								<input
 									type="text"
 									bind:value={zeroSlotSearch}
-									placeholder="Search code or course..."
+									placeholder="Search course code or section..."
 									class="w-full rounded-lg border border-purple-200 bg-white px-3 py-1.5 text-xs text-slate-700 placeholder:text-purple-300 focus:border-purple-400 focus:outline-none"
 								/>
 								{#if zeroSlotSearch.trim()}

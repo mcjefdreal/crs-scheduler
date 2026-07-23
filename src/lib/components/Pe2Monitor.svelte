@@ -22,6 +22,7 @@
 	let pe2Error = $state<string | null>(null);
 	let pe2FetchedAt = $state<number | null>(loadJson(LS_PE2_FETCHED, null));
 	let showAllPe2 = $state(loadJson(LS_PE2_SHOW_ALL, false));
+	let pe2Search = $state('');
 
 	function loadJson<T>(key: string, fallback: T): T {
 		try {
@@ -46,6 +47,14 @@
 	});
 
 	const visibleCount = $derived(pe2Sections.filter((s) => s.status !== 'gone').length);
+
+	const filteredPe2Sections = $derived(
+		pe2Sections.filter((s) => {
+			const term = pe2Search.trim().toLowerCase();
+			if (!term) return true;
+			return s.code.toLowerCase().includes(term);
+		})
+	);
 
 	async function fetchPe2() {
 		pe2Error = null;
@@ -152,6 +161,20 @@
 		</div>
 	</div>
 
+	<div class="mb-3">
+		<input
+			type="text"
+			bind:value={pe2Search}
+			placeholder="Search code..."
+			class="w-full rounded-lg border border-emerald-200 bg-white px-3 py-1.5 text-xs text-slate-700 placeholder:text-emerald-300 focus:border-emerald-400 focus:outline-none"
+		/>
+		{#if pe2Search.trim()}
+			<p class="mt-1 text-xs text-emerald-600">
+				{filteredPe2Sections.length} of {pe2Sections.length} sections
+			</p>
+		{/if}
+	</div>
+
 	{#if pe2Error}
 		<div class="mb-3 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
 			{pe2Error}
@@ -169,7 +192,7 @@
 		</div>
 	{:else}
 		<ul class="max-h-64 space-y-1.5 overflow-y-auto">
-			{#each pe2Sections as section (section.code + '-' + section.status)}
+			{#each filteredPe2Sections as section (section.code + '-' + section.status)}
 				<li
 					class="flex items-center justify-between rounded-lg border px-3 py-2 {section.status === 'new'
 						? 'border-emerald-300 bg-emerald-100/60 border-l-4 border-l-emerald-500'
@@ -212,6 +235,10 @@
 									? section.slotsLeft + ' left'
 									: 'Full'}
 					</span>
+				</li>
+			{:else}
+				<li class="rounded-lg border border-dashed border-emerald-300 bg-emerald-50/50 py-4 text-center text-xs text-emerald-600">
+					No sections match "{pe2Search}"
 				</li>
 			{/each}
 		</ul>

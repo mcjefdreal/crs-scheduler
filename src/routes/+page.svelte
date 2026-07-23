@@ -42,6 +42,7 @@
 	let newInstructor = $state('');
 	let lockedCrns = $state<number[]>([]);
 	let scheduleFilter = $state('');
+	let zeroSlotSearch = $state('');
 	let showDiff = $state(false);
 	let diffData = $state<{
 		added: Array<{ crn: number; code: string; courseName: string }>;
@@ -74,6 +75,14 @@
 		)
 	);
 	const totalZeroSlot = $derived(zeroSlotSections.length);
+
+	const filteredZeroSlotSections = $derived(
+		zeroSlotSections.filter((s) => {
+			const term = zeroSlotSearch.trim().toLowerCase();
+			if (!term) return true;
+			return s.code.toLowerCase().includes(term) || s.courseName.toLowerCase().includes(term);
+		})
+	);
 
 	async function saveCoursePriority(courseId: string, priority: number) {
 		await db.courses.update(courseId, { priority });
@@ -790,8 +799,21 @@
 							Sections with 0 slots remaining. Toggle to include in schedule generation.
 						</p>
 						{#if showZeroSlot}
+							<div class="mb-2">
+								<input
+									type="text"
+									bind:value={zeroSlotSearch}
+									placeholder="Search code or course..."
+									class="w-full rounded-lg border border-purple-200 bg-white px-3 py-1.5 text-xs text-slate-700 placeholder:text-purple-300 focus:border-purple-400 focus:outline-none"
+								/>
+								{#if zeroSlotSearch.trim()}
+									<p class="mt-1 text-xs text-purple-600">
+										{filteredZeroSlotSections.length} of {totalZeroSlot} sections
+									</p>
+								{/if}
+							</div>
 							<ul class="max-h-64 space-y-1 overflow-y-auto">
-								{#each zeroSlotSections as section}
+								{#each filteredZeroSlotSections as section}
 									<li
 										class="flex items-center justify-between rounded border border-purple-200 bg-white px-2 py-1.5 text-xs {lockedCrns.includes(
 											section.crn
@@ -832,6 +854,10 @@
 												{/if}
 											</button>
 										</div>
+									</li>
+								{:else}
+									<li class="rounded border border-dashed border-purple-300 bg-purple-50/50 py-3 text-center text-xs text-purple-600">
+										No sections match "{zeroSlotSearch}"
 									</li>
 								{/each}
 							</ul>

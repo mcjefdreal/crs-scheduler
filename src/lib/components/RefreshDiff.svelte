@@ -36,7 +36,7 @@
 >
 	<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
 	<div
-		class="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-md border border-border bg-surface shadow-xl"
+		class="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-md border border-border bg-surface shadow-sm"
 		onclick={(e) => e.stopPropagation()}
 	>
 		<div class="flex items-center justify-between border-b border-border px-6 py-4">

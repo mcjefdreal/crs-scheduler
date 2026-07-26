@@ -604,6 +604,12 @@
 </svelte:head>
 
 <main class="flex min-h-screen flex-col">
+	<a
+		href="#main-content"
+		class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-maroon focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-surface focus:outline-none"
+	>
+		Skip to content
+	</a>
 	<header class="border-b border-border bg-surface">
 		<div
 			class="mx-auto flex max-w-[95vw] items-center justify-between px-3 py-3 sm:px-6 sm:py-4 lg:px-8"
@@ -629,7 +635,7 @@
 			</div>
 			<button
 				onclick={() => (showInstructions = true)}
-				class="text-sm font-medium text-ink-muted hover:text-maroon"
+				class="text-sm font-medium text-ink-muted transition hover:text-maroon active:scale-[0.98] active:bg-maroon-subtle active:text-maroon"
 			>
 				Instructions
 			</button>
@@ -637,6 +643,7 @@
 	</header>
 
 	<div
+		id="main-content"
 		class="mx-auto w-[90vw] px-4 py-4 max-lg:pb-24 sm:px-6 sm:py-6 lg:max-w-[95vw] lg:px-8 lg:py-8"
 	>
 		<div class="grid gap-4 sm:gap-6 lg:grid-cols-[1fr_1fr_2fr] lg:gap-8">
@@ -649,7 +656,7 @@
 						<button
 							onclick={() =>
 								(expandedMobileSection = expandedMobileSection === 'courses' ? null : 'courses')}
-							class="flex min-w-0 items-center gap-2 text-left"
+							class="flex min-w-0 items-center gap-2 text-left transition active:scale-[0.98]"
 							aria-expanded={expandedMobileSection === 'courses'}
 						>
 							<svg
@@ -680,7 +687,7 @@
 						<button
 							onclick={refreshAllCourses}
 							disabled={isFetching || isGenerating}
-							class="text-sm font-medium text-maroon hover:text-maroon-hover disabled:text-ink-muted"
+							class="text-sm font-medium text-maroon transition hover:text-maroon-hover active:scale-[0.98] active:bg-maroon-subtle active:text-maroon disabled:text-ink-muted"
 						>
 							Refresh All
 						</button>
@@ -693,7 +700,7 @@
 							<button
 								onclick={refreshAllCourses}
 								disabled={isFetching || isGenerating}
-								class="text-sm font-medium text-maroon hover:text-maroon-hover disabled:text-ink-muted"
+								class="text-sm font-medium text-maroon transition hover:text-maroon-hover active:scale-[0.98] active:bg-maroon-subtle active:text-maroon disabled:text-ink-muted"
 							>
 								Refresh All
 							</button>
@@ -724,15 +731,15 @@
 									<li class="overflow-hidden rounded-md border border-border bg-paper">
 										<div class="flex items-center justify-between px-3 py-2">
 											<button
-												onclick={() => {
-													if (expandedCourseId === course.id) {
-														expandedCourseId = null;
-													} else {
-														expandedCourseId = course.id;
-														sectionSearch = '';
-													}
-												}}
-												class="flex min-w-0 flex-1 items-center gap-2 text-left"
+onclick={() => {
+									if (expandedCourseId === course.id) {
+										expandedCourseId = null;
+									} else {
+										expandedCourseId = course.id;
+										sectionSearch = '';
+									}
+								}}
+								class="flex min-w-0 flex-1 items-center gap-2 text-left transition active:scale-[0.98]"
 												aria-expanded={expandedCourseId === course.id}
 												aria-label="{expandedCourseId === course.id
 													? 'Collapse'
@@ -781,7 +788,7 @@
 														course.priority = p;
 														await saveCoursePriority(course.id, p);
 													}}
-													class="rounded-sm border border-border-hover px-2 py-1 text-xs text-ink outline-none"
+													class="rounded-sm border border-border-hover px-2 py-1 text-xs text-ink outline-none transition-colors duration-150"
 													aria-label="Priority for {course.name}"
 												>
 													<option value={0}>—</option>
@@ -792,8 +799,8 @@
 													<option value={5}>P5 (lowest)</option>
 												</select>
 												<button
-													onclick={() => removeCourse(course.id)}
-													class="rounded-sm p-1.5 text-ink-muted hover:bg-danger-bg hover:text-danger"
+onclick={() => removeCourse(course.id)}
+									class="rounded-sm p-1.5 text-ink-muted transition hover:bg-danger-bg hover:text-danger active:scale-[0.98]"
 													aria-label="Remove {course.name}"
 												>
 													<svg
@@ -831,7 +838,7 @@
 														type="text"
 														bind:value={sectionSearch}
 														placeholder="Search sections..."
-														class="w-full rounded-sm border border-border bg-surface px-3 py-1.5 text-xs text-ink placeholder:text-ink-muted focus:border-maroon focus:outline-none"
+														class="w-full rounded-sm border border-border bg-surface px-3 py-1.5 text-xs text-ink placeholder:text-ink-muted transition-colors duration-150 focus:border-maroon focus:outline-none"
 													/>
 													{#if sectionSearch.trim()}
 														<p class="mt-1 text-xs text-ink-muted">
@@ -867,7 +874,7 @@
 																	>
 																	<button
 																		onclick={() => toggleLock(section.crn)}
-																		class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm p-2.5 text-ink-muted hover:bg-border hover:text-ink-muted"
+																		class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm p-2.5 text-ink-muted transition hover:bg-border hover:text-ink-muted active:scale-[0.98]"
 																		title={lockedCrns.includes(section.crn)
 																			? 'Unlock'
 																			: 'Lock section'}
@@ -940,7 +947,7 @@
 											saveShowExcluded(true);
 										}
 									}}
-									class="flex min-w-0 items-center gap-2 text-left"
+									class="flex min-w-0 items-center gap-2 text-left transition active:scale-[0.98]"
 									aria-expanded={expandedMobileSection === 'excluded'}
 								>
 									<svg
@@ -972,7 +979,7 @@
 								</h2>
 								<button
 									onclick={() => saveShowExcluded(!showExcluded)}
-									class="text-xs font-medium text-excluded hover:text-excluded"
+									class="text-xs font-medium text-excluded transition hover:text-excluded active:scale-[0.98]"
 								>
 									{showExcluded ? 'Hide' : 'Show'}
 								</button>
@@ -986,7 +993,7 @@
 											type="text"
 											bind:value={excludedSearch}
 											placeholder="Search course code or section..."
-											class="w-full rounded-sm border border-excluded-border bg-surface px-3 py-1.5 text-xs text-ink placeholder:text-ink-muted focus:border-maroon focus:outline-none"
+											class="w-full rounded-sm border border-excluded-border bg-surface px-3 py-1.5 text-xs text-ink placeholder:text-ink-muted transition-colors duration-150 focus:border-maroon focus:outline-none"
 										/>
 										{#if excludedSearch.trim()}
 											<p class="mt-1 text-xs text-excluded">
@@ -1017,7 +1024,7 @@
 												<div class="ml-2 flex shrink-0 items-center gap-1">
 													<button
 														onclick={() => toggleLock(section.crn)}
-														class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm p-2.5 text-ink-muted hover:bg-border hover:text-ink-muted"
+														class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm p-2.5 text-ink-muted transition hover:bg-border hover:text-ink-muted active:scale-[0.98]"
 														title={lockedCrns.includes(section.crn) ? 'Unlock' : 'Lock section'}
 													>
 														{#if lockedCrns.includes(section.crn)}
@@ -1038,7 +1045,7 @@
 														onclick={async () => {
 															await toggleSectionExclusion(section.courseId, section.crn, false);
 														}}
-														class="rounded-md bg-maroon px-2 py-0.5 text-xs font-medium text-surface hover:bg-maroon-hover"
+														class="rounded-md bg-maroon px-2 py-0.5 text-xs font-medium text-surface transition hover:bg-maroon-hover active:scale-[0.98]"
 													>
 														Include
 													</button>
@@ -1065,7 +1072,7 @@
 											saveShowZeroSlot(true);
 										}
 									}}
-									class="flex min-w-0 items-center gap-2 text-left"
+									class="flex min-w-0 items-center gap-2 text-left transition active:scale-[0.98]"
 									aria-expanded={expandedMobileSection === 'zeroslot'}
 								>
 									<svg
@@ -1097,7 +1104,7 @@
 								</h2>
 								<button
 									onclick={() => saveShowZeroSlot(!showZeroSlot)}
-									class="text-xs font-medium text-zeroslot hover:text-zeroslot"
+									class="text-xs font-medium text-zeroslot transition hover:text-zeroslot active:scale-[0.98]"
 								>
 									{showZeroSlot ? 'Hide' : 'Show'}
 								</button>
@@ -1114,7 +1121,7 @@
 											type="text"
 											bind:value={zeroSlotSearch}
 											placeholder="Search course code or section..."
-											class="w-full rounded-sm border border-zeroslot-border bg-surface px-3 py-1.5 text-xs text-ink placeholder:text-ink-muted focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0 focus:outline-none"
+											class="w-full rounded-sm border border-zeroslot-border bg-surface px-3 py-1.5 text-xs text-ink placeholder:text-ink-muted transition-colors duration-150 focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0 focus:outline-none"
 										/>
 										{#if zeroSlotSearch.trim()}
 											<p class="mt-1 text-sm text-zeroslot">
@@ -1148,7 +1155,7 @@
 												<div class="ml-2 flex shrink-0 items-center gap-1">
 													<button
 														onclick={() => toggleLock(section.crn)}
-														class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm p-2.5 text-ink-muted hover:bg-border hover:text-ink-muted"
+														class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm p-2.5 text-ink-muted transition hover:bg-border hover:text-ink-muted active:scale-[0.98]"
 														title={lockedCrns.includes(section.crn) ? 'Unlock' : 'Lock section'}
 													>
 														{#if lockedCrns.includes(section.crn)}
@@ -1203,7 +1210,7 @@
 									aria-invalid={courseNameError ? 'true' : undefined}
 									aria-describedby="course-name-error"
 									placeholder="e.g. Eng 13, CS 133, Math 21"
-									class="w-full rounded-sm border border-border-hover px-3 py-2 text-sm transition outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
+									class="w-full rounded-sm border border-border-hover px-3 py-2 text-sm transition transition-colors duration-150 outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
 								/>
 								{#if courseNameError}
 									<p id="course-name-error" class="mt-1 text-sm text-danger" role="alert">
@@ -1221,12 +1228,12 @@
 										type="url"
 										bind:value={sourceUrl}
 										placeholder="https://crs.upd.edu.ph/..."
-										class="min-w-0 flex-1 rounded-sm border border-border-hover px-3 py-2 text-sm transition outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
+class="min-w-0 flex-1 rounded-sm border border-border-hover px-3 py-2 text-sm transition transition-colors duration-150 outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
 									/>
 									<button
 										onclick={fetchFromCrs}
 										disabled={isFetching}
-										class="shrink-0 rounded-md border border-maroon px-4 py-2 text-sm font-semibold text-maroon hover:bg-maroon-subtle active:bg-maroon-subtle disabled:cursor-not-allowed disabled:opacity-50"
+										class="shrink-0 rounded-md border border-maroon px-4 py-2 text-sm font-semibold text-maroon transition hover:bg-maroon-subtle active:bg-maroon-subtle active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
 									>
 										{isFetching ? fetchProgress || 'Fetching...' : 'Fetch'}
 									</button>
@@ -1264,7 +1271,7 @@
 								id="earliest-start"
 								bind:value={earliestStartMin}
 								onchange={saveEarliestStartMin}
-								class="w-full rounded-sm border border-border-hover px-3 py-2 text-sm transition outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
+								class="w-full rounded-sm border border-border-hover px-3 py-2 text-sm transition transition-colors duration-150 outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
 							>
 								<option value={undefined}>None</option>
 								<option value={420}>7:00 AM</option>
@@ -1290,7 +1297,7 @@
 								placeholder="Minutes"
 								bind:value={minGapMinutes}
 								onchange={saveMinGapMinutes}
-								class="w-full rounded-sm border border-border-hover px-3 py-2 text-sm transition outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
+								class="w-full rounded-sm border border-border-hover px-3 py-2 text-sm transition transition-colors duration-150 outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
 							/>
 							<p class="mt-1 text-xs text-ink-muted">Minutes between classes on the same day</p>
 						</div>
@@ -1301,11 +1308,11 @@
 								{#each ['M', 'Tu', 'W', 'Th', 'F', 'S'] as day, i (day)}
 									<button
 										onclick={() => toggleDayOff(i)}
-										class="rounded-full px-3 py-1.5 text-xs font-medium transition {daysOff.includes(
-											i
-										)
-											? 'bg-maroon text-surface'
-											: 'border border-border-hover bg-surface text-ink-muted hover:bg-paper'}"
+class="rounded-full px-3 py-1.5 text-xs font-medium transition active:scale-[0.98] {daysOff.includes(
+										i
+									)
+										? 'bg-maroon text-surface'
+										: 'border border-border-hover bg-surface text-ink-muted hover:bg-paper'}"
 									>
 										{day}
 									</button>
@@ -1334,7 +1341,7 @@
 								<button
 									onclick={addInstructor}
 									disabled={!newInstructor.trim()}
-									class="shrink-0 rounded-md bg-maroon px-3 py-2 text-sm font-semibold text-surface hover:bg-maroon-hover disabled:opacity-50"
+									class="shrink-0 rounded-md bg-maroon px-3 py-2 text-sm font-semibold text-surface transition hover:bg-maroon-hover active:scale-[0.98] disabled:opacity-50"
 								>
 									Add
 								</button>
@@ -1348,7 +1355,7 @@
 											{instructor}
 											<button
 												onclick={() => removeInstructor(instructor)}
-												class="inline-flex h-7 w-7 items-center justify-center rounded-full p-1 text-danger hover:bg-danger-bg hover:text-danger"
+												class="inline-flex h-7 w-7 items-center justify-center rounded-full p-1 text-danger transition hover:bg-danger-bg hover:text-danger active:scale-[0.98]"
 												aria-label="Remove {instructor}"
 											>
 												<svg
@@ -1384,7 +1391,7 @@
 							>
 							<button
 								onclick={clearLocks}
-								class="text-xs font-medium text-maroon hover:text-maroon-hover"
+								class="text-xs font-medium text-maroon transition hover:text-maroon-hover active:scale-[0.98] active:bg-maroon-subtle active:text-maroon"
 							>
 								Clear all
 							</button>
@@ -1411,7 +1418,7 @@
 									{/if}
 									<button
 										onclick={() => toggleLock(crn)}
-										class="ml-2 flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-sm p-2.5 text-ink-muted hover:bg-danger-bg hover:text-danger"
+										class="ml-2 flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-sm p-2.5 text-ink-muted transition hover:bg-danger-bg hover:text-danger active:scale-[0.98]"
 										title="Unlock"
 									>
 										<svg
@@ -1439,7 +1446,7 @@
 				<button
 					onclick={handleGenerate}
 					disabled={!canGenerate}
-					class="flex w-full items-center justify-center gap-2 rounded-lg bg-maroon px-4 py-3 text-sm font-semibold text-surface hover:bg-maroon-hover focus:ring-2 focus:ring-maroon focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+					class="flex w-full items-center justify-center gap-2 rounded-lg bg-maroon px-4 py-3 text-sm font-semibold text-surface transition hover:bg-maroon-hover focus:ring-2 focus:ring-maroon focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
 				>
 					{#if isGenerating}
 						<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -1502,7 +1509,7 @@
 							{#if selectedForCompare.length >= 2}
 								<button
 									onclick={() => (showCompare = true)}
-									class="rounded-md bg-maroon px-3 py-1.5 text-sm font-semibold text-surface hover:bg-maroon-hover"
+									class="rounded-md bg-maroon px-3 py-1.5 text-sm font-semibold text-surface transition hover:bg-maroon-hover active:scale-[0.98]"
 								>
 									Compare ({selectedForCompare.length})
 								</button>
@@ -1532,13 +1539,13 @@
 								type="text"
 								placeholder="Filter by instructor, code, or CRN..."
 								bind:value={scheduleFilter}
-								class="w-full rounded-sm border border-border-hover py-2 pr-3 pl-10 text-sm transition outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
+								class="w-full rounded-sm border border-border-hover py-2 pr-3 pl-10 text-sm transition transition-colors duration-150 outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
 							/>
 						</div>
 						<button
 							onclick={handleGenerate}
 							disabled={!canGenerate || isGenerating}
-							class="shrink-0 rounded-lg bg-maroon px-3 py-1.5 text-xs font-semibold text-surface hover:bg-maroon-hover disabled:opacity-50 lg:hidden"
+							class="shrink-0 rounded-lg bg-maroon px-3 py-1.5 text-xs font-semibold text-surface transition hover:bg-maroon-hover active:scale-[0.98] disabled:opacity-50 lg:hidden"
 						>
 							{isGenerating ? 'Generating...' : 'Re-generate'}
 						</button>
@@ -1573,7 +1580,7 @@
 											type="checkbox"
 											bind:group={selectedForCompare}
 											value={idx}
-											class="size-5 rounded-sm border-border-hover text-maroon"
+											class="size-5 rounded-sm border-border-hover text-maroon transition-colors duration-150"
 										/>
 									</label>
 									<span class="text-sm font-semibold text-ink-muted">#{idx + 1}</span>
@@ -1592,7 +1599,7 @@
 								</div>
 								<button
 									onclick={() => (expandedSchedule = expandedSchedule === idx ? null : idx)}
-									class="text-sm font-medium text-maroon hover:text-maroon-hover"
+									class="text-sm font-medium text-maroon transition hover:text-maroon-hover active:scale-[0.98] active:bg-maroon-subtle active:text-maroon"
 								>
 									{expandedSchedule === idx ? 'Hide details' : 'Show details'}
 								</button>
@@ -1626,7 +1633,7 @@
 													<div class="flex items-center gap-2">
 														<button
 															onclick={() => toggleLock(section.crn)}
-															class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm p-2.5 text-ink-muted hover:bg-border hover:text-ink-muted"
+															class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm p-2.5 text-ink-muted transition hover:bg-border hover:text-ink-muted active:scale-[0.98]"
 															title={lockedCrns.includes(section.crn)
 																? 'Unlock section'
 																: 'Lock section'}
@@ -1664,7 +1671,7 @@
 																if (found)
 																	await toggleSectionExclusion(found.course.id, section.crn, true);
 															}}
-															class="rounded-sm border border-danger-border px-2 py-1 text-xs font-medium text-danger hover:bg-danger-bg"
+															class="rounded-sm border border-danger-border px-2 py-1 text-xs font-medium text-danger transition hover:bg-danger-bg active:scale-[0.98]"
 															title="Exclude this section from scheduling"
 														>
 															Exclude
@@ -1721,7 +1728,7 @@
 			<button
 				onclick={handleGenerate}
 				disabled={!canGenerate || isGenerating}
-				class="flex w-full items-center justify-center gap-2 rounded-lg bg-maroon px-4 py-3 text-sm font-semibold text-surface hover:bg-maroon-hover disabled:cursor-not-allowed disabled:opacity-50"
+				class="flex w-full items-center justify-center gap-2 rounded-lg bg-maroon px-4 py-3 text-sm font-semibold text-surface transition hover:bg-maroon-hover active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
 			>
 				{#if isGenerating}
 					<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -1826,7 +1833,7 @@
 				<button
 					onclick={() => (showInstructions = false)}
 					autofocus
-					class="mt-4 w-full rounded-md bg-maroon px-4 py-2.5 text-sm font-semibold text-surface hover:bg-maroon-hover focus:ring-2 focus:ring-maroon focus:ring-offset-2 focus:outline-none"
+					class="mt-4 w-full rounded-md bg-maroon px-4 py-2.5 text-sm font-semibold text-surface transition hover:bg-maroon-hover focus:ring-2 focus:ring-maroon focus:ring-offset-2 focus:outline-none active:scale-[0.98]"
 				>
 					Got it
 				</button>

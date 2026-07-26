@@ -194,11 +194,11 @@
 		<ul class="max-h-64 space-y-1.5 overflow-y-auto">
 			{#each filteredPe2Sections as section (section.code + '-' + section.status)}
 				<li
-					class="flex items-center justify-between rounded-md border px-3 py-2 transition {section.status === 'new'
-						? 'border-emerald-300 bg-emerald-100/60 border-l-4 border-l-emerald-500'
+					class="flex items-center justify-between rounded-md border bg-white px-3 py-2 transition {section.status === 'new'
+						? 'border-emerald-300 bg-emerald-50/50'
 						: section.status === 'gone'
 							? 'border-border bg-paper opacity-70'
-							: 'border-emerald-100 bg-white hover:border-border-hover'}"
+							: 'border-emerald-100 hover:border-border-hover'}"
 				>
 					<div class="min-w-0 flex-1">
 						<p

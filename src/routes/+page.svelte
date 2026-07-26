@@ -599,10 +599,10 @@
 </svelte:head>
 
 <main class="flex min-h-screen flex-col">
-	<header class="border-b border-slate-200 bg-white">
+	<header class="border-b border-border bg-surface">
 		<div class="mx-auto flex max-w-3xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
 			<div class="flex items-center gap-3">
-				<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
+				<div class="flex h-8 w-8 items-center justify-center rounded-md bg-maroon text-surface">
 					<svg
 						class="h-5 w-5"
 						fill="none"
@@ -617,11 +617,11 @@
 						/>
 					</svg>
 				</div>
-				<h1 class="text-xl font-semibold tracking-tight text-slate-900">CRS Scheduler</h1>
+				<h1 class="text-xl font-semibold tracking-tight text-ink">CRS Scheduler</h1>
 			</div>
 			<button
 				onclick={() => (showInstructions = true)}
-				class="text-sm font-medium text-slate-500 hover:text-blue-600"
+				class="text-sm font-medium text-ink-muted hover:text-maroon"
 			>
 				Instructions
 			</button>
@@ -633,18 +633,18 @@
 			<!-- Sidebar -->
 			<section class="min-w-0 space-y-6">
 				<!-- Courses section -->
-				<section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+				<section class="rounded-md border border-border bg-surface p-5">
 					<div class="mb-4 flex items-center justify-between">
-						<h2 class="text-sm font-semibold tracking-wide text-slate-500 uppercase">Courses</h2>
+						<h2 class="text-sm font-semibold tracking-wide text-ink-muted uppercase">Courses</h2>
 						<div class="flex items-center gap-2">
 							<button
 								onclick={refreshAllCourses}
 								disabled={isFetching || isGenerating}
-								class="text-sm font-medium text-blue-600 hover:text-blue-800 disabled:text-slate-400"
+								class="text-sm font-medium text-maroon hover:text-maroon-hover disabled:text-ink-muted"
 							>
 								Refresh All
 							</button>
-							<span class="text-xs text-slate-500"
+							<span class="text-xs text-ink-muted"
 								>{courses.length} course{courses.length === 1 ? '' : 's'} • {totalSections} section{totalSections ===
 								1
 									? ''
@@ -653,21 +653,21 @@
 						</div>
 					</div>
 					{#if refreshProgress}
-						<div class="mb-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-700">
+						<div class="mb-3 rounded-md bg-maroon-subtle p-3 text-sm text-maroon">
 							{refreshProgress}
 						</div>
 					{/if}
 					{#if courses.length === 0}
 						<div
-							class="rounded-lg border border-dashed border-slate-300 bg-slate-50 py-8 text-center"
+							class="rounded-md border border-dashed border-border-hover bg-paper py-8 text-center"
 						>
-							<p class="text-sm font-medium text-slate-500">Add courses to get started</p>
-							<p class="mt-1 text-xs text-slate-400">Paste CRS HTML and click Add Course.</p>
+							<p class="text-sm font-medium text-ink-muted">Add courses to get started</p>
+							<p class="mt-1 text-xs text-ink-muted">Paste CRS HTML and click Add Course.</p>
 						</div>
 					{:else}
 						<ul class="space-y-2">
 							{#each courses as course}
-								<li class="overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+								<li class="overflow-hidden rounded-md border border-border bg-paper">
 									<div class="flex items-center justify-between px-3 py-2">
 										<button
 											onclick={() => {
@@ -683,7 +683,7 @@
 											aria-label="{expandedCourseId === course.id ? 'Collapse' : 'Expand'} {course.name} sections"
 										>
 											<svg
-												class="h-4 w-4 shrink-0 text-slate-400 transition-transform {expandedCourseId ===
+												class="h-4 w-4 shrink-0 text-ink-muted transition-transform {expandedCourseId ===
 												course.id
 													? 'rotate-180'
 													: ''}"
@@ -699,13 +699,13 @@
 												/>
 											</svg>
 											<div class="min-w-0">
-												<p class="truncate text-sm font-medium text-slate-800">{course.name}</p>
-												<p class="text-xs text-slate-500">
+												<p class="truncate text-sm font-medium text-ink">{course.name}</p>
+												<p class="text-xs text-ink-muted">
 													{course.sections.length} section{course.sections.length === 1
 														? ''
 														: 's'}
 													{#if course.sections.some((s) => s.restrictions)}
-														<span class="text-amber-700">
+														<span class="text-excluded">
 															• {course.sections.filter((s) => s.restrictions).length} section{course.sections.filter(
 																(s) => s.restrictions
 															).length === 1
@@ -724,7 +724,7 @@
 													course.priority = p;
 													await saveCoursePriority(course.id, p);
 												}}
-												class="rounded-md border border-slate-300 px-2 py-1 text-xs text-slate-700 outline-none"
+												class="rounded-sm border border-border-hover px-2 py-1 text-xs text-ink outline-none"
 												aria-label="Priority for {course.name}"
 											>
 												<option value={0}>—</option>
@@ -736,7 +736,7 @@
 											</select>
 											<button
 												onclick={() => removeCourse(course.id)}
-												class="rounded-md p-1.5 text-slate-400 hover:bg-red-100 hover:text-red-600"
+												class="rounded-sm p-1.5 text-ink-muted hover:bg-danger-bg hover:text-danger"
 												aria-label="Remove {course.name}"
 											>
 												<svg
@@ -763,18 +763,18 @@
 														String(s.crn).includes(sectionSearch) ||
 														(s.instructor &&
 															s.instructor.toLowerCase().includes(sectionSearch.toLowerCase()))
-											)
+												)
 											: course.sections}
-										<div class="border-t border-slate-200 bg-white px-3 py-2">
+										<div class="border-t border-border bg-surface px-3 py-2">
 											<div class="mb-2">
 												<input
 													type="text"
 													bind:value={sectionSearch}
 													placeholder="Search sections..."
-													class="w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none"
+													class="w-full rounded-sm border border-border bg-surface px-3 py-1.5 text-xs text-ink placeholder:text-ink-muted focus:border-maroon focus:outline-none"
 												/>
 												{#if sectionSearch.trim()}
-													<p class="mt-1 text-xs text-slate-500">
+													<p class="mt-1 text-xs text-ink-muted">
 														{filteredSections.length} of {course.sections.length} sections
 													</p>
 												{/if}
@@ -782,27 +782,27 @@
 											<ul class="max-h-56 space-y-1 overflow-y-auto">
 												{#each filteredSections as section}
 													<li
-														class="rounded border border-slate-200 px-2 py-1.5 text-xs {lockedCrns.includes(
+														class="rounded-sm border border-border px-2 py-1.5 text-xs {lockedCrns.includes(
 															section.crn
 														)
-															? 'border-l-2 border-blue-300 bg-blue-50'
+															? 'border-l-[3px] border-maroon bg-maroon-subtle'
 															: ''}"
 													>
 														<div class="flex items-start justify-between gap-2">
 															<div class="min-w-0 flex-1">
-																<p class="truncate font-medium text-slate-800">{section.code}</p>
-																<p class="truncate text-slate-500">
-																	CRN {section.crn} • {section.instructor || 'TBA'}
+																<p class="truncate font-medium text-ink font-mono">{section.code}</p>
+																<p class="truncate text-ink-muted">
+																	CRN <span class="font-mono">{section.crn}</span> • {section.instructor || 'TBA'}
 																</p>
-																<p class="truncate text-slate-400">{meetingSummary(section)}</p>
+																<p class="truncate text-ink-muted">{meetingSummary(section)}</p>
 															</div>
 															<div class="flex shrink-0 flex-col items-end gap-1">
-																<span class="whitespace-nowrap text-slate-600"
+																<span class="whitespace-nowrap text-ink-muted font-mono"
 																	>{section.slotsLeft}/{section.capacity} slots</span
 																>
 																<button
 																	onclick={() => toggleLock(section.crn)}
-																	class="rounded p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-600"
+																	class="rounded-sm p-1 text-ink-muted hover:bg-border hover:text-ink-muted"
 																	title={lockedCrns.includes(section.crn) ? 'Unlock' : 'Lock section'}
 																>
 																	{#if lockedCrns.includes(section.crn)}
@@ -824,7 +824,7 @@
 													</li>
 												{:else}
 													<li
-														class="rounded border border-dashed border-slate-200 bg-slate-50 py-2 text-center text-xs text-slate-500"
+														class="rounded-sm border border-dashed border-border bg-paper py-2 text-center text-xs text-ink-muted"
 													>
 														No sections match
 													</li>
@@ -834,7 +834,7 @@
 									{/if}
 								</li>
 							{:else}
-								<li class="rounded border border-dashed border-amber-300 bg-amber-50/50 py-3 text-center text-xs text-amber-600">
+								<li class="rounded-sm border border-dashed border-excluded-border bg-excluded-bg/50 py-3 text-center text-xs text-excluded">
 									No sections match "{excludedSearch}"
 								</li>
 							{/each}
@@ -848,14 +848,14 @@
 				<!-- Excluded section -->
 				<section>
 					{#if totalExcluded > 0}
-						<section class="rounded-xl border border-amber-200 bg-amber-50 p-5">
+						<section class="rounded-md border border-excluded-border bg-excluded-bg p-5">
 							<div class="mb-3 flex items-center justify-between">
-								<h2 class="text-sm font-semibold tracking-wide text-amber-700 uppercase">
+								<h2 class="text-sm font-semibold tracking-wide text-excluded uppercase">
 									Excluded ({totalExcluded})
 								</h2>
 								<button
 									onclick={() => saveShowExcluded(!showExcluded)}
-									class="text-xs font-medium text-amber-700 hover:text-amber-900"
+									class="text-xs font-medium text-excluded hover:text-excluded"
 								>
 									{showExcluded ? 'Hide' : 'Show'}
 								</button>
@@ -866,10 +866,10 @@
 									type="text"
 									bind:value={excludedSearch}
 									placeholder="Search course code or section..."
-									class="w-full rounded-lg border border-amber-200 bg-white px-3 py-1.5 text-xs text-slate-700 placeholder:text-amber-300 focus:border-amber-400 focus:outline-none"
+									class="w-full rounded-sm border border-excluded-border bg-surface px-3 py-1.5 text-xs text-ink placeholder:text-ink-muted focus:border-maroon focus:outline-none"
 								/>
 								{#if excludedSearch.trim()}
-									<p class="mt-1 text-xs text-amber-600">
+									<p class="mt-1 text-xs text-excluded">
 										{filteredExcludedSections.length} of {totalExcluded} sections
 									</p>
 								{/if}
@@ -877,25 +877,25 @@
 							<ul class="max-h-64 space-y-1 overflow-y-auto">
 								{#each filteredExcludedSections as section}
 									<li
-											class="flex items-center justify-between rounded border border-amber-200 bg-white px-2 py-1.5 text-xs {lockedCrns.includes(
+											class="flex items-center justify-between rounded-sm border border-excluded-border bg-surface px-2 py-1.5 text-xs {lockedCrns.includes(
 												section.crn
 											)
-												? 'border-l-2 border-blue-300 bg-blue-50'
+												? 'border-l-[3px] border-maroon bg-maroon-subtle'
 												: ''}"
 										>
 											<div class="min-w-0 flex-1">
-												<p class="truncate font-medium text-slate-800">{section.code}</p>
-												<p class="truncate text-slate-500">
-													{section.courseName} • CRN {section.crn}
+												<p class="truncate font-medium text-ink font-mono">{section.code}</p>
+												<p class="truncate text-ink-muted">
+													{section.courseName} • CRN <span class="font-mono">{section.crn}</span>
 												</p>
 												{#if section.restrictions}
-													<p class="truncate text-amber-600">{section.restrictions}</p>
+													<p class="truncate text-excluded">{section.restrictions}</p>
 												{/if}
 											</div>
 											<div class="ml-2 flex shrink-0 items-center gap-1">
 												<button
 													onclick={() => toggleLock(section.crn)}
-													class="rounded p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-600"
+													class="rounded-sm p-1 text-ink-muted hover:bg-border hover:text-ink-muted"
 													title={lockedCrns.includes(section.crn) ? 'Unlock' : 'Lock section'}
 												>
 													{#if lockedCrns.includes(section.crn)}
@@ -916,7 +916,7 @@
 													onclick={async () => {
 														await toggleSectionExclusion(section.courseId, section.crn, false);
 													}}
-													class="rounded bg-emerald-600 px-2 py-0.5 text-xs font-medium text-white hover:bg-emerald-700"
+													class="rounded-sm bg-maroon px-2 py-0.5 text-xs font-medium text-surface hover:bg-maroon-hover"
 												>
 													Include
 												</button>
@@ -930,19 +930,19 @@
 
 				<!-- Zero-slot sections -->
 				{#if totalZeroSlot > 0}
-					<section class="mt-6 rounded-xl border border-purple-200 bg-purple-50 p-5">
+					<section class="mt-6 rounded-md border border-zerocourse-border bg-zerocourse-bg p-5">
 						<div class="mb-3 flex items-center justify-between">
-							<h2 class="text-sm font-semibold tracking-wide text-purple-700 uppercase">
+							<h2 class="text-sm font-semibold tracking-wide text-zerocourse uppercase">
 								Zero Slots ({totalZeroSlot})
 							</h2>
 							<button
 								onclick={() => saveShowZeroSlot(!showZeroSlot)}
-								class="text-xs font-medium text-purple-700 hover:text-purple-900"
+								class="text-xs font-medium text-zerocourse hover:text-zerocourse"
 							>
 								{showZeroSlot ? 'Hide' : 'Show'}
 							</button>
 						</div>
-						<p class="mb-3 text-xs text-purple-600">
+						<p class="mb-3 text-xs text-zerocourse">
 							Sections with 0 slots remaining. Toggle to include in schedule generation.
 						</p>
 						{#if showZeroSlot}
@@ -951,10 +951,10 @@
 									type="text"
 									bind:value={zeroSlotSearch}
 									placeholder="Search course code or section..."
-									class="w-full rounded-lg border border-purple-200 bg-white px-3 py-1.5 text-xs text-slate-700 placeholder:text-purple-300 focus:border-purple-400 focus:outline-none"
+									class="w-full rounded-sm border border-zerocourse-border bg-surface px-3 py-1.5 text-xs text-ink placeholder:text-ink-muted focus:border-maroon focus:outline-none"
 								/>
 								{#if zeroSlotSearch.trim()}
-									<p class="mt-1 text-xs text-purple-600">
+									<p class="mt-1 text-xs text-zerocourse">
 										{filteredZeroSlotSections.length} of {totalZeroSlot} sections
 									</p>
 								{/if}
@@ -962,28 +962,28 @@
 							<ul class="max-h-64 space-y-1 overflow-y-auto">
 								{#each filteredZeroSlotSections as section}
 									<li
-										class="flex items-center justify-between rounded border border-purple-200 bg-white px-2 py-1.5 text-xs {lockedCrns.includes(
+										class="flex items-center justify-between rounded-sm border border-zerocourse-border bg-surface px-2 py-1.5 text-xs {lockedCrns.includes(
 											section.crn
 										)
-											? 'border-l-2 border-blue-300 bg-blue-50'
+											? 'border-l-[3px] border-maroon bg-maroon-subtle'
 											: ''}"
 									>
 										<div class="min-w-0 flex-1">
-											<p class="truncate font-medium text-slate-800">{section.code}</p>
-											<p class="truncate text-slate-500">
-												{section.courseName} • CRN {section.crn}
+											<p class="truncate font-medium text-ink font-mono">{section.code}</p>
+											<p class="truncate text-ink-muted">
+												{section.courseName} • CRN <span class="font-mono">{section.crn}</span>
 											</p>
-											<p class="truncate text-slate-400">
+											<p class="truncate text-ink-muted font-mono">
 												{section.slotsLeft}/{section.capacity} slots • Demand: {section.demand}
 											</p>
 											{#if section.restrictions}
-												<p class="truncate text-purple-600">{section.restrictions}</p>
+												<p class="truncate text-zerocourse">{section.restrictions}</p>
 											{/if}
 										</div>
 										<div class="ml-2 flex shrink-0 items-center gap-1">
 											<button
 												onclick={() => toggleLock(section.crn)}
-												class="rounded p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-600"
+												class="rounded-sm p-1 text-ink-muted hover:bg-border hover:text-ink-muted"
 												title={lockedCrns.includes(section.crn) ? 'Unlock' : 'Lock section'}
 											>
 												{#if lockedCrns.includes(section.crn)}
@@ -1003,7 +1003,7 @@
 										</div>
 									</li>
 								{:else}
-									<li class="rounded border border-dashed border-purple-300 bg-purple-50/50 py-3 text-center text-xs text-purple-600">
+									<li class="rounded-sm border border-dashed border-zerocourse-border bg-zerocourse-bg/50 py-3 text-center text-xs text-zerocourse">
 										No sections match "{zeroSlotSearch}"
 									</li>
 								{/each}
@@ -1015,13 +1015,13 @@
 			</section>
 			<aside class="space-y-6">
 				<!-- Add Course section -->
-				<section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-					<h2 class="mb-4 text-sm font-semibold tracking-wide text-slate-500 uppercase">
+				<section class="rounded-md border border-border bg-surface p-5">
+					<h2 class="mb-4 text-sm font-semibold tracking-wide text-ink-muted uppercase">
 						Add Course
 					</h2>
 					<div class="space-y-4">
 						<div>
-							<label for="course-name" class="mb-1 block text-sm font-medium text-slate-700"
+							<label for="course-name" class="mb-1 block text-sm font-medium text-ink"
 								>Course name</label
 							>
 							<input
@@ -1029,9 +1029,9 @@
 								type="text"
 								bind:value={courseName}
 								placeholder="e.g. Eng 13, CS 133, Math 21"
-								class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm ring-blue-500/20 transition outline-none focus:border-blue-500 focus:ring-4"
+								class="w-full rounded-sm border border-border-hover px-3 py-2 text-sm ring-maroon/20 transition outline-none focus:border-maroon focus:ring-4"
 							/>
-							<p class="mt-1 text-xs text-slate-500">
+							<p class="mt-1 text-xs text-ink-muted">
 								Separate multiple courses with commas for batch fetch
 							</p>
 						</div>
@@ -1042,50 +1042,46 @@
 									type="url"
 									bind:value={sourceUrl}
 									placeholder="https://crs.upd.edu.ph/..."
-									class="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm ring-blue-500/20 transition outline-none focus:border-blue-500 focus:ring-4"
+									class="min-w-0 flex-1 rounded-sm border border-border-hover px-3 py-2 text-sm ring-maroon/20 transition outline-none focus:border-maroon focus:ring-4"
 								/>
 								<button
 									onclick={fetchFromCrs}
 									disabled={isFetching}
-									class="shrink-0 rounded-lg border border-blue-300 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50 active:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-50"
+									class="shrink-0 rounded-md border border-maroon px-4 py-2 text-sm font-semibold text-maroon hover:bg-maroon-subtle active:bg-maroon-subtle disabled:cursor-not-allowed disabled:opacity-50"
 								>
 									{isFetching ? fetchProgress || 'Fetching...' : 'Fetch'}
 								</button>
 							</div>
 							{#if fetchError}
 								<div
-									class="mt-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700"
+									class="mt-2 rounded-md border border-danger-border bg-danger-bg p-3 text-sm text-danger"
 								>
 									<p>{fetchError}</p>
 								</div>
 							{/if}
 							{#if fetchSuccess}
 								<div
-									class="mt-2 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700"
+									class="mt-2 rounded-md border border-zeroslot-border bg-zeroslot-bg p-3 text-sm text-zeroslot"
 								>
 									<p>{fetchSuccess}</p>
 								</div>
 							{/if}
 						</div>
-
-
-
-
 					</div>
 				</section>
 
 				<!-- Preferences section -->
-				<section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-					<h2 class="mb-4 text-sm font-semibold tracking-wide text-slate-500 uppercase">
+				<section class="rounded-md border border-border bg-surface p-5">
+					<h2 class="mb-4 text-sm font-semibold tracking-wide text-ink-muted uppercase">
 						Preferences
 					</h2>
 					<div>
-						<label class="mb-1 block text-sm font-medium text-slate-700">Avoid classes before</label
+						<label class="mb-1 block text-sm font-medium text-ink">Avoid classes before</label
 						>
 						<select
 							bind:value={earliestStartMin}
 							onchange={saveEarliestStartMin}
-							class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm ring-blue-500/20 transition outline-none focus:border-blue-500 focus:ring-4"
+							class="w-full rounded-sm border border-border-hover px-3 py-2 text-sm ring-maroon/20 transition outline-none focus:border-maroon focus:ring-4"
 						>
 							<option value={undefined}>None</option>
 							<option value={420}>7:00 AM</option>
@@ -1093,13 +1089,13 @@
 							<option value={540}>9:00 AM</option>
 							<option value={600}>10:00 AM</option>
 						</select>
-						<p class="mt-1 text-xs text-slate-500">
+						<p class="mt-1 text-xs text-ink-muted">
 							Early classes get a score penalty. Only affects new schedule generation.
 						</p>
 					</div>
 
 					<div>
-						<label class="mb-1 block text-sm font-medium text-slate-700"
+						<label class="mb-1 block text-sm font-medium text-ink"
 							>Minimum gap between classes</label
 						>
 						<input
@@ -1110,33 +1106,33 @@
 							placeholder="Minutes"
 							bind:value={minGapMinutes}
 							onchange={saveMinGapMinutes}
-							class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm ring-blue-500/20 transition outline-none focus:border-blue-500 focus:ring-4"
+							class="w-full rounded-sm border border-border-hover px-3 py-2 text-sm ring-maroon/20 transition outline-none focus:border-maroon focus:ring-4"
 						/>
-						<p class="mt-1 text-xs text-slate-500">Minutes between classes on the same day</p>
+						<p class="mt-1 text-xs text-ink-muted">Minutes between classes on the same day</p>
 					</div>
 
 					<div>
-						<label class="mb-1 block text-sm font-medium text-slate-700">Prefer no classes on</label
+						<label class="mb-1 block text-sm font-medium text-ink">Prefer no classes on</label
 						>
 						<div class="flex gap-1">
 							{#each ['M', 'T', 'W', 'TH', 'F', 'S'] as day, i}
 								<button
 									onclick={() => toggleDayOff(i)}
-									class="rounded-lg px-3 py-1.5 text-xs font-medium transition {daysOff.includes(i)
-										? 'bg-blue-600 text-white'
-										: 'border border-slate-300 bg-white text-slate-600 hover:bg-slate-100'}"
+									class="rounded-md px-3 py-1.5 text-xs font-medium transition {daysOff.includes(i)
+										? 'bg-maroon text-surface'
+										: 'border border-border-hover bg-surface text-ink-muted hover:bg-paper'}"
 								>
 									{day}
 								</button>
 							{/each}
 						</div>
-						<p class="mt-1 text-xs text-slate-500">
+						<p class="mt-1 text-xs text-ink-muted">
 							Schedules with classes on selected days get a score penalty
 						</p>
 					</div>
 
 					<div>
-						<label class="mb-1 block text-sm font-medium text-slate-700">Exclude instructors</label>
+						<label class="mb-1 block text-sm font-medium text-ink">Exclude instructors</label>
 						<div class="flex gap-2">
 							<input
 								type="text"
@@ -1145,12 +1141,12 @@
 								onkeydown={(e) => {
 									if (e.key === 'Enter') addInstructor();
 								}}
-								class="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm ring-blue-500/20 transition outline-none focus:border-blue-500 focus:ring-4"
+								class="min-w-0 flex-1 rounded-sm border border-border-hover px-3 py-2 text-sm ring-maroon/20 transition outline-none focus:border-maroon focus:ring-4"
 							/>
 							<button
 								onclick={addInstructor}
 								disabled={!newInstructor.trim()}
-								class="shrink-0 rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-50"
+								class="shrink-0 rounded-md bg-maroon px-3 py-2 text-sm font-semibold text-surface hover:bg-maroon-hover disabled:opacity-50"
 							>
 								Add
 							</button>
@@ -1159,12 +1155,12 @@
 							<div class="mt-2 flex flex-wrap gap-1.5">
 								{#each excludedInstructors as instructor}
 									<span
-										class="inline-flex items-center gap-1 rounded-full bg-red-100 px-2.5 py-1 text-xs font-medium text-red-700"
+										class="inline-flex items-center gap-1 rounded-full bg-danger-bg px-2.5 py-1 text-xs font-medium text-danger"
 									>
 										{instructor}
 										<button
 											onclick={() => removeInstructor(instructor)}
-											class="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full text-red-500 hover:bg-red-200 hover:text-red-700"
+											class="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full text-danger hover:bg-danger-bg hover:text-danger"
 											aria-label="Remove {instructor}"
 										>
 											<svg
@@ -1185,21 +1181,21 @@
 								{/each}
 							</div>
 						{/if}
-						<p class="mt-1 text-xs text-slate-500">
+						<p class="mt-1 text-xs text-ink-muted">
 							Sections taught by excluded instructors will be skipped
 						</p>
 					</div>
 				</section>
 
 				{#if lockedCrns.length > 0}
-					<div class="rounded-lg border border-blue-200 bg-blue-50 p-3">
+					<div class="rounded-md border border-maroon-subtle bg-maroon-subtle p-3">
 						<div class="mb-2 flex items-center justify-between">
-							<span class="text-sm font-medium text-blue-700"
+							<span class="text-sm font-medium text-maroon"
 								>{lockedCrns.length} section{lockedCrns.length === 1 ? '' : 's'} locked</span
 							>
 							<button
 								onclick={clearLocks}
-								class="text-xs font-medium text-blue-600 hover:text-blue-800"
+								class="text-xs font-medium text-maroon hover:text-maroon-hover"
 							>
 								Clear all
 							</button>
@@ -1207,20 +1203,20 @@
 						<ul class="space-y-1">
 							{#each lockedCrns as crn}
 								{@const info = findCourseForSection(crn)}
-								<li class="flex items-center justify-between rounded border border-blue-100 bg-white px-2 py-1 text-xs">
+								<li class="flex items-center justify-between rounded-sm border border-maroon-subtle bg-surface px-2 py-1 text-xs">
 									{#if info}
 										<div class="min-w-0 flex-1">
-											<p class="truncate font-medium text-slate-800">{info.section.code}</p>
-											<p class="truncate text-slate-500">{info.course.name} • CRN {crn}</p>
+											<p class="truncate font-medium text-ink font-mono">{info.section.code}</p>
+											<p class="truncate text-ink-muted">{info.course.name} • CRN <span class="font-mono">{crn}</span></p>
 										</div>
 									{:else}
 										<div class="min-w-0 flex-1">
-											<p class="truncate text-slate-500">CRN {crn} (not in any course)</p>
+											<p class="truncate text-ink-muted">CRN <span class="font-mono">{crn}</span> (not in any course)</p>
 										</div>
 									{/if}
 									<button
 										onclick={() => toggleLock(crn)}
-										class="ml-2 shrink-0 rounded p-1 text-slate-400 hover:bg-red-100 hover:text-red-600"
+										class="ml-2 shrink-0 rounded-sm p-1 text-ink-muted hover:bg-danger-bg hover:text-danger"
 										title="Unlock"
 									>
 										<svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -1237,7 +1233,7 @@
 				<button
 					onclick={handleGenerate}
 					disabled={!canGenerate}
-					class="flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+					class="flex w-full items-center justify-center gap-2 rounded-md bg-maroon px-4 py-3 text-sm font-semibold text-surface hover:bg-maroon-hover focus:outline-none focus:ring-2 focus:ring-maroon focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 				>
 					{#if isGenerating}
 						<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -1265,7 +1261,7 @@
 			<!-- Results panel -->
 			<section class="space-y-6">
 				{#if lockedConflict && schedules.length === 0}
-					<div class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+					<div class="rounded-md border border-danger-border bg-danger-bg p-4 text-sm text-danger">
 						<p class="font-medium">Locked sections conflict</p>
 						<p class="mt-1">
 							Two or more locked sections have overlapping schedules or violate the minimum gap.
@@ -1276,10 +1272,10 @@
 
 				{#if schedules.length === 0 && !lockedConflict}
 					<div
-						class="flex h-64 flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white text-center"
+						class="flex h-64 flex-col items-center justify-center rounded-md border border-dashed border-border-hover bg-surface text-center"
 					>
-						<p class="text-sm font-medium text-slate-500">Click Generate to see schedules</p>
-						<p class="mt-1 max-w-xs text-xs text-slate-400">
+						<p class="text-sm font-medium text-ink-muted">Click Generate to see schedules</p>
+						<p class="mt-1 max-w-xs text-xs text-ink-muted">
 							Add all your courses first, then run the scheduler to find conflict-free combinations.
 						</p>
 					</div>
@@ -1287,9 +1283,9 @@
 
 				{#if schedules.length > 0}
 					<div class="mb-2 flex items-center justify-between">
-						<h2 class="text-lg font-semibold text-slate-900">Top schedules</h2>
+						<h2 class="text-lg font-semibold text-ink">Top schedules</h2>
 						<div class="flex items-center gap-3">
-							<span class="text-sm text-slate-500">
+							<span class="text-sm text-ink-muted">
 								{scheduleFilter.trim()
 									? `${filteredSchedules.length}/${schedules.length}`
 									: schedules.length} result{schedules.length === 1 ? '' : 's'}
@@ -1297,7 +1293,7 @@
 							{#if selectedForCompare.length >= 2}
 								<button
 									onclick={() => (showCompare = true)}
-									class="rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
+									class="rounded-md bg-maroon px-3 py-1.5 text-sm font-semibold text-surface hover:bg-maroon-hover"
 								>
 									Compare ({selectedForCompare.length})
 								</button>
@@ -1307,7 +1303,7 @@
 
 					<div class="relative mb-3">
 						<svg
-							class="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400"
+							class="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-muted"
 							fill="none"
 							stroke="currentColor"
 							stroke-width="2"
@@ -1323,53 +1319,53 @@
 							type="text"
 							placeholder="Filter by instructor, code, or CRN..."
 							bind:value={scheduleFilter}
-							class="w-full rounded-lg border border-slate-300 py-2 pr-3 pl-10 text-sm ring-blue-500/20 transition outline-none focus:border-blue-500 focus:ring-4"
+							class="w-full rounded-sm border border-border-hover py-2 pr-3 pl-10 text-sm ring-maroon/20 transition outline-none focus:border-maroon focus:ring-4"
 						/>
 					</div>
 
 					{#if schedules.length > 0 && minGapMinutes && minGapMinutes > 0 && filteredSchedules.length === 0}
-						<div class="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-700">
+						<div class="rounded-md border border-excluded-border bg-excluded-bg p-3 text-sm text-excluded">
 							No schedules match your filter. Try adjusting the filter or reducing the minimum gap.
 						</div>
 					{/if}
 
 					{#if filteredSchedules.length === 0}
 						<div
-							class="flex h-32 flex-col items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50 text-center"
+							class="flex h-32 flex-col items-center justify-center rounded-md border border-dashed border-border-hover bg-paper text-center"
 						>
-							<p class="text-sm text-slate-500">No matching schedules</p>
+							<p class="text-sm text-ink-muted">No matching schedules</p>
 						</div>
 					{/if}
 
 					{#each filteredSchedules as schedule, idx}
-						<article class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+						<article class="overflow-hidden rounded-md border border-border bg-surface">
 							<div
-								class="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-5 py-3"
+								class="flex items-center justify-between border-b border-border bg-paper px-5 py-3"
 							>
 								<div class="flex items-center gap-3">
 									<input
 										type="checkbox"
 										bind:group={selectedForCompare}
 										value={idx}
-										class="h-4 w-4 rounded border-slate-300 text-blue-600"
+										class="h-4 w-4 rounded-sm border-border-hover text-maroon"
 									/>
-									<span class="text-sm font-semibold text-slate-500">#{idx + 1}</span>
+									<span class="text-sm font-semibold text-ink-muted">#{idx + 1}</span>
 									<div class="flex items-center gap-2">
-								<span class="text-sm font-medium text-slate-700">Chance</span>
-									<div class="h-2 w-24 overflow-hidden rounded-full bg-slate-200">
+								<span class="text-sm font-medium text-ink">Chance</span>
+									<div class="h-2 w-24 overflow-hidden rounded-full bg-border">
 										<div
-											class="h-full rounded-full bg-blue-600"
+											class="h-full rounded-full bg-maroon"
 											style="width: {Math.min(100, Math.max(0, schedule.probability * 100))}%"
 										></div>
 									</div>
-									<span class="text-sm font-semibold text-slate-900"
+									<span class="text-sm font-semibold text-ink"
 										>{(schedule.probability * 100).toFixed(1)}%</span
 									>
 									</div>
 								</div>
 								<button
 									onclick={() => (expandedSchedule = expandedSchedule === idx ? null : idx)}
-									class="text-sm font-medium text-blue-600 hover:text-blue-700"
+									class="text-sm font-medium text-maroon hover:text-maroon-hover"
 								>
 									{expandedSchedule === idx ? 'Hide details' : 'Show details'}
 								</button>
@@ -1380,28 +1376,28 @@
 							</div>
 
 							{#if expandedSchedule === idx}
-								<div class="border-t border-slate-200 px-5 py-4">
-									<h3 class="mb-3 text-xs font-semibold tracking-wide text-slate-500 uppercase">
+								<div class="border-t border-border px-5 py-4">
+									<h3 class="mb-3 text-xs font-semibold tracking-wide text-ink-muted uppercase">
 										Sections
 									</h3>
 									<div class="grid gap-3 sm:grid-cols-2">
 										{#each schedule.sections as section}
 											<div
-												class="rounded-lg border border-slate-200 p-3 {lockedCrns.includes(
+												class="rounded-md border border-border p-3 {lockedCrns.includes(
 													section.crn
 												)
-													? 'border-l-2 border-blue-300 bg-blue-50'
+													? 'border-l-[3px] border-maroon bg-maroon-subtle'
 													: ''}"
 											>
 												<div class="flex items-start justify-between">
 													<div>
-														<p class="text-sm font-semibold text-slate-900">{section.code}</p>
-														<p class="text-xs text-slate-500">CRN {section.crn}</p>
+														<p class="text-sm font-semibold text-ink font-mono">{section.code}</p>
+														<p class="text-xs text-ink-muted">CRN <span class="font-mono">{section.crn}</span></p>
 													</div>
 													<div class="flex items-center gap-2">
 														<button
 															onclick={() => toggleLock(section.crn)}
-															class="rounded p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-600"
+															class="rounded-sm p-1 text-ink-muted hover:bg-border hover:text-ink-muted"
 															title={lockedCrns.includes(section.crn)
 																? 'Unlock section'
 																: 'Lock section'}
@@ -1420,7 +1416,7 @@
 																</svg>
 															{/if}
 														</button>
-														<span class="text-xs font-semibold text-blue-700"
+														<span class="text-xs font-semibold text-maroon font-mono"
 															>{sectionScore(section).toFixed(2)}</span
 														>
 														<button
@@ -1429,16 +1425,16 @@
 																if (found)
 																	await toggleSectionExclusion(found.course.id, section.crn, true);
 															}}
-															class="rounded border border-red-200 px-1.5 py-0.5 text-[10px] font-medium text-red-600 hover:bg-red-50"
+															class="rounded-sm border border-danger-border px-1.5 py-0.5 text-[10px] font-medium text-danger hover:bg-danger-bg"
 															title="Exclude this section from scheduling"
 														>
 															Exclude
 														</button>
 													</div>
 												</div>
-												<div class="mt-2 space-y-1 text-xs text-slate-600">
+												<div class="mt-2 space-y-1 text-xs text-ink-muted">
 													<p>{section.instructor}</p>
-													<p>
+													<p class="font-mono">
 														{#each section.meetings as meeting, mIdx}
 															{mIdx > 0 ? '; ' : ''}
 															{meeting.days.map((d) => ['M', 'T', 'W', 'H', 'F', 'S'][d]).join('')}
@@ -1449,16 +1445,16 @@
 													</p>
 													<p class="flex gap-2">
 														<span
-															class={slotsLeft(section) > 0 ? 'text-emerald-600' : 'text-red-600'}
+															class="font-mono {slotsLeft(section) > 0 ? 'text-zeroslot' : 'text-danger'}"
 														>
 															{slotsLeft(section)} slot{slotsLeft(section) === 1 ? '' : 's'} left
 														</span>
-														<span class="text-slate-400">•</span>
-														<span>Demand: {section.demand}</span>
+														<span class="text-ink-muted">•</span>
+														<span class="font-mono">Demand: {section.demand}</span>
 													</p>
 													{#if section.restrictions}
 														<p
-															class="rounded bg-amber-50 px-2 py-1 text-xs font-medium text-amber-800"
+															class="rounded-sm bg-excluded-bg px-2 py-1 text-xs font-medium text-excluded"
 														>
 															Restricted: {section.restrictions}
 														</p>
@@ -1476,13 +1472,13 @@
 		</div>
 	</div>
 
-	<footer class="border-t border-slate-200 bg-white">
-		<div class="mx-auto max-w-3xl px-4 py-6 text-center text-xs text-slate-500 sm:px-6 lg:px-8">
+	<footer class="border-t border-border bg-surface">
+		<div class="mx-auto max-w-3xl px-4 py-6 text-center text-xs text-ink-muted sm:px-6 lg:px-8">
 			<p>
 				CRS Scheduler — built for University of the Philippines Diliman students.
 				<button
 					onclick={() => (showInstructions = true)}
-					class="font-medium text-blue-600 hover:underline">How to use</button
+					class="font-medium text-maroon hover:underline">How to use</button
 				>
 			</p>
 		</div>
@@ -1507,14 +1503,14 @@
 
 	{#if showInstructions}
 		<div
-			class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm"
+			class="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-4 backdrop-blur-sm"
 			onclick={() => (showInstructions = false)}
 			role="dialog"
 			aria-modal="true"
 		>
-			<div class="max-w-md rounded-xl bg-white p-6 shadow-xl" onclick={(e) => e.stopPropagation()}>
-				<h3 class="mb-2 text-lg font-semibold text-slate-900">How to use</h3>
-				<ol class="list-decimal space-y-2 pl-5 text-sm text-slate-600">
+			<div class="max-w-md rounded-md bg-surface p-6" onclick={(e) => e.stopPropagation()}>
+				<h3 class="mb-2 text-lg font-semibold text-ink">How to use</h3>
+				<ol class="list-decimal space-y-2 pl-5 text-sm text-ink-muted">
 					<li>
 						<strong>Add courses:</strong> Enter a course name and optionally paste a CRS schedule URL, then click <strong>Fetch</strong>. For batch import, separate multiple course names with commas (e.g. <em>Eng 13, Math 21</em>).
 					</li>
@@ -1540,7 +1536,7 @@
 				</ol>
 				<button
 					onclick={() => (showInstructions = false)}
-					class="mt-4 w-full rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-800"
+					class="mt-4 w-full rounded-md bg-maroon px-4 py-2.5 text-sm font-semibold text-surface hover:bg-maroon-hover focus:outline-none focus:ring-2 focus:ring-maroon focus:ring-offset-2"
 				>
 					Got it
 				</button>

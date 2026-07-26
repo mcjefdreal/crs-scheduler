@@ -133,7 +133,7 @@ export function generateSchedules(courses: Course[], opts?: ScheduleOptions): Sc
 				)
 		)
 	}));
-	let valid = filtered.filter((c) => c.sections.length > 0 && !lockedCourseIds.has(c.id));
+	const valid = filtered.filter((c) => c.sections.length > 0 && !lockedCourseIds.has(c.id));
 
 	if (valid.length === 0 && lockedSections.length === 0) {
 		return { schedules: [] };

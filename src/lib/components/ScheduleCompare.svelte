@@ -97,7 +97,7 @@
 
 		<div class="overflow-y-auto p-6">
 			<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-				{#each schedules as schedule, idx}
+				{#each schedules as schedule, idx (idx)}
 					{@const badge = rankBadge[idx % rankBadge.length]}
 					<section
 						class="flex flex-col rounded-md border border-border bg-surface transition hover:border-border-hover hover:shadow-sm"
@@ -123,7 +123,7 @@
 						</div>
 
 						<div class="flex-1 divide-y divide-border">
-							{#each courseNames as courseName}
+							{#each courseNames as courseName (courseName)}
 								{@const section = sectionByCourse[idx][courseName]}
 								{@const isDifferent = section !== undefined && differingCourses.has(courseName)}
 								<div class="px-4 py-3 {isDifferent ? 'bg-excluded-bg' : ''}">
@@ -133,7 +133,7 @@
 											{#if section}
 												<p class="font-mono text-sm font-medium text-maroon">{section.code}</p>
 												<div class="mt-1 space-y-0.5 text-xs text-ink-muted">
-													{#each section.meetings as meeting}
+													{#each section.meetings as meeting, mIdx (mIdx)}
 														<p class="font-mono">{formatMeeting(meeting)}</p>
 													{/each}
 												</div>

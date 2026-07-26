@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { SvelteMap } from 'svelte/reactivity';
 	import {
 		parseCRSHtml,
 		generateSchedules,
@@ -404,7 +405,7 @@
 		fetchSuccess = '';
 		showDiff = false;
 
-		const oldSections = new Map<
+		const oldSections = new SvelteMap<
 			number,
 			{ code: string; courseName: string; slotsLeft: number; capacity: number }
 		>();
@@ -419,7 +420,7 @@
 			}
 		}
 
-		const urlMap = new Map<string, string[]>();
+		const urlMap = new SvelteMap<string, string[]>();
 		for (const course of courses) {
 			if (course.sourceUrl) {
 				const existing = urlMap.get(course.sourceUrl) || [];
@@ -479,7 +480,7 @@
 			}
 		}
 
-		const newSections = new Map<
+		const newSections = new SvelteMap<
 			number,
 			{ code: string; courseName: string; slotsLeft: number; capacity: number }
 		>();
@@ -719,7 +720,7 @@
 							</div>
 						{:else}
 							<ul class="space-y-2">
-								{#each courses as course}
+								{#each courses as course (course.id)}
 									<li class="overflow-hidden rounded-md border border-border bg-paper">
 										<div class="flex items-center justify-between px-3 py-2">
 											<button
@@ -839,7 +840,7 @@
 													{/if}
 												</div>
 												<ul class="max-h-56 space-y-1 overflow-y-auto">
-													{#each filteredSections as section}
+													{#each filteredSections as section (section.crn)}
 														<li
 															class="rounded-sm border border-border px-3 py-2 text-sm {lockedCrns.includes(
 																section.crn
@@ -994,7 +995,7 @@
 										{/if}
 									</div>
 									<ul class="max-h-64 space-y-1 overflow-y-auto">
-										{#each filteredExcludedSections as section}
+										{#each filteredExcludedSections as section (section.crn)}
 											<li
 												class="flex items-center justify-between rounded-sm border border-excluded-border bg-surface px-3 py-2 text-sm {lockedCrns.includes(
 													section.crn
@@ -1122,7 +1123,7 @@
 										{/if}
 									</div>
 									<ul class="max-h-64 space-y-1 overflow-y-auto">
-										{#each filteredZeroSlotSections as section}
+										{#each filteredZeroSlotSections as section (section.crn)}
 											<li
 												class="flex items-center justify-between rounded-sm border border-zeroslot-border bg-surface px-3 py-2 text-sm {lockedCrns.includes(
 													section.crn
@@ -1297,7 +1298,7 @@
 						<div>
 							<label class="mb-1 block text-sm font-medium text-ink">Prefer no classes on</label>
 							<div class="flex gap-1">
-								{#each ['M', 'Tu', 'W', 'Th', 'F', 'S'] as day, i}
+								{#each ['M', 'Tu', 'W', 'Th', 'F', 'S'] as day, i (day)}
 									<button
 										onclick={() => toggleDayOff(i)}
 										class="rounded-full px-3 py-1.5 text-xs font-medium transition {daysOff.includes(
@@ -1340,7 +1341,7 @@
 							</div>
 							{#if excludedInstructors.length > 0}
 								<div class="mt-2 flex flex-wrap gap-1.5">
-									{#each excludedInstructors as instructor}
+									{#each excludedInstructors as instructor (instructor)}
 										<span
 											class="inline-flex items-center gap-1 rounded-full bg-danger-bg px-2.5 py-1 text-xs font-medium text-danger"
 										>
@@ -1389,7 +1390,7 @@
 							</button>
 						</div>
 						<ul class="space-y-1">
-							{#each lockedCrns as crn}
+							{#each lockedCrns as crn (crn)}
 								{@const info = findCourseForSection(crn)}
 								<li
 									class="flex items-center justify-between rounded-sm border border-maroon-subtle bg-surface px-2 py-1 text-xs"
@@ -1561,7 +1562,7 @@
 					{/if}
 
 					<!-- Sorted by score descending; #{idx + 1} = rank -->
-					{#each filteredSchedules as schedule, idx}
+					{#each filteredSchedules as schedule, idx (idx)}
 						<article class="overflow-hidden rounded-md border border-border bg-surface">
 							<div
 								class="flex items-center justify-between border-b border-border bg-paper px-5 py-3"
@@ -1607,7 +1608,7 @@
 										Sections
 									</h3>
 									<div class="grid grid-cols-2 gap-3">
-										{#each schedule.sections as section}
+										{#each schedule.sections as section (section.crn)}
 											<div
 												class="rounded-md border border-border bg-surface p-3 {lockedCrns.includes(
 													section.crn
@@ -1673,7 +1674,7 @@
 												<div class="mt-2 space-y-1 text-sm text-ink-muted">
 													<p>{section.instructor}</p>
 													<p class="font-mono">
-														{#each section.meetings as meeting, mIdx}
+														{#each section.meetings as meeting, mIdx (mIdx)}
 															{mIdx > 0 ? '; ' : ''}
 															{meeting.days.map((d) => ['M', 'T', 'W', 'H', 'F', 'S'][d]).join('')}
 															{formatTime(meeting.startMin)}–{formatTime(meeting.endMin)}

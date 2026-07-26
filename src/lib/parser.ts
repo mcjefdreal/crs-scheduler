@@ -162,7 +162,7 @@ export function parseCRSHtml(html: string): Section[] {
 		const allowedProgram = (text: string) => {
 			const m = text.match(/for\s*:\s*(.+?)(?:\||$)/i);
 			if (!m) return false;
-			const programs = m[1].split(/[,\/]/).map((p) => p.replace(/\(\d+\s*slots?\)/i, '').trim());
+			const programs = m[1].split(/[,/]/).map((p) => p.replace(/\(\d+\s*slots?\)/i, '').trim());
 			return programs.some((p) => ALLOWED_PROGRAMS.includes(p));
 		};
 
@@ -178,7 +178,7 @@ export function parseCRSHtml(html: string): Section[] {
 		const { slotsLeft, capacity } = parseCapacity(enrolledText);
 
 		// td[7]: Demand (with rowspan carry-over)
-		let demand = 0;
+		let demand: number;
 		if (rowspanRemaining > 0) {
 			demand = rowspanDemand;
 			rowspanRemaining--;

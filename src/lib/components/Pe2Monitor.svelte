@@ -42,10 +42,10 @@
 
 	$effect(() => {
 		// track dependencies — save on any change
-		pe2Sections;
-		previousSections;
-		pe2FetchedAt;
-		showAllPe2;
+		void pe2Sections;
+		void previousSections;
+		void pe2FetchedAt;
+		void showAllPe2;
 		savePersistence();
 	});
 

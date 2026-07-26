@@ -66,7 +66,7 @@
 						Removed Sections
 					</h3>
 					<ul class="space-y-2">
-						{#each removed as item}
+						{#each removed as item (item.crn)}
 							<li
 								class="flex items-center gap-3 rounded-sm border border-danger-border bg-danger-bg px-3 py-2 text-sm"
 							>
@@ -96,7 +96,7 @@
 						Added Sections
 					</h3>
 					<ul class="space-y-2">
-						{#each added as item}
+						{#each added as item (item.crn)}
 							<li
 								class="flex items-center gap-3 rounded-sm border border-success-border bg-success-bg px-3 py-2 text-sm"
 							>
@@ -126,7 +126,7 @@
 						Changed Sections
 					</h3>
 					<ul class="space-y-2">
-						{#each changed as item}
+						{#each changed as item (item.crn)}
 							<li class="rounded-sm border border-excluded-border bg-excluded-bg px-3 py-2 text-sm">
 								<div class="flex items-center gap-2">
 									<svg

@@ -72,7 +72,7 @@
 	<!-- Header -->
 	<div class="grid grid-cols-[4rem_repeat(6,1fr)] border-b border-border bg-paper">
 		<div class="border-r border-border"></div>
-		{#each DAYS as day}
+		{#each DAYS as day (day)}
 			<div class="py-2 text-center text-xs font-semibold tracking-wide text-ink-muted uppercase">
 				{day}
 			</div>
@@ -83,7 +83,7 @@
 	<div class="grid grid-cols-[4rem_repeat(6,1fr)]">
 		<!-- Time labels -->
 		<div class="relative border-r border-border bg-paper" style="height: {HOURS * 48}px">
-			{#each { length: HOURS + 1 } as _, i}
+			{#each { length: HOURS + 1 } as _, i (i)}
 				<div
 					class="absolute right-1.5 -translate-y-1/2 font-mono text-[10px] font-medium text-ink-muted"
 					style="top: {(i / HOURS) * 100}%"
@@ -94,10 +94,10 @@
 		</div>
 
 		<!-- Day columns -->
-		{#each DAYS as _, dayIdx}
+		{#each DAYS as _, dayIdx (dayIdx)}
 			<div class="relative border-r border-border" style="height: {HOURS * 48}px">
 				<!-- Hour grid lines -->
-				{#each { length: HOURS }, i}
+				{#each { length: HOURS } as _, i (i)}
 					<div
 						class="absolute right-0 left-0 border-t border-border"
 						style="top: {((i + 1) / HOURS) * 100}%"
@@ -105,7 +105,7 @@
 				{/each}
 
 				<!-- Meeting blocks -->
-				{#each blocks.filter((b) => b.day === dayIdx) as block}
+				{#each blocks.filter((b) => b.day === dayIdx) as block, blockIdx (blockIdx)}
 					<!-- 10px text intentional: block is 48px/hr grid cell; 14px floor cannot fit 2-3 lines of meeting data. Contrast validated ≥8:1 -->
 					<div
 						class="absolute inset-x-1 overflow-hidden rounded-sm border px-1.5 py-0.5 text-[10px] leading-tight transition {block

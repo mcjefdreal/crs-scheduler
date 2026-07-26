@@ -1612,10 +1612,9 @@ class="rounded-full px-3 py-1.5 text-xs font-medium transition active:scale-[0.9
 					{#each filteredSchedules as schedule, idx (idx)}
 						<article class="overflow-hidden rounded-md border border-border bg-surface">
 							<div
-								class="flex flex-col gap-2 border-b border-border bg-paper px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5"
+								class="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-paper px-3 py-3 sm:px-5"
 							>
-								<div class="flex items-center justify-between gap-2">
-									<div class="flex items-center gap-3">
+								<div class="flex flex-wrap items-center gap-3">
 									<label class="flex cursor-pointer items-center py-1">
 										<input
 											type="checkbox"
@@ -1627,12 +1626,6 @@ class="rounded-full px-3 py-1.5 text-xs font-medium transition active:scale-[0.9
 									<span class="text-sm font-semibold text-ink-muted">#{idx + 1}</span>
 									<div class="flex items-center gap-2">
 										<span class="text-sm font-medium text-ink">Probability</span>
-										<div class="h-2 w-24 overflow-hidden rounded-full bg-border">
-											<div
-												class="h-full rounded-full bg-ink"
-												style="width: {Math.min(100, Math.max(0, schedule.probability * 100))}%"
-											></div>
-										</div>
 										<span class="text-sm font-semibold text-ink"
 											>{(schedule.probability * 100).toFixed(1)}%</span
 										>
@@ -1646,7 +1639,7 @@ class="rounded-full px-3 py-1.5 text-xs font-medium transition active:scale-[0.9
 								</button>
 							</div>
 
-							<div class="p-3 sm:p-5">
+							<div class="overflow-x-auto p-3 sm:p-5">
 								<TimelineGrid sections={schedule.sections} />
 							</div>
 

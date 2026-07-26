@@ -68,7 +68,7 @@
 	);
 </script>
 
-<div class="overflow-x-auto rounded-md border border-border bg-surface pb-4 text-ink">
+<div class="overflow-hidden rounded-md border border-border bg-surface pb-4 text-ink">
 	<!-- Header -->
 	<div class="grid min-w-[480px] grid-cols-[3rem_repeat(6,1fr)] border-b border-border bg-paper sm:grid-cols-[4rem_repeat(6,1fr)]">
 		<div class="border-r border-border"></div>

@@ -16,10 +16,6 @@
 	import RefreshDiff from '$lib/components/RefreshDiff.svelte';
 	import Pe2Monitor from '$lib/components/Pe2Monitor.svelte';
 
-	const compactQuery = typeof window !== 'undefined'
-		? window.matchMedia('(max-width: 639px)')
-		: null;
-
 	let courses = $state<Course[]>([]);
 	let courseName = $state('');
 	let courseNameError = $state('');
@@ -28,7 +24,6 @@
 	let schedules = $state<Schedule[]>([]);
 	let lockedConflict = $state(false);
 	let expandedSchedule = $state<number | null>(null);
-	let isCompact = $state(compactQuery?.matches ?? false);
 	let showInstructions = $state(false);
 	let showExcluded = $state(false);
 	let showZeroSlot = $state(false);
@@ -110,10 +105,6 @@
 	onMount(async () => {
 		courses = await db.courses.toArray();
 		loadPrefs();
-		if (compactQuery) {
-			isCompact = compactQuery.matches;
-			compactQuery.addEventListener('change', (e) => (isCompact = e.matches));
-		}
 	});
 
 	const totalSections = $derived(courses.reduce((sum, c) => sum + c.sections.length, 0));
@@ -1161,7 +1152,7 @@
 			<aside class="min-w-0 space-y-6">
 				<div class="space-y-4">
 					<!-- Add Course section -->
-					<section class="rounded-md border border-border border-t-2 border-t-maroon bg-surface p-6">
+					<section class="rounded-md border border-border border-l-[3px] border-l-maroon bg-surface p-6">
 					<h2 class="mb-4 text-sm font-semibold tracking-wide text-ink-muted uppercase">
 						Add Course
 					</h2>
@@ -1487,7 +1478,7 @@
 						<button
 							onclick={handleGenerate}
 							disabled={!canGenerate || isGenerating}
-							class="shrink-0 rounded-lg bg-maroon px-3 py-1.5 text-xs font-semibold text-surface hover:bg-maroon-hover disabled:opacity-50"
+							class="shrink-0 rounded-lg bg-maroon px-3 py-1.5 text-xs font-semibold text-surface hover:bg-maroon-hover disabled:opacity-50 lg:hidden"
 						>
 							{isGenerating ? 'Generating...' : 'Re-generate'}
 						</button>

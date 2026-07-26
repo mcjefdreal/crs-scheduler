@@ -14,14 +14,14 @@
 
 	// Muted course color palette (course code hash → consistent hue)
 	const COLORS = [
-		{ bg: 'bg-[#E8EFF5]', border: 'border-[#B8CDDD]', text: 'text-[#1E3A5F]' },
-		{ bg: 'bg-[#E5EFE9]', border: 'border-[#B0CFB7]', text: 'text-[#1F4A35]' },
-		{ bg: 'bg-[#F5EDDF]', border: 'border-[#D9C496]', text: 'text-[#5C4117]' },
-		{ bg: 'bg-[#F2E2E3]', border: 'border-[#D4A5A8]', text: 'text-[#5A1F22]' },
-		{ bg: 'bg-[#EAE5F0]', border: 'border-[#BFB1D1]', text: 'text-[#3A2A5C]' },
-		{ bg: 'bg-[#E2EEF0]', border: 'border-[#A9C8CD]', text: 'text-[#1B4651]' },
-		{ bg: 'bg-[#F4E8E0]', border: 'border-[#D6B69F]', text: 'text-[#5C3318]' },
-		{ bg: 'bg-[#E6E7EE]', border: 'border-[#B6BACB]', text: 'text-[#222A4C]' }
+		{ bg: 'bg-sched-1-bg', border: 'border-sched-1-border', text: 'text-sched-1-text' },
+		{ bg: 'bg-sched-2-bg', border: 'border-sched-2-border', text: 'text-sched-2-text' },
+		{ bg: 'bg-sched-3-bg', border: 'border-sched-3-border', text: 'text-sched-3-text' },
+		{ bg: 'bg-sched-4-bg', border: 'border-sched-4-border', text: 'text-sched-4-text' },
+		{ bg: 'bg-sched-5-bg', border: 'border-sched-5-border', text: 'text-sched-5-text' },
+		{ bg: 'bg-sched-6-bg', border: 'border-sched-6-border', text: 'text-sched-6-text' },
+		{ bg: 'bg-sched-7-bg', border: 'border-sched-7-border', text: 'text-sched-7-text' },
+		{ bg: 'bg-sched-8-bg', border: 'border-sched-8-border', text: 'text-sched-8-text' }
 	];
 
 	interface Block {
@@ -106,6 +106,7 @@
 
 				<!-- Meeting blocks -->
 				{#each blocks.filter((b) => b.day === dayIdx) as block}
+					<!-- 10px text intentional: block is 48px/hr grid cell; 14px floor cannot fit 2-3 lines of meeting data. Contrast validated ≥8:1 -->
 					<div
 						class="absolute inset-x-1 overflow-hidden rounded-sm border px-1.5 py-0.5 text-[10px] leading-tight transition {block
 							.color.bg} {block.color.border} {block.color.text}"

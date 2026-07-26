@@ -18,22 +18,48 @@
 	--color-border-hover: #bfc1c3;
 
 	/* Feature tones (used for excluded/zero-slot/empty-course sidebars) */
-	--color-excluded: #b45309;
-	--color-excluded-bg: #fffbeb;
-	--color-excluded-border: #fde68a;
-	--color-success: #047857;
-	--color-success-bg: #ecfdf5;
-	--color-success-border: #a7f3d0;
+	--color-excluded: #6b4f20;
+	--color-excluded-bg: #fff9f0;
+	--color-excluded-border: #e6d3b0;
+	--color-success: #2d5c42;
+	--color-success-bg: #e9f5ee;
+	--color-success-border: #b7d8c2;
 
 	/* Zero-slot sections sidebar */
-	--color-zeroslot: #6d28d9;
-	--color-zeroslot-bg: #f5f3ff;
-	--color-zeroslot-border: #ddd6fe;
+	--color-zeroslot: #4e3a73;
+	--color-zeroslot-bg: #f6f2fb;
+	--color-zeroslot-border: #dad0e8;
 
 	/* Semantic */
-	--color-danger: #b91c1c;
-	--color-danger-bg: #fef2f2;
-	--color-danger-border: #fecaca;
+	--color-danger: #7b2b2b;
+	--color-danger-bg: #fdf1f1;
+	--color-danger-border: #e8bfbf;
+
+	/* Schedule timeline colors (muted pastel — matched to panel token family) */
+	--color-sched-1-bg: #e8eff5;
+	--color-sched-1-border: #c4d5e2;
+	--color-sched-1-text: #1e3a5f;
+	--color-sched-2-bg: #e5efe9;
+	--color-sched-2-border: #bed3c3;
+	--color-sched-2-text: #1f4a35;
+	--color-sched-3-bg: #f5eddf;
+	--color-sched-3-border: #decfad;
+	--color-sched-3-text: #5c4117;
+	--color-sched-4-bg: #f2e2e3;
+	--color-sched-4-border: #dab7b9;
+	--color-sched-4-text: #5a1f22;
+	--color-sched-5-bg: #eae5f0;
+	--color-sched-5-border: #cbc0d8;
+	--color-sched-5-text: #3a2a5c;
+	--color-sched-6-bg: #e2eef0;
+	--color-sched-6-border: #b8d0d4;
+	--color-sched-6-text: #1b4651;
+	--color-sched-7-bg: #f4e8e0;
+	--color-sched-7-border: #dcc4b1;
+	--color-sched-7-text: #5c3318;
+	--color-sched-8-bg: #e6e7ee;
+	--color-sched-8-border: #c3c6d4;
+	--color-sched-8-text: #222a4c;
 
 	/* Typography */
 	--font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;

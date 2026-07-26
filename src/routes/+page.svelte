@@ -1414,11 +1414,11 @@
 									<div class="grid gap-3 sm:grid-cols-2">
 										{#each schedule.sections as section}
 											<div
-												class="rounded-md border border-border p-3 {lockedCrns.includes(
-													section.crn
-												)
-													? 'border-l-[3px] border-maroon bg-maroon-subtle'
-													: ''}"
+									class="rounded-md border border-border p-3 bg-surface {lockedCrns.includes(
+										section.crn
+									)
+										? 'border-l-[3px] border-maroon'
+										: ''}"
 											>
 												<div class="flex items-start justify-between">
 													<div>

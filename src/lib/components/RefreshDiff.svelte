@@ -27,7 +27,9 @@
 	class="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 p-4"
 	onclick={onclose}
 	tabindex="-1"
-	onkeydown={(e) => { if (e.key === 'Escape') onclose(); }}
+	onkeydown={(e) => {
+		if (e.key === 'Escape') onclose();
+	}}
 	role="dialog"
 	aria-modal="true"
 	aria-labelledby="diff-title"
@@ -41,12 +43,19 @@
 			<h2 id="diff-title" class="text-lg font-semibold text-ink">Refresh Results</h2>
 			<button
 				onclick={onclose}
-				class="rounded-md p-2 text-ink-muted hover:bg-maroon-subtle hover:text-maroon focus:outline-none focus:ring-2 focus:ring-maroon"
+				class="rounded-md p-2 text-ink-muted hover:bg-maroon-subtle hover:text-maroon focus:ring-2 focus:ring-maroon focus:outline-none"
 				aria-label="Close diff view"
 			>
-			<svg class="h-5 w-5" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-			</svg>
+				<svg
+					class="h-5 w-5"
+					aria-hidden="true"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					viewBox="0 0 24 24"
+				>
+					<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+				</svg>
 			</button>
 		</div>
 
@@ -61,16 +70,16 @@
 							<li
 								class="flex items-center gap-3 rounded-sm border border-danger-border bg-danger-bg px-3 py-2 text-sm"
 							>
-							<svg
-								class="h-4 w-4 shrink-0 text-danger"
-								aria-hidden="true"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								viewBox="0 0 24 24"
-							>
-								<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-							</svg>
+								<svg
+									class="h-4 w-4 shrink-0 text-danger"
+									aria-hidden="true"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									viewBox="0 0 24 24"
+								>
+									<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+								</svg>
 								<div>
 									<p class="font-mono font-medium text-danger">{item.code}</p>
 									<p class="text-xs text-ink-muted">{item.courseName}</p>
@@ -91,16 +100,16 @@
 							<li
 								class="flex items-center gap-3 rounded-sm border border-success-border bg-success-bg px-3 py-2 text-sm"
 							>
-							<svg
-								class="h-4 w-4 shrink-0 text-success"
-								aria-hidden="true"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								viewBox="0 0 24 24"
-							>
-								<path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14" />
-							</svg>
+								<svg
+									class="h-4 w-4 shrink-0 text-success"
+									aria-hidden="true"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									viewBox="0 0 24 24"
+								>
+									<path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14" />
+								</svg>
 								<div>
 									<p class="font-mono font-medium text-success">{item.code}</p>
 									<p class="text-xs text-ink-muted">{item.courseName}</p>
@@ -118,24 +127,22 @@
 					</h3>
 					<ul class="space-y-2">
 						{#each changed as item}
-							<li
-								class="rounded-sm border border-excluded-border bg-excluded-bg px-3 py-2 text-sm"
-							>
+							<li class="rounded-sm border border-excluded-border bg-excluded-bg px-3 py-2 text-sm">
 								<div class="flex items-center gap-2">
-							<svg
-								class="h-4 w-4 shrink-0 text-excluded"
-								aria-hidden="true"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								viewBox="0 0 24 24"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-								/>
-							</svg>
+									<svg
+										class="h-4 w-4 shrink-0 text-excluded"
+										aria-hidden="true"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										viewBox="0 0 24 24"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+										/>
+									</svg>
 									<div>
 										<p class="font-mono font-medium text-excluded">{item.code}</p>
 										<p class="text-xs text-ink-muted">{item.courseName}</p>
@@ -162,7 +169,7 @@
 		<div class="border-t border-border px-6 py-4">
 			<button
 				onclick={onclose}
-				class="w-full rounded-md bg-maroon px-4 py-2.5 text-sm font-semibold text-surface shadow-sm transition hover:bg-maroon-hover focus:outline-none focus:ring-2 focus:ring-maroon focus:ring-offset-2"
+				class="w-full rounded-md bg-maroon px-4 py-2.5 text-sm font-semibold text-surface shadow-sm transition hover:bg-maroon-hover focus:ring-2 focus:ring-maroon focus:ring-offset-2 focus:outline-none"
 			>
 				Done
 			</button>

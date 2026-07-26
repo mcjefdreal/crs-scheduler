@@ -86,7 +86,7 @@
 			<h2 id="compare-title" class="text-lg font-semibold text-ink">Compare Schedules</h2>
 			<button
 				onclick={onclose}
-				class="rounded-md p-2 text-ink-muted hover:bg-maroon-subtle hover:text-maroon focus:outline-none focus:ring-2 focus:ring-maroon"
+				class="rounded-md p-2 text-ink-muted hover:bg-maroon-subtle hover:text-maroon focus:ring-2 focus:ring-maroon focus:outline-none"
 				aria-label="Close comparison"
 			>
 				<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -143,7 +143,7 @@
 										</div>
 										{#if isDifferent}
 											<span
-												class="mt-0.5 shrink-0 rounded-full bg-excluded-bg px-1.5 py-0.5 text-[10px] font-semibold text-excluded uppercase tracking-wide"
+												class="mt-0.5 shrink-0 rounded-full bg-excluded-bg px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-excluded uppercase"
 												title="Section differs from the other schedules"
 											>
 												Differs

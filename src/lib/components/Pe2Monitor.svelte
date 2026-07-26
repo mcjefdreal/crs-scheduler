@@ -42,7 +42,10 @@
 
 	$effect(() => {
 		// track dependencies — save on any change
-		pe2Sections; previousSections; pe2FetchedAt; showAllPe2;
+		pe2Sections;
+		previousSections;
+		pe2FetchedAt;
+		showAllPe2;
 		savePersistence();
 	});
 
@@ -103,9 +106,15 @@
 		<div>
 			<h2 class="text-sm font-semibold tracking-wide text-emerald-800 uppercase">PE 2 Classes</h2>
 			<p class="mt-0.5 text-xs text-emerald-600">
-				{visibleCount} {showAllPe2 ? 'section' : 'section'}{visibleCount === 1 ? '' : 's'}
+				{visibleCount}
+				{showAllPe2 ? 'section' : 'section'}{visibleCount === 1 ? '' : 's'}
 				{#if pe2FetchedAt}
-					• updated <span class="font-mono">{new Date(pe2FetchedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+					• updated <span class="font-mono"
+						>{new Date(pe2FetchedAt).toLocaleTimeString([], {
+							hour: '2-digit',
+							minute: '2-digit'
+						})}</span
+					>
 				{/if}
 			</p>
 		</div>
@@ -122,7 +131,7 @@
 			<button
 				onclick={fetchPe2}
 				disabled={isPe2Fetching}
-				class="flex items-center gap-1.5 rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:bg-emerald-400"
+				class="flex items-center gap-1.5 rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:outline-none disabled:bg-emerald-400"
 			>
 				{#if isPe2Fetching}
 					<svg class="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -166,7 +175,7 @@
 			type="text"
 			bind:value={pe2Search}
 			placeholder="Search course code or section..."
-			class="w-full rounded-sm border border-emerald-200 bg-white px-3 py-1.5 text-xs text-ink placeholder:text-emerald-300 focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1"
+			class="w-full rounded-sm border border-emerald-200 bg-white px-3 py-1.5 text-xs text-ink placeholder:text-emerald-300 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1 focus:outline-none"
 		/>
 		{#if pe2Search.trim()}
 			<p class="mt-1 text-xs text-emerald-600">
@@ -182,7 +191,9 @@
 	{/if}
 
 	{#if pe2Sections.length === 0}
-		<div class="rounded-md border border-dashed border-emerald-300 bg-emerald-50/50 py-6 text-center">
+		<div
+			class="rounded-md border border-dashed border-emerald-300 bg-emerald-50/50 py-6 text-center"
+		>
 			<p class="text-sm font-medium text-emerald-700">
 				{isPe2Fetching ? 'Loading…' : 'No open PE 2 classes'}
 			</p>
@@ -194,7 +205,8 @@
 		<ul class="max-h-64 space-y-1.5 overflow-y-auto">
 			{#each filteredPe2Sections as section (section.code + '-' + section.status)}
 				<li
-					class="flex items-center justify-between rounded-md border bg-white px-3 py-2 transition {section.status === 'new'
+					class="flex items-center justify-between rounded-md border bg-white px-3 py-2 transition {section.status ===
+					'new'
 						? 'border-emerald-300 bg-emerald-50/50'
 						: section.status === 'gone'
 							? 'border-border bg-paper opacity-70'
@@ -209,7 +221,9 @@
 							{section.code}
 						</p>
 						<p
-							class="font-mono text-xs {section.status === 'gone' ? 'text-ink-muted opacity-70' : 'text-ink-muted'}"
+							class="font-mono text-xs {section.status === 'gone'
+								? 'text-ink-muted opacity-70'
+								: 'text-ink-muted'}"
 						>
 							{#if section.capacity > 0}
 								{section.slotsLeft} / {section.capacity} slots
@@ -219,7 +233,8 @@
 						</p>
 					</div>
 					<span
-						class="ml-2 shrink-0 rounded-full px-2 py-0.5 text-xs font-medium {section.status === 'new'
+						class="ml-2 shrink-0 rounded-full px-2 py-0.5 text-xs font-medium {section.status ===
+						'new'
 							? 'bg-emerald-200 text-emerald-800'
 							: section.status === 'gone'
 								? 'bg-danger-bg text-danger'
@@ -237,7 +252,9 @@
 					</span>
 				</li>
 			{:else}
-				<li class="rounded-md border border-dashed border-emerald-300 bg-emerald-50/50 py-4 text-center text-xs text-emerald-600">
+				<li
+					class="rounded-md border border-dashed border-emerald-300 bg-emerald-50/50 py-4 text-center text-xs text-emerald-600"
+				>
 					No sections match "{pe2Search}"
 				</li>
 			{/each}

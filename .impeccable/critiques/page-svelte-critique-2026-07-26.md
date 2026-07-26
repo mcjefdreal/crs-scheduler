@@ -4,19 +4,19 @@
 
 ## Design Health Score
 
-| # | Heuristic | Score | Key Issue |
-|---|-----------|-------|-----------|
-| 1 | Visibility of System Status | 3 | Spinner on Generate, fetchProgress/refreshProgress, but no ETA/count/cancel |
-| 2 | Match System / Real World | 3 | Domain-native terms (CRN/slots/demand), but "Chance" and "P1↑–P5↓" unexplained |
-| 3 | User Control and Freedom | 2 | No undo anywhere; removeCourse/toggleSectionExclusion destructive, no confirm |
-| 4 | Consistency and Standards | 2 | Three button radii, focus rings ring-4 vs spec's 2px, maroon used for data content |
-| 5 | Error Prevention | 3 | Empty course name validated, locked conflict detected, but no warning before removing courses |
-| 6 | Recognition Rather Than Recall | 3 | Instructions modal present, but priority/Chance/day-off meanings require docs |
-| 7 | Flexibility and Efficiency | 3 | Batch fetch, search/filter, Compare, Enter-to-add; no Generate shortcut, no quick-lock |
-| 8 | Aesthetic and Minimalist | 2 | Cluttered middle column, redundant Chance label+bar+% , 12px text everywhere |
-| 9 | Error Recognition and Recovery | 3 | Locked-conflict copy is specific and actionable, but "No matching schedules" gives no recovery |
-| 10 | Help and Documentation | 3 | 5-step modal decent, but header+footer duplicate "How to use", no inline tooltips |
-| **Total** | | **25/40** | **Acceptable — significant improvements needed** |
+| #         | Heuristic                      | Score     | Key Issue                                                                                      |
+| --------- | ------------------------------ | --------- | ---------------------------------------------------------------------------------------------- |
+| 1         | Visibility of System Status    | 3         | Spinner on Generate, fetchProgress/refreshProgress, but no ETA/count/cancel                    |
+| 2         | Match System / Real World      | 3         | Domain-native terms (CRN/slots/demand), but "Chance" and "P1↑–P5↓" unexplained                 |
+| 3         | User Control and Freedom       | 2         | No undo anywhere; removeCourse/toggleSectionExclusion destructive, no confirm                  |
+| 4         | Consistency and Standards      | 2         | Three button radii, focus rings ring-4 vs spec's 2px, maroon used for data content             |
+| 5         | Error Prevention               | 3         | Empty course name validated, locked conflict detected, but no warning before removing courses  |
+| 6         | Recognition Rather Than Recall | 3         | Instructions modal present, but priority/Chance/day-off meanings require docs                  |
+| 7         | Flexibility and Efficiency     | 3         | Batch fetch, search/filter, Compare, Enter-to-add; no Generate shortcut, no quick-lock         |
+| 8         | Aesthetic and Minimalist       | 2         | Cluttered middle column, redundant Chance label+bar+% , 12px text everywhere                   |
+| 9         | Error Recognition and Recovery | 3         | Locked-conflict copy is specific and actionable, but "No matching schedules" gives no recovery |
+| 10        | Help and Documentation         | 3         | 5-step modal decent, but header+footer duplicate "How to use", no inline tooltips              |
+| **Total** |                                | **25/40** | **Acceptable — significant improvements needed**                                               |
 
 ## Anti-Patterns Verdict
 
@@ -80,12 +80,14 @@ The token migration succeeded at the paint level but stopped short of the struct
 ## Persona Red Flags
 
 **Jordan First-Timer**
+
 - Empty state says "click Add Course" (L665) — no such button. First dead end.
 - "Chance" (L1354) unlabeled — 73% of what? Anxiety at the decision moment.
 - "P1↑" (L731) unexplained inline — must open a modal to learn the notation.
 - Three columns all visible at once — no guided onboarding, no nudge pointing to Fetch input.
 
 **Sam Accessibility**
+
 - 12px and 10px text below the 14px floor — low-vision strain across entire UI.
 - Modal has no Escape handler, no focus trap (L1504) — keyboard users stranded.
 - Many SVGs lack `aria-hidden="true"` — screen-reader noise.
@@ -93,6 +95,7 @@ The token migration succeeded at the paint level but stopped short of the struct
 - `truncate` hides data visually; SR reads full text, but sighted low-vision users with magnification lose the truncated tail.
 
 **Riley Stress Tester**
+
 - `removeCourse` (L237) — no confirm. One misclick destroys a course + all schedules.
 - `toggleSectionExclusion` (L580) — wipes schedules on every toggle. No undo.
 - Generate has no cancel (L1235) — long runs trap the user.

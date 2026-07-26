@@ -79,7 +79,8 @@
 	font-style: normal;
 	font-weight: 100 900;
 	font-display: swap;
-	src: url('https://fonts.bunny.net/inter/files/inter-latin-wght-normal.woff2') format('woff2-variations');
+	src: url('https://fonts.bunny.net/inter/files/inter-latin-wght-normal.woff2')
+		format('woff2-variations');
 }
 
 @font-face {
@@ -87,7 +88,8 @@
 	font-style: normal;
 	font-weight: 100 800;
 	font-display: swap;
-	src: url('https://fonts.bunny.net/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2') format('woff2-variations');
+	src: url('https://fonts.bunny.net/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2')
+		format('woff2-variations');
 }
 
 /* ------------------------------------------------------------------ */

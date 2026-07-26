@@ -123,7 +123,6 @@
 			: schedules
 	);
 
-
 	function loadPrefs() {
 		const stored = localStorage.getItem('showExcluded');
 		if (stored === 'true') showExcluded = true;
@@ -236,7 +235,6 @@
 			.replace(/[^a-z0-9]+/g, '-')
 			.replace(/^-|-$/g, '');
 	}
-
 
 	async function removeCourse(id: string) {
 		const course = courses.find((c) => c.id === id);
@@ -586,7 +584,8 @@
 		if (!course) return;
 		const section = course.sections.find((s) => s.crn === crn);
 		if (!section) return;
-		if (exclude && !confirm(`Exclude ${section.code}? This will remove it from all schedules.`)) return;
+		if (exclude && !confirm(`Exclude ${section.code}? This will remove it from all schedules.`))
+			return;
 		section.excluded = exclude;
 		await db.courses.put(JSON.parse(JSON.stringify(course)));
 		courses = await db.courses.toArray();
@@ -605,23 +604,25 @@
 
 <main class="flex min-h-screen flex-col">
 	<header class="border-b border-border bg-surface">
-		<div class="mx-auto flex max-w-[95vw] items-center justify-between px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
+		<div
+			class="mx-auto flex max-w-[95vw] items-center justify-between px-3 py-3 sm:px-6 sm:py-4 lg:px-8"
+		>
 			<div class="flex items-center gap-3">
 				<div class="flex h-8 w-8 items-center justify-center rounded-md bg-maroon text-surface">
-				<svg
-					class="h-5 w-5"
-					aria-hidden="true"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					viewBox="0 0 24 24"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
-					/>
-				</svg>
+					<svg
+						class="h-5 w-5"
+						aria-hidden="true"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
+						/>
+					</svg>
 				</div>
 				<h1 class="text-xl font-semibold tracking-tight text-ink">CRS Scheduler</h1>
 			</div>
@@ -634,57 +635,47 @@
 		</div>
 	</header>
 
-	<div class="mx-auto w-[90vw] px-4 py-4 sm:px-6 sm:py-6 lg:max-w-[95vw] lg:px-8 lg:py-8 max-lg:pb-24">
-		<div class="grid gap-4 sm:gap-6 lg:gap-8 lg:grid-cols-[1fr_1fr_2fr]">
+	<div
+		class="mx-auto w-[90vw] px-4 py-4 max-lg:pb-24 sm:px-6 sm:py-6 lg:max-w-[95vw] lg:px-8 lg:py-8"
+	>
+		<div class="grid gap-4 sm:gap-6 lg:grid-cols-[1fr_1fr_2fr] lg:gap-8">
 			<!-- Sidebar -->
 			<section class="min-w-0 space-y-6">
 				<!-- Courses section -->
-			<section class="rounded-md border border-border bg-surface p-5">
-				<!-- Mobile collapse header -->
-				<div class="mb-4 flex items-center justify-between lg:hidden">
-					<button
-						onclick={() => expandedMobileSection = expandedMobileSection === 'courses' ? null : 'courses'}
-						class="flex min-w-0 items-center gap-2 text-left"
-						aria-expanded={expandedMobileSection === 'courses'}
-					>
-						<svg
-							class="h-4 w-4 shrink-0 text-ink-muted transition-transform {expandedMobileSection ===
-							'courses'
-								? 'rotate-180'
-								: ''}"
-							aria-hidden="true"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							viewBox="0 0 24 24"
+				<section class="rounded-md border border-border bg-surface p-5">
+					<!-- Mobile collapse header -->
+					<div class="mb-4 flex items-center justify-between lg:hidden">
+						<button
+							onclick={() =>
+								(expandedMobileSection = expandedMobileSection === 'courses' ? null : 'courses')}
+							class="flex min-w-0 items-center gap-2 text-left"
+							aria-expanded={expandedMobileSection === 'courses'}
 						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-							/>
-						</svg>
-						<span class="text-sm font-semibold text-ink">Courses</span>
-						<span class="text-xs text-ink-muted">
-							({courses.length} course{courses.length === 1 ? '' : 's'} • {totalSections} section{totalSections ===
+							<svg
+								class="h-4 w-4 shrink-0 text-ink-muted transition-transform {expandedMobileSection ===
+								'courses'
+									? 'rotate-180'
+									: ''}"
+								aria-hidden="true"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								viewBox="0 0 24 24"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+								/>
+							</svg>
+							<span class="text-sm font-semibold text-ink">Courses</span>
+							<span class="text-xs text-ink-muted">
+								({courses.length} course{courses.length === 1 ? '' : 's'} • {totalSections} section{totalSections ===
 								1
 									? ''
 									: 's'})
-						</span>
-					</button>
-					<button
-						onclick={refreshAllCourses}
-						disabled={isFetching || isGenerating}
-						class="text-sm font-medium text-maroon hover:text-maroon-hover disabled:text-ink-muted"
-					>
-						Refresh All
-					</button>
-				</div>
-
-				<!-- Desktop header -->
-				<div class="mb-4 hidden items-center justify-between lg:flex">
-					<h2 class="text-sm font-semibold tracking-wide text-ink-muted uppercase">Courses</h2>
-					<div class="flex items-center gap-2">
+							</span>
+						</button>
 						<button
 							onclick={refreshAllCourses}
 							disabled={isFetching || isGenerating}
@@ -692,6 +683,19 @@
 						>
 							Refresh All
 						</button>
+					</div>
+
+					<!-- Desktop header -->
+					<div class="mb-4 hidden items-center justify-between lg:flex">
+						<h2 class="text-sm font-semibold tracking-wide text-ink-muted uppercase">Courses</h2>
+						<div class="flex items-center gap-2">
+							<button
+								onclick={refreshAllCourses}
+								disabled={isFetching || isGenerating}
+								class="text-sm font-medium text-maroon hover:text-maroon-hover disabled:text-ink-muted"
+							>
+								Refresh All
+							</button>
 							<span class="text-xs text-ink-muted"
 								>{courses.length} course{courses.length === 1 ? '' : 's'} • {totalSections} section{totalSections ===
 								1
@@ -701,200 +705,221 @@
 						</div>
 					</div>
 					<div class="{expandedMobileSection === 'courses' ? 'block' : 'hidden'} lg:block">
-					{#if refreshProgress}
-						<div class="mb-3 rounded-md bg-maroon-subtle p-3 text-sm text-maroon">
-							{refreshProgress}
-						</div>
-					{/if}
-					{#if courses.length === 0}
-						<div
-							class="rounded-md border border-dashed border-border-hover bg-paper py-8 text-center"
-						>
-							<p class="text-sm font-medium text-ink-muted">Add courses to get started</p>
-							<p class="mt-1 text-sm text-ink-muted">Paste CRS HTML and click Fetch.</p>
-						</div>
-					{:else}
-						<ul class="space-y-2">
-							{#each courses as course}
-								<li class="overflow-hidden rounded-md border border-border bg-paper">
-									<div class="flex items-center justify-between px-3 py-2">
-										<button
-											onclick={() => {
-												if (expandedCourseId === course.id) {
-													expandedCourseId = null;
-												} else {
-													expandedCourseId = course.id;
-													sectionSearch = '';
-												}
-											}}
-											class="flex min-w-0 flex-1 items-center gap-2 text-left"
-											aria-expanded={expandedCourseId === course.id}
-											aria-label="{expandedCourseId === course.id ? 'Collapse' : 'Expand'} {course.name} sections"
-										>
-			<svg
-				class="h-4 w-4 shrink-0 text-ink-muted transition-transform {expandedCourseId ===
-				course.id
-					? 'rotate-180'
-					: ''}"
-				aria-hidden="true"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				viewBox="0 0 24 24"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-				/>
-			</svg>
-											<div class="min-w-0">
-												<p class="truncate text-sm font-medium text-ink">{course.name}</p>
-												<p class="text-xs text-ink-muted">
-													{course.sections.length} section{course.sections.length === 1
-														? ''
-														: 's'}
-													{#if course.sections.some((s) => s.restrictions)}
-														<span class="text-excluded">
-															• {course.sections.filter((s) => s.restrictions).length} section{course.sections.filter(
-																(s) => s.restrictions
-															).length === 1
-																? ''
-																: 's'} restricted
-														</span>
-													{/if}
-												</p>
-											</div>
-										</button>
-										<div class="flex items-center gap-2">
-											<select
-												value={course.priority ?? 0}
-												onchange={async (e) => {
-													const p = parseInt(e.currentTarget.value);
-													course.priority = p;
-													await saveCoursePriority(course.id, p);
-												}}
-												class="rounded-sm border border-border-hover px-2 py-1 text-xs text-ink outline-none"
-												aria-label="Priority for {course.name}"
-											>
-												<option value={0}>—</option>
-												<option value={1}>P1 (highest)</option>
-												<option value={2}>P2</option>
-												<option value={3}>P3</option>
-												<option value={4}>P4</option>
-												<option value={5}>P5 (lowest)</option>
-											</select>
+						{#if refreshProgress}
+							<div class="mb-3 rounded-md bg-maroon-subtle p-3 text-sm text-maroon">
+								{refreshProgress}
+							</div>
+						{/if}
+						{#if courses.length === 0}
+							<div
+								class="rounded-md border border-dashed border-border-hover bg-paper py-8 text-center"
+							>
+								<p class="text-sm font-medium text-ink-muted">Add courses to get started</p>
+								<p class="mt-1 text-sm text-ink-muted">Paste CRS HTML and click Fetch.</p>
+							</div>
+						{:else}
+							<ul class="space-y-2">
+								{#each courses as course}
+									<li class="overflow-hidden rounded-md border border-border bg-paper">
+										<div class="flex items-center justify-between px-3 py-2">
 											<button
-												onclick={() => removeCourse(course.id)}
-												class="rounded-sm p-1.5 text-ink-muted hover:bg-danger-bg hover:text-danger"
-												aria-label="Remove {course.name}"
+												onclick={() => {
+													if (expandedCourseId === course.id) {
+														expandedCourseId = null;
+													} else {
+														expandedCourseId = course.id;
+														sectionSearch = '';
+													}
+												}}
+												class="flex min-w-0 flex-1 items-center gap-2 text-left"
+												aria-expanded={expandedCourseId === course.id}
+												aria-label="{expandedCourseId === course.id
+													? 'Collapse'
+													: 'Expand'} {course.name} sections"
 											>
-			<svg
-				class="h-4 w-4"
-				aria-hidden="true"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				viewBox="0 0 24 24"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					d="M6 18 18 6M6 6l12 12"
-				/>
-			</svg>
-		</button>
-										</div>
-									</div>
-									{#if expandedCourseId === course.id}
-										{@const filteredSections = sectionSearch.trim()
-											? course.sections.filter(
-													(s) =>
-														s.code.toLowerCase().includes(sectionSearch.toLowerCase()) ||
-														String(s.crn).includes(sectionSearch) ||
-														(s.instructor &&
-															s.instructor.toLowerCase().includes(sectionSearch.toLowerCase()))
-												)
-											: course.sections}
-										<div class="border-t border-border bg-surface px-3 py-2">
-										<div class="mb-2">
-											<label for="section-search" class="sr-only">Filter sections</label>
-											<input
-												id="section-search"
-												type="text"
-												bind:value={sectionSearch}
-												placeholder="Search sections..."
-												class="w-full rounded-sm border border-border bg-surface px-3 py-1.5 text-xs text-ink placeholder:text-ink-muted focus:border-maroon focus:outline-none"
-											/>
-												{#if sectionSearch.trim()}
-													<p class="mt-1 text-xs text-ink-muted">
-														{filteredSections.length} of {course.sections.length} sections
+												<svg
+													class="h-4 w-4 shrink-0 text-ink-muted transition-transform {expandedCourseId ===
+													course.id
+														? 'rotate-180'
+														: ''}"
+													aria-hidden="true"
+													fill="none"
+													stroke="currentColor"
+													stroke-width="2"
+													viewBox="0 0 24 24"
+												>
+													<path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+													/>
+												</svg>
+												<div class="min-w-0">
+													<p class="truncate text-sm font-medium text-ink">{course.name}</p>
+													<p class="text-xs text-ink-muted">
+														{course.sections.length} section{course.sections.length === 1
+															? ''
+															: 's'}
+														{#if course.sections.some((s) => s.restrictions)}
+															<span class="text-excluded">
+																• {course.sections.filter((s) => s.restrictions).length} section{course.sections.filter(
+																	(s) => s.restrictions
+																).length === 1
+																	? ''
+																	: 's'} restricted
+															</span>
+														{/if}
 													</p>
-												{/if}
+												</div>
+											</button>
+											<div class="flex items-center gap-2">
+												<select
+													value={course.priority ?? 0}
+													onchange={async (e) => {
+														const p = parseInt(e.currentTarget.value);
+														course.priority = p;
+														await saveCoursePriority(course.id, p);
+													}}
+													class="rounded-sm border border-border-hover px-2 py-1 text-xs text-ink outline-none"
+													aria-label="Priority for {course.name}"
+												>
+													<option value={0}>—</option>
+													<option value={1}>P1 (highest)</option>
+													<option value={2}>P2</option>
+													<option value={3}>P3</option>
+													<option value={4}>P4</option>
+													<option value={5}>P5 (lowest)</option>
+												</select>
+												<button
+													onclick={() => removeCourse(course.id)}
+													class="rounded-sm p-1.5 text-ink-muted hover:bg-danger-bg hover:text-danger"
+													aria-label="Remove {course.name}"
+												>
+													<svg
+														class="h-4 w-4"
+														aria-hidden="true"
+														fill="none"
+														stroke="currentColor"
+														stroke-width="2"
+														viewBox="0 0 24 24"
+													>
+														<path
+															stroke-linecap="round"
+															stroke-linejoin="round"
+															d="M6 18 18 6M6 6l12 12"
+														/>
+													</svg>
+												</button>
 											</div>
-											<ul class="max-h-56 space-y-1 overflow-y-auto">
-												{#each filteredSections as section}
-													<li
-														class="rounded-sm border border-border px-3 py-2 text-sm {lockedCrns.includes(
-															section.crn
-														)
-															? 'border-l-[3px] border-maroon bg-maroon-subtle'
-															: ''}"
-													>
-														<div class="flex items-start justify-between gap-2">
-															<div class="min-w-0 flex-1">
-																<p class="truncate font-medium text-ink font-mono">{section.code}</p>
-																<p class="truncate text-sm text-ink-muted">
-																	CRN <span class="font-mono">{section.crn}</span> • {section.instructor || 'TBA'}
-																</p>
-																<p class="whitespace-normal break-words text-sm text-ink-muted">{meetingSummary(section)}</p>
-															</div>
-															<div class="flex shrink-0 flex-col items-end gap-1">
-																<span class="whitespace-nowrap text-sm text-ink-muted font-mono"
-																	>{section.slotsLeft}/{section.capacity} slots</span
-																>
-																<button
-																	onclick={() => toggleLock(section.crn)}
-																	class="rounded-sm p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-ink-muted hover:bg-border hover:text-ink-muted"
-																	title={lockedCrns.includes(section.crn) ? 'Unlock' : 'Lock section'}
-																>
-																	{#if lockedCrns.includes(section.crn)}
-<svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-				<path
-					d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"
-				/>
-			</svg>
-																	{:else}
-<svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-				<path
-					d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"
-				/>
-			</svg>
-																	{/if}
-																</button>
-															</div>
-														</div>
-													</li>
-												{:else}
-													<li
-														class="rounded-sm border border-dashed border-border bg-paper py-2 text-center text-xs text-ink-muted"
-													>
-														No sections match
-													</li>
-												{/each}
-											</ul>
 										</div>
-									{/if}
-								</li>
-							{:else}
-								<li class="rounded-sm border border-dashed border-excluded-border bg-excluded-bg/50 py-3 text-center text-xs text-excluded">
-									No sections match "{sectionSearch}"
-								</li>
-							{/each}
-						</ul>
-					{/if}
-				</div>
-			</section>
+										{#if expandedCourseId === course.id}
+											{@const filteredSections = sectionSearch.trim()
+												? course.sections.filter(
+														(s) =>
+															s.code.toLowerCase().includes(sectionSearch.toLowerCase()) ||
+															String(s.crn).includes(sectionSearch) ||
+															(s.instructor &&
+																s.instructor.toLowerCase().includes(sectionSearch.toLowerCase()))
+													)
+												: course.sections}
+											<div class="border-t border-border bg-surface px-3 py-2">
+												<div class="mb-2">
+													<label for="section-search" class="sr-only">Filter sections</label>
+													<input
+														id="section-search"
+														type="text"
+														bind:value={sectionSearch}
+														placeholder="Search sections..."
+														class="w-full rounded-sm border border-border bg-surface px-3 py-1.5 text-xs text-ink placeholder:text-ink-muted focus:border-maroon focus:outline-none"
+													/>
+													{#if sectionSearch.trim()}
+														<p class="mt-1 text-xs text-ink-muted">
+															{filteredSections.length} of {course.sections.length} sections
+														</p>
+													{/if}
+												</div>
+												<ul class="max-h-56 space-y-1 overflow-y-auto">
+													{#each filteredSections as section}
+														<li
+															class="rounded-sm border border-border px-3 py-2 text-sm {lockedCrns.includes(
+																section.crn
+															)
+																? 'border-l-[3px] border-maroon bg-maroon-subtle'
+																: ''}"
+														>
+															<div class="flex items-start justify-between gap-2">
+																<div class="min-w-0 flex-1">
+																	<p class="truncate font-mono font-medium text-ink">
+																		{section.code}
+																	</p>
+																	<p class="truncate text-sm text-ink-muted">
+																		CRN <span class="font-mono">{section.crn}</span> • {section.instructor ||
+																			'TBA'}
+																	</p>
+																	<p class="text-sm break-words whitespace-normal text-ink-muted">
+																		{meetingSummary(section)}
+																	</p>
+																</div>
+																<div class="flex shrink-0 flex-col items-end gap-1">
+																	<span class="font-mono text-sm whitespace-nowrap text-ink-muted"
+																		>{section.slotsLeft}/{section.capacity} slots</span
+																	>
+																	<button
+																		onclick={() => toggleLock(section.crn)}
+																		class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm p-2.5 text-ink-muted hover:bg-border hover:text-ink-muted"
+																		title={lockedCrns.includes(section.crn)
+																			? 'Unlock'
+																			: 'Lock section'}
+																	>
+																		{#if lockedCrns.includes(section.crn)}
+																			<svg
+																				class="h-3.5 w-3.5"
+																				fill="currentColor"
+																				viewBox="0 0 24 24"
+																				aria-hidden="true"
+																			>
+																				<path
+																					d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"
+																				/>
+																			</svg>
+																		{:else}
+																			<svg
+																				class="h-3.5 w-3.5"
+																				fill="currentColor"
+																				viewBox="0 0 24 24"
+																				aria-hidden="true"
+																			>
+																				<path
+																					d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"
+																				/>
+																			</svg>
+																		{/if}
+																	</button>
+																</div>
+															</div>
+														</li>
+													{:else}
+														<li
+															class="rounded-sm border border-dashed border-border bg-paper py-2 text-center text-xs text-ink-muted"
+														>
+															No sections match
+														</li>
+													{/each}
+												</ul>
+											</div>
+										{/if}
+									</li>
+								{:else}
+									<li
+										class="rounded-sm border border-dashed border-excluded-border bg-excluded-bg/50 py-3 text-center text-xs text-excluded"
+									>
+										No sections match "{sectionSearch}"
+									</li>
+								{/each}
+							</ul>
+						{/if}
+					</div>
+				</section>
 
 				<!-- PE 2 monitor -->
 				<Pe2Monitor />
@@ -952,388 +977,402 @@
 								</button>
 							</div>
 							<div class="{expandedMobileSection === 'excluded' ? 'block' : 'hidden'} lg:block">
-						{#if showExcluded}
-							<div class="mb-2">
-								<label for="excluded-search" class="sr-only">Filter excluded sections</label>
-								<input
-									id="excluded-search"
-									type="text"
-									bind:value={excludedSearch}
-									placeholder="Search course code or section..."
-									class="w-full rounded-sm border border-excluded-border bg-surface px-3 py-1.5 text-xs text-ink placeholder:text-ink-muted focus:border-maroon focus:outline-none"
-								/>
-								{#if excludedSearch.trim()}
-									<p class="mt-1 text-xs text-excluded">
-										{filteredExcludedSections.length} of {totalExcluded} sections
-									</p>
-								{/if}
-							</div>
-							<ul class="max-h-64 space-y-1 overflow-y-auto">
-								{#each filteredExcludedSections as section}
-									<li
-											class="flex items-center justify-between rounded-sm border border-excluded-border bg-surface px-3 py-2 text-sm {lockedCrns.includes(
-												section.crn
-											)
-												? 'border-l-[3px] border-maroon bg-maroon-subtle'
-												: ''}"
-										>
-											<div class="min-w-0 flex-1">
-												<p class="truncate font-medium text-ink font-mono">{section.code}</p>
-												<p class="truncate text-ink-muted">
-													{section.courseName} • CRN <span class="font-mono">{section.crn}</span>
-												</p>
-												{#if section.restrictions}
-													<p class="whitespace-normal break-words text-excluded">{section.restrictions}</p>
-												{/if}
-											</div>
-											<div class="ml-2 flex shrink-0 items-center gap-1">
-												<button
-													onclick={() => toggleLock(section.crn)}
-													class="rounded-sm p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-ink-muted hover:bg-border hover:text-ink-muted"
-													title={lockedCrns.includes(section.crn) ? 'Unlock' : 'Lock section'}
-												>
-													{#if lockedCrns.includes(section.crn)}
-														<svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
-															<path
-																d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"
-															/>
-														</svg>
-													{:else}
-														<svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
-															<path
-																d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"
-															/>
-														</svg>
-													{/if}
-												</button>
-										<button
-											onclick={async () => {
-												await toggleSectionExclusion(section.courseId, section.crn, false);
-											}}
-											class="rounded-md bg-maroon px-2 py-0.5 text-xs font-medium text-surface hover:bg-maroon-hover"
-										>
-											Include
-										</button>
+								{#if showExcluded}
+									<div class="mb-2">
+										<label for="excluded-search" class="sr-only">Filter excluded sections</label>
+										<input
+											id="excluded-search"
+											type="text"
+											bind:value={excludedSearch}
+											placeholder="Search course code or section..."
+											class="w-full rounded-sm border border-excluded-border bg-surface px-3 py-1.5 text-xs text-ink placeholder:text-ink-muted focus:border-maroon focus:outline-none"
+										/>
+										{#if excludedSearch.trim()}
+											<p class="mt-1 text-xs text-excluded">
+												{filteredExcludedSections.length} of {totalExcluded} sections
+											</p>
+										{/if}
 									</div>
-								</li>
-							{/each}
-						</ul>
-					{/if}
-				</div>
-				</section>
-					{/if}
-
-				<!-- Zero-slot sections -->
-				{#if totalZeroSlot > 0}
-					<section class="mt-6 rounded-md border border-zeroslot-border bg-zeroslot-bg p-5">
-						<!-- Mobile collapse header -->
-						<div class="mb-3 flex items-center justify-between lg:hidden">
-							<button
-								onclick={() => {
-									if (expandedMobileSection === 'zeroslot') {
-										expandedMobileSection = null;
-									} else {
-										expandedMobileSection = 'zeroslot';
-										saveShowZeroSlot(true);
-									}
-								}}
-								class="flex min-w-0 items-center gap-2 text-left"
-								aria-expanded={expandedMobileSection === 'zeroslot'}
-							>
-								<svg
-									class="h-4 w-4 shrink-0 text-zeroslot transition-transform {expandedMobileSection ===
-									'zeroslot'
-										? 'rotate-180'
-										: ''}"
-									aria-hidden="true"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-									/>
-								</svg>
-								<span class="text-sm font-semibold text-zeroslot">Zero Slots</span>
-								<span class="text-xs text-zeroslot">({totalZeroSlot})</span>
-							</button>
-						</div>
-
-						<!-- Desktop header -->
-						<div class="mb-3 hidden items-center justify-between lg:flex">
-							<h2 class="text-sm font-semibold tracking-wide text-zeroslot uppercase">
-								Zero Slots ({totalZeroSlot})
-							</h2>
-							<button
-								onclick={() => saveShowZeroSlot(!showZeroSlot)}
-								class="text-xs font-medium text-zeroslot hover:text-zeroslot"
-							>
-								{showZeroSlot ? 'Hide' : 'Show'}
-							</button>
-						</div>
-						<div class="{expandedMobileSection === 'zeroslot' ? 'block' : 'hidden'} lg:block">
-						<p class="mb-3 text-sm text-zeroslot">
-							Sections with 0 slots remaining. Toggle to include in schedule generation.
-						</p>
-						{#if showZeroSlot}
-							<div class="mb-2">
-								<label for="zeroslot-search" class="sr-only">Filter zero-slot sections</label>
-								<input
-									id="zeroslot-search"
-									type="text"
-									bind:value={zeroSlotSearch}
-									placeholder="Search course code or section..."
-									class="w-full rounded-sm border border-zeroslot-border bg-surface px-3 py-1.5 text-xs text-ink placeholder:text-ink-muted focus:border-maroon focus:outline-none focus:ring-2 focus:ring-maroon focus:ring-offset-0"
-								/>
-								{#if zeroSlotSearch.trim()}
-									<p class="mt-1 text-sm text-zeroslot">
-										{filteredZeroSlotSections.length} of {totalZeroSlot} sections
-									</p>
+									<ul class="max-h-64 space-y-1 overflow-y-auto">
+										{#each filteredExcludedSections as section}
+											<li
+												class="flex items-center justify-between rounded-sm border border-excluded-border bg-surface px-3 py-2 text-sm {lockedCrns.includes(
+													section.crn
+												)
+													? 'border-l-[3px] border-maroon bg-maroon-subtle'
+													: ''}"
+											>
+												<div class="min-w-0 flex-1">
+													<p class="truncate font-mono font-medium text-ink">{section.code}</p>
+													<p class="truncate text-ink-muted">
+														{section.courseName} • CRN <span class="font-mono">{section.crn}</span>
+													</p>
+													{#if section.restrictions}
+														<p class="break-words whitespace-normal text-excluded">
+															{section.restrictions}
+														</p>
+													{/if}
+												</div>
+												<div class="ml-2 flex shrink-0 items-center gap-1">
+													<button
+														onclick={() => toggleLock(section.crn)}
+														class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm p-2.5 text-ink-muted hover:bg-border hover:text-ink-muted"
+														title={lockedCrns.includes(section.crn) ? 'Unlock' : 'Lock section'}
+													>
+														{#if lockedCrns.includes(section.crn)}
+															<svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
+																<path
+																	d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"
+																/>
+															</svg>
+														{:else}
+															<svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
+																<path
+																	d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"
+																/>
+															</svg>
+														{/if}
+													</button>
+													<button
+														onclick={async () => {
+															await toggleSectionExclusion(section.courseId, section.crn, false);
+														}}
+														class="rounded-md bg-maroon px-2 py-0.5 text-xs font-medium text-surface hover:bg-maroon-hover"
+													>
+														Include
+													</button>
+												</div>
+											</li>
+										{/each}
+									</ul>
 								{/if}
 							</div>
-							<ul class="max-h-64 space-y-1 overflow-y-auto">
-								{#each filteredZeroSlotSections as section}
-									<li
-										class="flex items-center justify-between rounded-sm border border-zeroslot-border bg-surface px-3 py-2 text-sm {lockedCrns.includes(
-											section.crn
-										)
-											? 'border-l-[3px] border-maroon bg-maroon-subtle'
-											: ''}"
-									>
-										<div class="min-w-0 flex-1">
-											<p class="truncate font-medium text-ink font-mono">{section.code}</p>
-											<p class="truncate text-ink-muted">
-												{section.courseName} • CRN <span class="font-mono">{section.crn}</span>
-											</p>
-											<p class="truncate text-ink-muted font-mono">
-												{section.slotsLeft}/{section.capacity} slots • Demand: {section.demand}
-											</p>
-											{#if section.restrictions}
-												<p class="whitespace-normal break-words text-zeroslot">{section.restrictions}</p>
-											{/if}
-										</div>
-										<div class="ml-2 flex shrink-0 items-center gap-1">
-											<button
-												onclick={() => toggleLock(section.crn)}
-												class="rounded-sm p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-ink-muted hover:bg-border hover:text-ink-muted"
-												title={lockedCrns.includes(section.crn) ? 'Unlock' : 'Lock section'}
-											>
-												{#if lockedCrns.includes(section.crn)}
-													<svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
-														<path
-															d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"
-														/>
-													</svg>
-												{:else}
-													<svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
-														<path
-															d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"
-														/>
-													</svg>
-												{/if}
-											</button>
-										</div>
-									</li>
-							{:else}
-								<li class="rounded-sm border border-dashed border-zeroslot-border bg-zeroslot-bg/50 py-3 text-center text-sm text-zeroslot">
-									No sections match "{zeroSlotSearch}"
-								</li>
-							{/each}
-						</ul>
+						</section>
 					{/if}
-				</div>
+
+					<!-- Zero-slot sections -->
+					{#if totalZeroSlot > 0}
+						<section class="mt-6 rounded-md border border-zeroslot-border bg-zeroslot-bg p-5">
+							<!-- Mobile collapse header -->
+							<div class="mb-3 flex items-center justify-between lg:hidden">
+								<button
+									onclick={() => {
+										if (expandedMobileSection === 'zeroslot') {
+											expandedMobileSection = null;
+										} else {
+											expandedMobileSection = 'zeroslot';
+											saveShowZeroSlot(true);
+										}
+									}}
+									class="flex min-w-0 items-center gap-2 text-left"
+									aria-expanded={expandedMobileSection === 'zeroslot'}
+								>
+									<svg
+										class="h-4 w-4 shrink-0 text-zeroslot transition-transform {expandedMobileSection ===
+										'zeroslot'
+											? 'rotate-180'
+											: ''}"
+										aria-hidden="true"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										viewBox="0 0 24 24"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+										/>
+									</svg>
+									<span class="text-sm font-semibold text-zeroslot">Zero Slots</span>
+									<span class="text-xs text-zeroslot">({totalZeroSlot})</span>
+								</button>
+							</div>
+
+							<!-- Desktop header -->
+							<div class="mb-3 hidden items-center justify-between lg:flex">
+								<h2 class="text-sm font-semibold tracking-wide text-zeroslot uppercase">
+									Zero Slots ({totalZeroSlot})
+								</h2>
+								<button
+									onclick={() => saveShowZeroSlot(!showZeroSlot)}
+									class="text-xs font-medium text-zeroslot hover:text-zeroslot"
+								>
+									{showZeroSlot ? 'Hide' : 'Show'}
+								</button>
+							</div>
+							<div class="{expandedMobileSection === 'zeroslot' ? 'block' : 'hidden'} lg:block">
+								<p class="mb-3 text-sm text-zeroslot">
+									Sections with 0 slots remaining. Toggle to include in schedule generation.
+								</p>
+								{#if showZeroSlot}
+									<div class="mb-2">
+										<label for="zeroslot-search" class="sr-only">Filter zero-slot sections</label>
+										<input
+											id="zeroslot-search"
+											type="text"
+											bind:value={zeroSlotSearch}
+											placeholder="Search course code or section..."
+											class="w-full rounded-sm border border-zeroslot-border bg-surface px-3 py-1.5 text-xs text-ink placeholder:text-ink-muted focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0 focus:outline-none"
+										/>
+										{#if zeroSlotSearch.trim()}
+											<p class="mt-1 text-sm text-zeroslot">
+												{filteredZeroSlotSections.length} of {totalZeroSlot} sections
+											</p>
+										{/if}
+									</div>
+									<ul class="max-h-64 space-y-1 overflow-y-auto">
+										{#each filteredZeroSlotSections as section}
+											<li
+												class="flex items-center justify-between rounded-sm border border-zeroslot-border bg-surface px-3 py-2 text-sm {lockedCrns.includes(
+													section.crn
+												)
+													? 'border-l-[3px] border-maroon bg-maroon-subtle'
+													: ''}"
+											>
+												<div class="min-w-0 flex-1">
+													<p class="truncate font-mono font-medium text-ink">{section.code}</p>
+													<p class="truncate text-ink-muted">
+														{section.courseName} • CRN <span class="font-mono">{section.crn}</span>
+													</p>
+													<p class="truncate font-mono text-ink-muted">
+														{section.slotsLeft}/{section.capacity} slots • Demand: {section.demand}
+													</p>
+													{#if section.restrictions}
+														<p class="break-words whitespace-normal text-zeroslot">
+															{section.restrictions}
+														</p>
+													{/if}
+												</div>
+												<div class="ml-2 flex shrink-0 items-center gap-1">
+													<button
+														onclick={() => toggleLock(section.crn)}
+														class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm p-2.5 text-ink-muted hover:bg-border hover:text-ink-muted"
+														title={lockedCrns.includes(section.crn) ? 'Unlock' : 'Lock section'}
+													>
+														{#if lockedCrns.includes(section.crn)}
+															<svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
+																<path
+																	d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"
+																/>
+															</svg>
+														{:else}
+															<svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
+																<path
+																	d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"
+																/>
+															</svg>
+														{/if}
+													</button>
+												</div>
+											</li>
+										{:else}
+											<li
+												class="rounded-sm border border-dashed border-zeroslot-border bg-zeroslot-bg/50 py-3 text-center text-sm text-zeroslot"
+											>
+												No sections match "{zeroSlotSearch}"
+											</li>
+										{/each}
+									</ul>
+								{/if}
+							</div>
+						</section>
+					{/if}
 				</section>
-			{/if}
-			</section>
 			</section>
 			<aside class="min-w-0 space-y-6">
 				<div class="space-y-4">
 					<!-- Add Course section -->
-					<section class="rounded-md border border-border border-l-[3px] border-l-maroon bg-surface p-6">
-					<h2 class="mb-4 text-sm font-semibold tracking-wide text-ink-muted uppercase">
-						Add Course
-					</h2>
-					<div class="space-y-4">
-						<div>
-							<label for="course-name" class="mb-1 block text-sm font-medium text-ink"
-								>Course name</label
-							>
-						<input
-							id="course-name"
-							type="text"
-							bind:value={courseName}
-							oninput={() => (courseNameError = '')}
-							aria-invalid={courseNameError ? 'true' : undefined}
-							aria-describedby="course-name-error"
-							placeholder="e.g. Eng 13, CS 133, Math 21"
-							class="w-full rounded-sm border border-border-hover px-3 py-2 text-sm transition outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
-						/>
-						{#if courseNameError}
-							<p id="course-name-error" class="mt-1 text-sm text-danger" role="alert">{courseNameError}</p>
-						{/if}
-						<p class="mt-1 text-xs text-ink-muted">
-							Separate multiple courses with commas for batch fetch
-						</p>
+					<section
+						class="rounded-md border border-l-[3px] border-border border-l-maroon bg-surface p-6"
+					>
+						<h2 class="mb-4 text-sm font-semibold tracking-wide text-ink-muted uppercase">
+							Add Course
+						</h2>
+						<div class="space-y-4">
+							<div>
+								<label for="course-name" class="mb-1 block text-sm font-medium text-ink"
+									>Course name</label
+								>
+								<input
+									id="course-name"
+									type="text"
+									bind:value={courseName}
+									oninput={() => (courseNameError = '')}
+									aria-invalid={courseNameError ? 'true' : undefined}
+									aria-describedby="course-name-error"
+									placeholder="e.g. Eng 13, CS 133, Math 21"
+									class="w-full rounded-sm border border-border-hover px-3 py-2 text-sm transition outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
+								/>
+								{#if courseNameError}
+									<p id="course-name-error" class="mt-1 text-sm text-danger" role="alert">
+										{courseNameError}
+									</p>
+								{/if}
+								<p class="mt-1 text-xs text-ink-muted">
+									Separate multiple courses with commas for batch fetch
+								</p>
+							</div>
+							<div>
+								<div class="flex gap-2">
+									<input
+										id="source-url"
+										type="url"
+										bind:value={sourceUrl}
+										placeholder="https://crs.upd.edu.ph/..."
+										class="min-w-0 flex-1 rounded-sm border border-border-hover px-3 py-2 text-sm transition outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
+									/>
+									<button
+										onclick={fetchFromCrs}
+										disabled={isFetching}
+										class="shrink-0 rounded-md border border-maroon px-4 py-2 text-sm font-semibold text-maroon hover:bg-maroon-subtle active:bg-maroon-subtle disabled:cursor-not-allowed disabled:opacity-50"
+									>
+										{isFetching ? fetchProgress || 'Fetching...' : 'Fetch'}
+									</button>
+								</div>
+								{#if fetchError}
+									<div
+										role="alert"
+										class="mt-2 rounded-md border border-danger-border bg-danger-bg p-3 text-sm text-danger"
+									>
+										<p>{fetchError}</p>
+									</div>
+								{/if}
+								{#if fetchSuccess}
+									<div
+										role="alert"
+										class="mt-2 rounded-md border border-success-border bg-success-bg p-3 text-sm text-success"
+									>
+										<p>{fetchSuccess}</p>
+									</div>
+								{/if}
+							</div>
 						</div>
+					</section>
+
+					<!-- Preferences section -->
+					<section class="space-y-3 rounded-md border border-border bg-surface p-4">
+						<h2 class="mb-0 text-sm font-semibold tracking-wide text-ink-muted uppercase">
+							Preferences
+						</h2>
 						<div>
+							<label for="earliest-start" class="mb-1 block text-sm font-medium text-ink"
+								>Avoid classes before</label
+							>
+							<select
+								id="earliest-start"
+								bind:value={earliestStartMin}
+								onchange={saveEarliestStartMin}
+								class="w-full rounded-sm border border-border-hover px-3 py-2 text-sm transition outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
+							>
+								<option value={undefined}>None</option>
+								<option value={420}>7:00 AM</option>
+								<option value={480}>8:00 AM</option>
+								<option value={540}>9:00 AM</option>
+								<option value={600}>10:00 AM</option>
+							</select>
+							<p class="mt-1 text-xs text-ink-muted">
+								Early classes get a score penalty. Only affects new schedule generation.
+							</p>
+						</div>
+
+						<div>
+							<label for="min-gap" class="mb-1 block text-sm font-medium text-ink"
+								>Minimum gap between classes</label
+							>
+							<input
+								id="min-gap"
+								type="number"
+								min="0"
+								max="120"
+								step="5"
+								placeholder="Minutes"
+								bind:value={minGapMinutes}
+								onchange={saveMinGapMinutes}
+								class="w-full rounded-sm border border-border-hover px-3 py-2 text-sm transition outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
+							/>
+							<p class="mt-1 text-xs text-ink-muted">Minutes between classes on the same day</p>
+						</div>
+
+						<div>
+							<label class="mb-1 block text-sm font-medium text-ink">Prefer no classes on</label>
+							<div class="flex gap-1">
+								{#each ['M', 'Tu', 'W', 'Th', 'F', 'S'] as day, i}
+									<button
+										onclick={() => toggleDayOff(i)}
+										class="rounded-full px-3 py-1.5 text-xs font-medium transition {daysOff.includes(
+											i
+										)
+											? 'bg-maroon text-surface'
+											: 'border border-border-hover bg-surface text-ink-muted hover:bg-paper'}"
+									>
+										{day}
+									</button>
+								{/each}
+							</div>
+							<p class="mt-1 text-xs text-ink-muted">
+								Schedules with classes on selected days get a score penalty
+							</p>
+						</div>
+
+						<div>
+							<label for="exclude-instructor" class="mb-1 block text-sm font-medium text-ink"
+								>Exclude instructors</label
+							>
 							<div class="flex gap-2">
 								<input
-									id="source-url"
-									type="url"
-									bind:value={sourceUrl}
-									placeholder="https://crs.upd.edu.ph/..."
+									id="exclude-instructor"
+									type="text"
+									placeholder="Instructor name"
+									bind:value={newInstructor}
+									onkeydown={(e) => {
+										if (e.key === 'Enter') addInstructor();
+									}}
 									class="min-w-0 flex-1 rounded-sm border border-border-hover px-3 py-2 text-sm transition outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
 								/>
 								<button
-									onclick={fetchFromCrs}
-									disabled={isFetching}
-									class="shrink-0 rounded-md border border-maroon px-4 py-2 text-sm font-semibold text-maroon hover:bg-maroon-subtle active:bg-maroon-subtle disabled:cursor-not-allowed disabled:opacity-50"
+									onclick={addInstructor}
+									disabled={!newInstructor.trim()}
+									class="shrink-0 rounded-md bg-maroon px-3 py-2 text-sm font-semibold text-surface hover:bg-maroon-hover disabled:opacity-50"
 								>
-									{isFetching ? fetchProgress || 'Fetching...' : 'Fetch'}
+									Add
 								</button>
 							</div>
-						{#if fetchError}
-							<div
-								role="alert"
-								class="mt-2 rounded-md border border-danger-border bg-danger-bg p-3 text-sm text-danger"
-							>
-								<p>{fetchError}</p>
-							</div>
-						{/if}
-						{#if fetchSuccess}
-							<div
-								role="alert"
-								class="mt-2 rounded-md border border-success-border bg-success-bg p-3 text-sm text-success"
-							>
-								<p>{fetchSuccess}</p>
-							</div>
-						{/if}
-						</div>
-					</div>
-				</section>
-
-				<!-- Preferences section -->
-				<section class="rounded-md border border-border bg-surface p-4 space-y-3">
-					<h2 class="mb-0 text-sm font-semibold tracking-wide text-ink-muted uppercase">
-						Preferences
-					</h2>
-					<div>
-		<label for="earliest-start" class="mb-1 block text-sm font-medium text-ink">Avoid classes before</label
-		>
-		<select
-			id="earliest-start"
-			bind:value={earliestStartMin}
-			onchange={saveEarliestStartMin}
-			class="w-full rounded-sm border border-border-hover px-3 py-2 text-sm transition outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
-		>
-							<option value={undefined}>None</option>
-							<option value={420}>7:00 AM</option>
-							<option value={480}>8:00 AM</option>
-							<option value={540}>9:00 AM</option>
-							<option value={600}>10:00 AM</option>
-						</select>
-						<p class="mt-1 text-xs text-ink-muted">
-							Early classes get a score penalty. Only affects new schedule generation.
-						</p>
-					</div>
-
-					<div>
-		<label for="min-gap" class="mb-1 block text-sm font-medium text-ink"
-			>Minimum gap between classes</label
-		>
-		<input
-			id="min-gap"
-			type="number"
-			min="0"
-			max="120"
-			step="5"
-			placeholder="Minutes"
-			bind:value={minGapMinutes}
-			onchange={saveMinGapMinutes}
-			class="w-full rounded-sm border border-border-hover px-3 py-2 text-sm transition outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
-		/>
-						<p class="mt-1 text-xs text-ink-muted">Minutes between classes on the same day</p>
-					</div>
-
-					<div>
-						<label class="mb-1 block text-sm font-medium text-ink">Prefer no classes on</label
-						>
-						<div class="flex gap-1">
-							{#each ['M', 'Tu', 'W', 'Th', 'F', 'S'] as day, i}
-								<button
-									onclick={() => toggleDayOff(i)}
-									class="rounded-full px-3 py-1.5 text-xs font-medium transition {daysOff.includes(i)
-										? 'bg-maroon text-surface'
-										: 'border border-border-hover bg-surface text-ink-muted hover:bg-paper'}"
-								>
-									{day}
-								</button>
-							{/each}
-						</div>
-						<p class="mt-1 text-xs text-ink-muted">
-							Schedules with classes on selected days get a score penalty
-						</p>
-					</div>
-
-					<div>
-		<label for="exclude-instructor" class="mb-1 block text-sm font-medium text-ink">Exclude instructors</label>
-		<div class="flex gap-2">
-			<input
-				id="exclude-instructor"
-				type="text"
-				placeholder="Instructor name"
-				bind:value={newInstructor}
-				onkeydown={(e) => {
-					if (e.key === 'Enter') addInstructor();
-				}}
-				class="min-w-0 flex-1 rounded-sm border border-border-hover px-3 py-2 text-sm transition outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
-			/>
-							<button
-								onclick={addInstructor}
-								disabled={!newInstructor.trim()}
-								class="shrink-0 rounded-md bg-maroon px-3 py-2 text-sm font-semibold text-surface hover:bg-maroon-hover disabled:opacity-50"
-							>
-								Add
-							</button>
-						</div>
-						{#if excludedInstructors.length > 0}
-							<div class="mt-2 flex flex-wrap gap-1.5">
-								{#each excludedInstructors as instructor}
-									<span
-										class="inline-flex items-center gap-1 rounded-full bg-danger-bg px-2.5 py-1 text-xs font-medium text-danger"
-									>
-										{instructor}
-										<button
-											onclick={() => removeInstructor(instructor)}
-											class="inline-flex h-7 w-7 items-center justify-center rounded-full p-1 text-danger hover:bg-danger-bg hover:text-danger"
-											aria-label="Remove {instructor}"
+							{#if excludedInstructors.length > 0}
+								<div class="mt-2 flex flex-wrap gap-1.5">
+									{#each excludedInstructors as instructor}
+										<span
+											class="inline-flex items-center gap-1 rounded-full bg-danger-bg px-2.5 py-1 text-xs font-medium text-danger"
 										>
-											<svg
-												class="h-3 w-3"
-												fill="none"
-												stroke="currentColor"
-												stroke-width="2"
-												viewBox="0 0 24 24"
+											{instructor}
+											<button
+												onclick={() => removeInstructor(instructor)}
+												class="inline-flex h-7 w-7 items-center justify-center rounded-full p-1 text-danger hover:bg-danger-bg hover:text-danger"
+												aria-label="Remove {instructor}"
 											>
-												<path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													d="M6 18 18 6M6 6l12 12"
-												/>
-											</svg>
-										</button>
-									</span>
-								{/each}
-							</div>
-						{/if}
-						<p class="mt-1 text-xs text-ink-muted">
-							Sections taught by excluded instructors will be skipped
-						</p>
-					</div>
-				</section>
+												<svg
+													class="h-3 w-3"
+													fill="none"
+													stroke="currentColor"
+													stroke-width="2"
+													viewBox="0 0 24 24"
+												>
+													<path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														d="M6 18 18 6M6 6l12 12"
+													/>
+												</svg>
+											</button>
+										</span>
+									{/each}
+								</div>
+							{/if}
+							<p class="mt-1 text-xs text-ink-muted">
+								Sections taught by excluded instructors will be skipped
+							</p>
+						</div>
+					</section>
 				</div>
 
 				{#if lockedCrns.length > 0}
@@ -1352,25 +1391,42 @@
 						<ul class="space-y-1">
 							{#each lockedCrns as crn}
 								{@const info = findCourseForSection(crn)}
-								<li class="flex items-center justify-between rounded-sm border border-maroon-subtle bg-surface px-2 py-1 text-xs">
+								<li
+									class="flex items-center justify-between rounded-sm border border-maroon-subtle bg-surface px-2 py-1 text-xs"
+								>
 									{#if info}
 										<div class="min-w-0 flex-1">
-											<p class="truncate font-medium text-ink font-mono">{info.section.code}</p>
-											<p class="truncate text-ink-muted">{info.course.name} • CRN <span class="font-mono">{crn}</span></p>
+											<p class="truncate font-mono font-medium text-ink">{info.section.code}</p>
+											<p class="truncate text-ink-muted">
+												{info.course.name} • CRN <span class="font-mono">{crn}</span>
+											</p>
 										</div>
 									{:else}
 										<div class="min-w-0 flex-1">
-											<p class="truncate text-ink-muted">CRN <span class="font-mono">{crn}</span> (not in any course)</p>
+											<p class="truncate text-ink-muted">
+												CRN <span class="font-mono">{crn}</span> (not in any course)
+											</p>
 										</div>
 									{/if}
 									<button
 										onclick={() => toggleLock(crn)}
-										class="ml-2 shrink-0 rounded-sm p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-ink-muted hover:bg-danger-bg hover:text-danger"
+										class="ml-2 flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-sm p-2.5 text-ink-muted hover:bg-danger-bg hover:text-danger"
 										title="Unlock"
 									>
-			<svg class="h-3 w-3" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-			</svg>
+										<svg
+											class="h-3 w-3"
+											aria-hidden="true"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="2"
+											viewBox="0 0 24 24"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												d="M6 18 18 6M6 6l12 12"
+											/>
+										</svg>
 									</button>
 								</li>
 							{/each}
@@ -1382,7 +1438,7 @@
 				<button
 					onclick={handleGenerate}
 					disabled={!canGenerate}
-					class="flex w-full items-center justify-center gap-2 rounded-lg bg-maroon px-4 py-3 text-sm font-semibold text-surface hover:bg-maroon-hover focus:outline-none focus:ring-2 focus:ring-maroon focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+					class="flex w-full items-center justify-center gap-2 rounded-lg bg-maroon px-4 py-3 text-sm font-semibold text-surface hover:bg-maroon-hover focus:ring-2 focus:ring-maroon focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 				>
 					{#if isGenerating}
 						<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -1410,7 +1466,10 @@
 			<!-- Results panel -->
 			<section class="min-w-0 space-y-6">
 				{#if lockedConflict && schedules.length === 0}
-					<div role="alert" class="rounded-md border border-danger-border bg-danger-bg p-4 text-sm text-danger">
+					<div
+						role="alert"
+						class="rounded-md border border-danger-border bg-danger-bg p-4 text-sm text-danger"
+					>
 						<p class="font-medium">Locked sections conflict</p>
 						<p class="mt-1">
 							Two or more locked sections have overlapping schedules or violate the minimum gap.
@@ -1485,7 +1544,9 @@
 					</div>
 
 					{#if schedules.length > 0 && minGapMinutes && minGapMinutes > 0 && filteredSchedules.length === 0}
-						<div class="rounded-md border border-excluded-border bg-excluded-bg p-3 text-sm text-excluded">
+						<div
+							class="rounded-md border border-excluded-border bg-excluded-bg p-3 text-sm text-excluded"
+						>
 							No schedules match your filter. Try adjusting the filter or reducing the minimum gap.
 						</div>
 					{:else if filteredSchedules.length === 0}
@@ -1506,26 +1567,26 @@
 								class="flex items-center justify-between border-b border-border bg-paper px-5 py-3"
 							>
 								<div class="flex items-center gap-3">
-									<label class="flex items-center py-1 cursor-pointer">
-									<input
-										type="checkbox"
-										bind:group={selectedForCompare}
-										value={idx}
-										class="size-5 rounded-sm border-border-hover text-maroon"
-									/>
+									<label class="flex cursor-pointer items-center py-1">
+										<input
+											type="checkbox"
+											bind:group={selectedForCompare}
+											value={idx}
+											class="size-5 rounded-sm border-border-hover text-maroon"
+										/>
 									</label>
 									<span class="text-sm font-semibold text-ink-muted">#{idx + 1}</span>
 									<div class="flex items-center gap-2">
-							<span class="text-sm font-medium text-ink">Probability</span>
-								<div class="h-2 w-24 overflow-hidden rounded-full bg-border">
-										<div
-											class="h-full rounded-full bg-ink"
-											style="width: {Math.min(100, Math.max(0, schedule.probability * 100))}%"
-										></div>
-									</div>
-									<span class="text-sm font-semibold text-ink"
-										>{(schedule.probability * 100).toFixed(1)}%</span
-									>
+										<span class="text-sm font-medium text-ink">Probability</span>
+										<div class="h-2 w-24 overflow-hidden rounded-full bg-border">
+											<div
+												class="h-full rounded-full bg-ink"
+												style="width: {Math.min(100, Math.max(0, schedule.probability * 100))}%"
+											></div>
+										</div>
+										<span class="text-sm font-semibold text-ink"
+											>{(schedule.probability * 100).toFixed(1)}%</span
+										>
 									</div>
 								</div>
 								<button
@@ -1545,43 +1606,55 @@
 									<h3 class="mb-3 text-xs font-semibold tracking-wide text-ink-muted uppercase">
 										Sections
 									</h3>
-									<div class="grid gap-3 grid-cols-2">
+									<div class="grid grid-cols-2 gap-3">
 										{#each schedule.sections as section}
 											<div
-									class="rounded-md border border-border p-3 bg-surface {lockedCrns.includes(
-										section.crn
-									)
-										? 'border-l-[3px] border-maroon'
-										: ''}"
+												class="rounded-md border border-border bg-surface p-3 {lockedCrns.includes(
+													section.crn
+												)
+													? 'border-l-[3px] border-maroon'
+													: ''}"
 											>
 												<div class="flex items-start justify-between">
 													<div>
-														<p class="text-sm font-semibold text-ink font-mono">{section.code}</p>
-														<p class="text-xs text-ink-muted">CRN <span class="font-mono">{section.crn}</span></p>
+														<p class="font-mono text-sm font-semibold text-ink">{section.code}</p>
+														<p class="text-xs text-ink-muted">
+															CRN <span class="font-mono">{section.crn}</span>
+														</p>
 													</div>
 													<div class="flex items-center gap-2">
 														<button
 															onclick={() => toggleLock(section.crn)}
-															class="rounded-sm p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-ink-muted hover:bg-border hover:text-ink-muted"
+															class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm p-2.5 text-ink-muted hover:bg-border hover:text-ink-muted"
 															title={lockedCrns.includes(section.crn)
 																? 'Unlock section'
 																: 'Lock section'}
 														>
 															{#if lockedCrns.includes(section.crn)}
-					<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-																<path
-																	d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"
-																/>
-															</svg>
+																<svg
+																	class="h-4 w-4"
+																	fill="currentColor"
+																	viewBox="0 0 24 24"
+																	aria-hidden="true"
+																>
+																	<path
+																		d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"
+																	/>
+																</svg>
 															{:else}
-					<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-																<path
-																	d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"
-																/>
-															</svg>
+																<svg
+																	class="h-4 w-4"
+																	fill="currentColor"
+																	viewBox="0 0 24 24"
+																	aria-hidden="true"
+																>
+																	<path
+																		d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"
+																	/>
+																</svg>
 															{/if}
 														</button>
-														<span class="text-sm font-semibold text-ink font-mono"
+														<span class="font-mono text-sm font-semibold text-ink"
 															>{sectionScore(section).toFixed(2)}</span
 														>
 														<button
@@ -1610,7 +1683,9 @@
 													</p>
 													<p class="flex gap-2">
 														<span
-															class="font-mono {section.slotsLeft > 0 ? 'text-success' : 'text-danger'}"
+															class="font-mono {section.slotsLeft > 0
+																? 'text-success'
+																: 'text-danger'}"
 														>
 															{section.slotsLeft} slot{section.slotsLeft === 1 ? '' : 's'} left
 														</span>
@@ -1639,7 +1714,7 @@
 
 	{#if courses.length > 0}
 		<div
-			class="fixed bottom-0 left-0 right-0 z-30 border-t border-border bg-paper p-3 lg:hidden"
+			class="fixed right-0 bottom-0 left-0 z-30 border-t border-border bg-paper p-3 lg:hidden"
 			style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom))"
 		>
 			<button
@@ -1649,8 +1724,13 @@
 			>
 				{#if isGenerating}
 					<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-						<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
+						></circle>
+						<path
+							class="opacity-75"
+							fill="currentColor"
+							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+						></path>
 					</svg>
 					<span>Generating...</span>
 				{:else if schedules.length > 0}
@@ -1690,14 +1770,24 @@
 			class="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-4"
 			onclick={() => (showInstructions = false)}
 			onkeydown={(e) => {
-				if (e.key === 'Escape') { showInstructions = false; return; }
+				if (e.key === 'Escape') {
+					showInstructions = false;
+					return;
+				}
 				if (e.key === 'Tab') {
 					const modal = e.currentTarget as HTMLElement;
-					const focusable = modal.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+					const focusable = modal.querySelectorAll<HTMLElement>(
+						'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+					);
 					const first = focusable[0];
 					const last = focusable[focusable.length - 1];
-					if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
-					else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+					if (e.shiftKey && document.activeElement === first) {
+						e.preventDefault();
+						last?.focus();
+					} else if (!e.shiftKey && document.activeElement === last) {
+						e.preventDefault();
+						first?.focus();
+					}
 				}
 			}}
 			tabindex="-1"
@@ -1708,11 +1798,13 @@
 				<h3 class="mb-2 text-lg font-semibold text-ink">How to use</h3>
 				<ol class="list-decimal space-y-2 pl-5 text-sm text-ink-muted">
 					<li>
-						<strong>Add courses:</strong> Enter a course name and optionally paste a CRS schedule URL, then click <strong>Fetch</strong>. For batch import, separate multiple course names with commas (e.g. <em>Eng 13, Math 21</em>).
+						<strong>Add courses:</strong> Enter a course name and optionally paste a CRS schedule
+						URL, then click <strong>Fetch</strong>. For batch import, separate multiple course names
+						with commas (e.g. <em>Eng 13, Math 21</em>).
 					</li>
 					<li>
-						<strong>Set priorities:</strong> Use the P1 (highest) – P5 (lowest) dropdown on each course to rank importance.
-						Higher-priority courses get weighted more heavily when generating schedules.
+						<strong>Set priorities:</strong> Use the P1 (highest) – P5 (lowest) dropdown on each course
+						to rank importance. Higher-priority courses get weighted more heavily when generating schedules.
 					</li>
 					<li>
 						<strong>Customize:</strong> Set <em>Avoid classes before</em> to penalize early classes,
@@ -1733,7 +1825,7 @@
 				<button
 					onclick={() => (showInstructions = false)}
 					autofocus
-					class="mt-4 w-full rounded-md bg-maroon px-4 py-2.5 text-sm font-semibold text-surface hover:bg-maroon-hover focus:outline-none focus:ring-2 focus:ring-maroon focus:ring-offset-2"
+					class="mt-4 w-full rounded-md bg-maroon px-4 py-2.5 text-sm font-semibold text-surface hover:bg-maroon-hover focus:ring-2 focus:ring-maroon focus:ring-offset-2 focus:outline-none"
 				>
 					Got it
 				</button>

@@ -61,6 +61,7 @@ pnpm build    # production build
 **Creative North Star:** "The Timetable" — grid-forward, data-dense, utilitarian. The schedule IS the interface. See `DESIGN.md` for full visual spec, `PRODUCT.md` for strategic context.
 
 **Key visual rules (extracted from DESIGN.md):**
+
 - **Ten Percent Rule**: UPD Maroon (`#7B1113`) occupies ≤10% of any screen. Primary buttons, selected chips, focus rings only.
 - **No-Cream Rule**: Page bg is cool off-white (`#F5F6F7`). Never warm-tinted neutrals (40–100° hue).
 - **Mono Precision Rule**: CRNs, times, course codes → JetBrains Mono. Never proportional.

@@ -159,10 +159,7 @@ export function generateSchedules(courses: Course[], opts?: ScheduleOptions): Sc
 
 		if (courseIdx === sorted.length) {
 			// Raw probability: product of section scores WITHOUT priority boost
-			let probability = selected.reduce(
-				(prod, s) => prod * scoreSection(s, opts, 0),
-				1
-			);
+			let probability = selected.reduce((prod, s) => prod * scoreSection(s, opts, 0), 1);
 
 			// Day-off penalty
 			let dayoffPenalty = 1;

@@ -1,282 +1,282 @@
 {
-  "schemaVersion": 2,
-  "generatedAt": "2026-07-26T00:00:00.000Z",
-  "title": "Design System: CRS Scheduler",
-  "extensions": {
-    "colorMeta": {
-      "maroon": {
-        "role": "primary",
-        "displayName": "UPD Maroon",
-        "canonical": "oklch(36% 0.11 18)",
-        "tonalRamp": [
-          "oklch(15% 0.06 18)",
-          "oklch(22% 0.08 18)",
-          "oklch(28% 0.10 18)",
-          "oklch(36% 0.11 18)",
-          "oklch(50% 0.10 18)",
-          "oklch(65% 0.07 18)",
-          "oklch(80% 0.04 18)",
-          "oklch(94% 0.015 18)"
-        ]
-      },
-      "maroon-hover": {
-        "role": "primary",
-        "displayName": "Maroon Hover",
-        "canonical": "oklch(32% 0.10 18)",
-        "tonalRamp": []
-      },
-      "maroon-subtle": {
-        "role": "primary-subtle",
-        "displayName": "Maroon Subtle",
-        "canonical": "oklch(94% 0.015 18)",
-        "tonalRamp": []
-      },
-      "paper": {
-        "role": "neutral",
-        "displayName": "Cool Paper",
-        "canonical": "oklch(97% 0.002 240)",
-        "tonalRamp": [
-          "oklch(78% 0.002 240)",
-          "oklch(82% 0.002 240)",
-          "oklch(86% 0.002 240)",
-          "oklch(90% 0.002 240)",
-          "oklch(93% 0.002 240)",
-          "oklch(95% 0.002 240)",
-          "oklch(97% 0.002 240)",
-          "oklch(99% 0.001 240)"
-        ]
-      },
-      "surface": {
-        "role": "neutral",
-        "displayName": "White Surface",
-        "canonical": "oklch(100% 0 0)",
-        "tonalRamp": []
-      },
-      "ink": {
-        "role": "neutral",
-        "displayName": "Ink",
-        "canonical": "oklch(18% 0.003 20)",
-        "tonalRamp": [
-          "oklch(10% 0.001 20)",
-          "oklch(14% 0.002 20)",
-          "oklch(18% 0.003 20)",
-          "oklch(28% 0.003 20)",
-          "oklch(38% 0.003 20)",
-          "oklch(45% 0.003 20)",
-          "oklch(55% 0.002 20)",
-          "oklch(68% 0.001 20)"
-        ]
-      },
-      "ink-muted": {
-        "role": "neutral",
-        "displayName": "Ink Muted",
-        "canonical": "oklch(45% 0.003 20)",
-        "tonalRamp": []
-      },
-      "border": {
-        "role": "neutral",
-        "displayName": "Light Border",
-        "canonical": "oklch(88% 0.002 240)",
-        "tonalRamp": []
-      },
-      "border-hover": {
-        "role": "neutral",
-        "displayName": "Border Hover",
-        "canonical": "oklch(78% 0.002 240)",
-        "tonalRamp": []
-      }
-    },
-    "typographyMeta": {
-      "display": {
-        "displayName": "Display",
-        "purpose": "Course names, schedule section headers — scannable at 20px in narrow columns."
-      },
-      "body": {
-        "displayName": "Body",
-        "purpose": "All UI text: section details, instructor names, metadata. 14px minimum for readability."
-      },
-      "label": {
-        "displayName": "Label",
-        "purpose": "Structural section headers in cards, column labels, button text. Uppercase, tracked, semibold."
-      },
-      "mono": {
-        "displayName": "Mono",
-        "purpose": "CRNs, schedule times, course codes, slot counts. Precision data that benefits from character alignment."
-      }
-    },
-    "shadows": [
-      {
-        "name": "hover-card",
-        "value": "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)",
-        "purpose": "Subtle lift on hovered cards and interactive rows. Signals interactivity without heaviness."
-      },
-      {
-        "name": "focus-ring",
-        "value": "0 0 0 2px #7B1113",
-        "purpose": "Maroon focus ring on inputs and buttons. 2px, offset 0. Replaces browser default blue."
-      }
-    ],
-    "motion": [
-      {
-        "name": "ease-standard",
-        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
-        "purpose": "Default easing for state transitions: hover, focus, expand."
-      },
-      {
-        "name": "duration-fast",
-        "value": "150ms",
-        "purpose": "Micro-interactions: hover states, focus rings, chevron rotation."
-      },
-      {
-        "name": "duration-normal",
-        "value": "250ms",
-        "purpose": "Card expansion, section collapse, schedule generation spinner."
-      }
-    ],
-    "breakpoints": [
-      { "name": "sm", "value": "640px" },
-      { "name": "md", "value": "768px" },
-      { "name": "lg", "value": "1024px" },
-      { "name": "xl", "value": "1280px" }
-    ]
-  },
-  "components": [
-    {
-      "name": "Primary Button",
-      "kind": "button",
-      "refersTo": "button-primary",
-      "description": "Main action button. Maroon background, white label text. Used for Generate, Fetch, and other primary actions.",
-      "html": "<button class=\"ds-btn-primary\">GENERATE</button>",
-      "css": ".ds-btn-primary { background-color: #7B1113; color: #FFFFFF; padding: 8px 20px; border-radius: 12px; font-family: Inter, system-ui, sans-serif; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; border: none; cursor: pointer; height: 36px; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-primary:hover { background-color: #680E11; box-shadow: 0 1px 3px rgba(0,0,0,0.08); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 2px #7B1113; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
-    },
-    {
-      "name": "Ghost Button",
-      "kind": "button",
-      "refersTo": "button-ghost",
-      "description": "Secondary action button. Transparent background, muted text. Hover reveals maroon tint. Used for Include, Exclude, Remove.",
-      "html": "<button class=\"ds-btn-ghost\">INCLUDE</button>",
-      "css": ".ds-btn-ghost { background: transparent; color: #5C5858; padding: 6px 12px; border-radius: 8px; font-family: Inter, system-ui, sans-serif; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; border: none; cursor: pointer; height: 32px; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-ghost:hover { background-color: #F1E5E5; color: #7B1113; } .ds-btn-ghost:focus-visible { outline: none; box-shadow: 0 0 0 2px #7B1113; }"
-    },
-    {
-      "name": "Text Input",
-      "kind": "input",
-      "refersTo": "input",
-      "description": "Standard text field. White surface, light border, maroon focus ring.",
-      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Course name (e.g. Math 21)\" />",
-      "css": ".ds-input { background-color: #FFFFFF; color: #1C1A1A; padding: 8px 12px; border-radius: 6px; border: 1px solid #D9DBDD; font-family: Inter, system-ui, sans-serif; font-size: 0.875rem; height: 36px; width: 100%; box-sizing: border-box; transition: border-color 150ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-input::placeholder { color: #5C5858; } .ds-input:focus { outline: none; border-color: #7B1113; box-shadow: 0 0 0 2px #7B1113; }"
-    },
-    {
-      "name": "Card",
-      "kind": "card",
-      "refersTo": "card",
-      "description": "Content container. White surface, light border, subtle hover shadow. Used for schedule results and course cards.",
-      "html": "<div class=\"ds-card\"><h3 class=\"ds-card-title\">Course Name</h3><p class=\"ds-card-body\">Section details and metadata.</p></div>",
-      "css": ".ds-card { background-color: #FFFFFF; border-radius: 8px; border: 1px solid #D9DBDD; padding: 16px; transition: border-color 150ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-card:hover { border-color: #BFC1C3; box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06); } .ds-card-title { font-family: Inter, system-ui, sans-serif; font-size: 1.25rem; font-weight: 600; line-height: 1.3; color: #1C1A1A; margin: 0 0 4px 0; } .ds-card-body { font-family: Inter, system-ui, sans-serif; font-size: 0.875rem; line-height: 1.5; color: #5C5858; margin: 0; }"
-    },
-    {
-      "name": "Selected Card",
-      "kind": "card",
-      "refersTo": "card-selected",
-      "description": "Selected state of a card. Maroon left accent, subtle background tint.",
-      "html": "<div class=\"ds-card ds-card-selected\"><h3 class=\"ds-card-title\">Course Name</h3><p class=\"ds-card-body\">Section details and metadata.</p></div>",
-      "css": ".ds-card-selected { border-left: 3px solid #7B1113; background-color: #F1E5E5; }"
-    },
-    {
-      "name": "Chip",
-      "kind": "chip",
-      "refersTo": "chip",
-      "description": "Inline tag for priority badges, instructor names, day-off toggles.",
-      "html": "<span class=\"ds-chip\">P1</span>",
-      "css": ".ds-chip { background-color: #F1E5E5; color: #7B1113; padding: 2px 10px; border-radius: 9999px; font-family: Inter, system-ui, sans-serif; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; height: 24px; display: inline-flex; align-items: center; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-chip:hover { cursor: default; }"
-    },
-    {
-      "name": "Selected Chip",
-      "kind": "chip",
-      "refersTo": "chip-selected",
-      "description": "Active chip state. Solid maroon, white text. Used for active filters.",
-      "html": "<span class=\"ds-chip ds-chip-selected\">MON</span>",
-      "css": ".ds-chip-selected { background-color: #7B1113; color: #FFFFFF; } .ds-chip-selected:hover { cursor: pointer; }"
-    },
-    {
-      "name": "Sidebar Row",
-      "kind": "custom",
-      "refersTo": "sidebar-row",
-      "description": "Course row in the left sidebar. Hover reveals maroon tint. Active row gets left accent.",
-      "html": "<div class=\"ds-sidebar-row\"><span class=\"ds-sidebar-row-name\">Math 21</span><span class=\"ds-sidebar-row-meta\">3 sections</span></div>",
-      "css": ".ds-sidebar-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-sidebar-row:hover { background-color: #F1E5E5; } .ds-sidebar-row-name { font-family: Inter, system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; color: #1C1A1A; } .ds-sidebar-row-meta { font-family: Inter, system-ui, sans-serif; font-size: 0.75rem; color: #5C5858; }"
-    },
-    {
-      "name": "Schedule Grid Block",
-      "kind": "custom",
-      "refersTo": "schedule-block",
-      "description": "Meeting block in the TimelineGrid. Color-coded by course, mono typography for times.",
-      "html": "<div class=\"ds-schedule-block\"><span class=\"ds-schedule-time\">10:00-11:30</span><span class=\"ds-schedule-loc\">Math 21 · Room 101</span></div>",
-      "css": ".ds-schedule-block { background-color: #D4E6F1; border-radius: 6px; padding: 4px 8px; font-size: 0.75rem; overflow: hidden; } .ds-schedule-time { font-family: 'JetBrains Mono', monospace; font-size: 0.6875rem; font-weight: 500; color: #1C1A1A; display: block; } .ds-schedule-loc { font-family: Inter, system-ui, sans-serif; font-size: 0.6875rem; color: #5C5858; display: block; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }"
-    },
-    {
-      "name": "Column Header",
-      "kind": "custom",
-      "refersTo": "column-header",
-      "description": "Section header for each of the three layout columns. Uppercase label with bottom border.",
-      "html": "<h2 class=\"ds-column-header\">COURSES</h2>",
-      "css": ".ds-column-header { font-family: Inter, system-ui, sans-serif; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; color: #5C5858; margin: 0; padding-bottom: 8px; border-bottom: 1px solid #D9DBDD; }"
-    }
-  ],
-  "narrative": {
-    "northStar": "The Timetable",
-    "overview": "Grid-forward, data-dense but scannable. The schedule IS the interface — minimal chrome, maximum information. Like a train station departure board or an airline timetable: utilitarian beauty derived from clarity, not decoration. The tool gets out of the way so students can scan, compare, and decide in seconds.\n\nThis is a product surface through and through. Design serves the workflow: fetch courses, set constraints, generate schedules, compare results. Every pixel of ornamentation must earn its place by making schedules easier to parse. The personality is clean, fast, trustworthy — system-native in feel, predictable in behavior. No learning curve.\n\nThe system explicitly rejects SaaS marketing clichés: no gradient text, no glassmorphism, no hero sections, no side-stripe card borders, no eyebrow kickers above every section. It also rejects institutional clunk — no 2005-era university portal aesthetics, no government-table density, no beige. Apple Reminders/Calendar is the reference for platform-native familiarity: the tool should feel like it belongs, not like it was dropped in from a different universe.",
-    "keyCharacteristics": [
-      "Data-first hierarchy: schedule grids dominate; controls and chrome recede",
-      "Restrained color: one accent (UPD maroon), used at ≤10% of any screen",
-      "System-native type: Inter for UI, JetBrains Mono for precision data (CRNs, times, course codes)",
-      "Flat at rest, subtle shadow on hover — depth as state response, not decoration",
-      "Lightweight and breathable: generous padding, light borders, rounded corners. Cards feel like paper slips, not heavy containers."
-    ],
-    "rules": [
-      {
-        "name": "The Ten Percent Rule",
-        "body": "The maroon accent occupies ≤10% of any visible surface. Never a full-width maroon banner, never a maroon background section. Its power comes from restraint — a single primary button, a selected chip, a priority dot. If maroon is the dominant color on screen, you've used too much.",
-        "section": "colors"
-      },
-      {
-        "name": "The No-Cream Rule",
-        "body": "The page background is cool off-white (#F5F6F7), not warm. No bg-yellow-50, bg-warm-gray, bg-stone-50, bg-amber-50, or any tint in the 40–100° hue range. Warmth comes from the maroon accent and imagery, not from the body background.",
-        "section": "colors"
-      },
-      {
-        "name": "The Mono Precision Rule",
-        "body": "Any data that benefits from character-level alignment — CRNs, time ranges, course codes, numerical slot counts — must use JetBrains Mono. Never set CRNs in Inter. The mono voice is the signal of precision; mixing it with proportional text creates visual noise.",
-        "section": "typography"
-      },
-      {
-        "name": "The No-Kicker Rule",
-        "body": "Section headers use the Label style (uppercase, tracked, semibold) but never as a tiny eyebrow (text-[10px] tracking-[0.15em]) floating above body text. Labels are structural, not decorative. One per section, never stacked.",
-        "section": "typography"
-      },
-      {
-        "name": "The Flat-By-Default Rule",
-        "body": "Surfaces are flat at rest. Shadows appear only as a response to state (hover, focus, active). If a static card has a shadow, something is wrong — it should be a border or a background shift instead.",
-        "section": "elevation"
-      }
-    ],
-    "dos": [
-      "Do use maroon only for UI chrome — buttons, selected states, focus rings, priority indicators. Never for data content.",
-      "Do use JetBrains Mono for CRNs, course codes, schedule times, and slot counts. Character-aligned data demands monospace.",
-      "Do keep cards flat at rest. Shadow only on hover. Static shadows are heavy.",
-      "Do use the 3-column grid for all primary content. The layout IS the navigation — don't add a nav bar.",
-      "Do use tonal layering (Paper → Surface) to separate content areas. The background shift does the work borders used to do.",
-      "Do keep body text at 14px minimum. Schedule data is dense; small text punishes scanning.",
-      "Do use the Label style (uppercase, tracked, semibold, 12px) for structural section headers. One per section, never stacked."
-    ],
-    "donts": [
-      "Don't use SaaS marketing clichés — no gradient text, no glassmorphism, no hero sections, no eyebrow kickers above every section, no numbered section markers.",
-      "Don't use side-stripe borders (border-left > 1px) as decoration. One exception: 3px maroon left accent on selected cards and active rows.",
-      "Don't use warm-tinted backgrounds (bg-yellow-50, bg-stone-50, bg-amber-50, or any hue in the 40–100° range).",
-      "Don't use maroon as a background wash or full-width banner. The Ten Percent Rule: maroon occupies ≤10% of any visible surface.",
-      "Don't use dark backgrounds or dark mode. Light mode only for ambient-light readability.",
-      "Don't set body text below 14px. Schedule data is inherently dense.",
-      "Don't animate layout properties. Use transform and opacity.",
-      "Don't gate content behind reveal animations. All content must be visible in the default state."
-    ]
-  }
+	"schemaVersion": 2,
+	"generatedAt": "2026-07-26T00:00:00.000Z",
+	"title": "Design System: CRS Scheduler",
+	"extensions": {
+		"colorMeta": {
+			"maroon": {
+				"role": "primary",
+				"displayName": "UPD Maroon",
+				"canonical": "oklch(36% 0.11 18)",
+				"tonalRamp": [
+					"oklch(15% 0.06 18)",
+					"oklch(22% 0.08 18)",
+					"oklch(28% 0.10 18)",
+					"oklch(36% 0.11 18)",
+					"oklch(50% 0.10 18)",
+					"oklch(65% 0.07 18)",
+					"oklch(80% 0.04 18)",
+					"oklch(94% 0.015 18)"
+				]
+			},
+			"maroon-hover": {
+				"role": "primary",
+				"displayName": "Maroon Hover",
+				"canonical": "oklch(32% 0.10 18)",
+				"tonalRamp": []
+			},
+			"maroon-subtle": {
+				"role": "primary-subtle",
+				"displayName": "Maroon Subtle",
+				"canonical": "oklch(94% 0.015 18)",
+				"tonalRamp": []
+			},
+			"paper": {
+				"role": "neutral",
+				"displayName": "Cool Paper",
+				"canonical": "oklch(97% 0.002 240)",
+				"tonalRamp": [
+					"oklch(78% 0.002 240)",
+					"oklch(82% 0.002 240)",
+					"oklch(86% 0.002 240)",
+					"oklch(90% 0.002 240)",
+					"oklch(93% 0.002 240)",
+					"oklch(95% 0.002 240)",
+					"oklch(97% 0.002 240)",
+					"oklch(99% 0.001 240)"
+				]
+			},
+			"surface": {
+				"role": "neutral",
+				"displayName": "White Surface",
+				"canonical": "oklch(100% 0 0)",
+				"tonalRamp": []
+			},
+			"ink": {
+				"role": "neutral",
+				"displayName": "Ink",
+				"canonical": "oklch(18% 0.003 20)",
+				"tonalRamp": [
+					"oklch(10% 0.001 20)",
+					"oklch(14% 0.002 20)",
+					"oklch(18% 0.003 20)",
+					"oklch(28% 0.003 20)",
+					"oklch(38% 0.003 20)",
+					"oklch(45% 0.003 20)",
+					"oklch(55% 0.002 20)",
+					"oklch(68% 0.001 20)"
+				]
+			},
+			"ink-muted": {
+				"role": "neutral",
+				"displayName": "Ink Muted",
+				"canonical": "oklch(45% 0.003 20)",
+				"tonalRamp": []
+			},
+			"border": {
+				"role": "neutral",
+				"displayName": "Light Border",
+				"canonical": "oklch(88% 0.002 240)",
+				"tonalRamp": []
+			},
+			"border-hover": {
+				"role": "neutral",
+				"displayName": "Border Hover",
+				"canonical": "oklch(78% 0.002 240)",
+				"tonalRamp": []
+			}
+		},
+		"typographyMeta": {
+			"display": {
+				"displayName": "Display",
+				"purpose": "Course names, schedule section headers — scannable at 20px in narrow columns."
+			},
+			"body": {
+				"displayName": "Body",
+				"purpose": "All UI text: section details, instructor names, metadata. 14px minimum for readability."
+			},
+			"label": {
+				"displayName": "Label",
+				"purpose": "Structural section headers in cards, column labels, button text. Uppercase, tracked, semibold."
+			},
+			"mono": {
+				"displayName": "Mono",
+				"purpose": "CRNs, schedule times, course codes, slot counts. Precision data that benefits from character alignment."
+			}
+		},
+		"shadows": [
+			{
+				"name": "hover-card",
+				"value": "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)",
+				"purpose": "Subtle lift on hovered cards and interactive rows. Signals interactivity without heaviness."
+			},
+			{
+				"name": "focus-ring",
+				"value": "0 0 0 2px #7B1113",
+				"purpose": "Maroon focus ring on inputs and buttons. 2px, offset 0. Replaces browser default blue."
+			}
+		],
+		"motion": [
+			{
+				"name": "ease-standard",
+				"value": "cubic-bezier(0.4, 0, 0.2, 1)",
+				"purpose": "Default easing for state transitions: hover, focus, expand."
+			},
+			{
+				"name": "duration-fast",
+				"value": "150ms",
+				"purpose": "Micro-interactions: hover states, focus rings, chevron rotation."
+			},
+			{
+				"name": "duration-normal",
+				"value": "250ms",
+				"purpose": "Card expansion, section collapse, schedule generation spinner."
+			}
+		],
+		"breakpoints": [
+			{ "name": "sm", "value": "640px" },
+			{ "name": "md", "value": "768px" },
+			{ "name": "lg", "value": "1024px" },
+			{ "name": "xl", "value": "1280px" }
+		]
+	},
+	"components": [
+		{
+			"name": "Primary Button",
+			"kind": "button",
+			"refersTo": "button-primary",
+			"description": "Main action button. Maroon background, white label text. Used for Generate, Fetch, and other primary actions.",
+			"html": "<button class=\"ds-btn-primary\">GENERATE</button>",
+			"css": ".ds-btn-primary { background-color: #7B1113; color: #FFFFFF; padding: 8px 20px; border-radius: 12px; font-family: Inter, system-ui, sans-serif; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; border: none; cursor: pointer; height: 36px; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-primary:hover { background-color: #680E11; box-shadow: 0 1px 3px rgba(0,0,0,0.08); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 2px #7B1113; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
+		},
+		{
+			"name": "Ghost Button",
+			"kind": "button",
+			"refersTo": "button-ghost",
+			"description": "Secondary action button. Transparent background, muted text. Hover reveals maroon tint. Used for Include, Exclude, Remove.",
+			"html": "<button class=\"ds-btn-ghost\">INCLUDE</button>",
+			"css": ".ds-btn-ghost { background: transparent; color: #5C5858; padding: 6px 12px; border-radius: 8px; font-family: Inter, system-ui, sans-serif; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; border: none; cursor: pointer; height: 32px; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-ghost:hover { background-color: #F1E5E5; color: #7B1113; } .ds-btn-ghost:focus-visible { outline: none; box-shadow: 0 0 0 2px #7B1113; }"
+		},
+		{
+			"name": "Text Input",
+			"kind": "input",
+			"refersTo": "input",
+			"description": "Standard text field. White surface, light border, maroon focus ring.",
+			"html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Course name (e.g. Math 21)\" />",
+			"css": ".ds-input { background-color: #FFFFFF; color: #1C1A1A; padding: 8px 12px; border-radius: 6px; border: 1px solid #D9DBDD; font-family: Inter, system-ui, sans-serif; font-size: 0.875rem; height: 36px; width: 100%; box-sizing: border-box; transition: border-color 150ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-input::placeholder { color: #5C5858; } .ds-input:focus { outline: none; border-color: #7B1113; box-shadow: 0 0 0 2px #7B1113; }"
+		},
+		{
+			"name": "Card",
+			"kind": "card",
+			"refersTo": "card",
+			"description": "Content container. White surface, light border, subtle hover shadow. Used for schedule results and course cards.",
+			"html": "<div class=\"ds-card\"><h3 class=\"ds-card-title\">Course Name</h3><p class=\"ds-card-body\">Section details and metadata.</p></div>",
+			"css": ".ds-card { background-color: #FFFFFF; border-radius: 8px; border: 1px solid #D9DBDD; padding: 16px; transition: border-color 150ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-card:hover { border-color: #BFC1C3; box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06); } .ds-card-title { font-family: Inter, system-ui, sans-serif; font-size: 1.25rem; font-weight: 600; line-height: 1.3; color: #1C1A1A; margin: 0 0 4px 0; } .ds-card-body { font-family: Inter, system-ui, sans-serif; font-size: 0.875rem; line-height: 1.5; color: #5C5858; margin: 0; }"
+		},
+		{
+			"name": "Selected Card",
+			"kind": "card",
+			"refersTo": "card-selected",
+			"description": "Selected state of a card. Maroon left accent, subtle background tint.",
+			"html": "<div class=\"ds-card ds-card-selected\"><h3 class=\"ds-card-title\">Course Name</h3><p class=\"ds-card-body\">Section details and metadata.</p></div>",
+			"css": ".ds-card-selected { border-left: 3px solid #7B1113; background-color: #F1E5E5; }"
+		},
+		{
+			"name": "Chip",
+			"kind": "chip",
+			"refersTo": "chip",
+			"description": "Inline tag for priority badges, instructor names, day-off toggles.",
+			"html": "<span class=\"ds-chip\">P1</span>",
+			"css": ".ds-chip { background-color: #F1E5E5; color: #7B1113; padding: 2px 10px; border-radius: 9999px; font-family: Inter, system-ui, sans-serif; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; height: 24px; display: inline-flex; align-items: center; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-chip:hover { cursor: default; }"
+		},
+		{
+			"name": "Selected Chip",
+			"kind": "chip",
+			"refersTo": "chip-selected",
+			"description": "Active chip state. Solid maroon, white text. Used for active filters.",
+			"html": "<span class=\"ds-chip ds-chip-selected\">MON</span>",
+			"css": ".ds-chip-selected { background-color: #7B1113; color: #FFFFFF; } .ds-chip-selected:hover { cursor: pointer; }"
+		},
+		{
+			"name": "Sidebar Row",
+			"kind": "custom",
+			"refersTo": "sidebar-row",
+			"description": "Course row in the left sidebar. Hover reveals maroon tint. Active row gets left accent.",
+			"html": "<div class=\"ds-sidebar-row\"><span class=\"ds-sidebar-row-name\">Math 21</span><span class=\"ds-sidebar-row-meta\">3 sections</span></div>",
+			"css": ".ds-sidebar-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-sidebar-row:hover { background-color: #F1E5E5; } .ds-sidebar-row-name { font-family: Inter, system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; color: #1C1A1A; } .ds-sidebar-row-meta { font-family: Inter, system-ui, sans-serif; font-size: 0.75rem; color: #5C5858; }"
+		},
+		{
+			"name": "Schedule Grid Block",
+			"kind": "custom",
+			"refersTo": "schedule-block",
+			"description": "Meeting block in the TimelineGrid. Color-coded by course, mono typography for times.",
+			"html": "<div class=\"ds-schedule-block\"><span class=\"ds-schedule-time\">10:00-11:30</span><span class=\"ds-schedule-loc\">Math 21 · Room 101</span></div>",
+			"css": ".ds-schedule-block { background-color: #D4E6F1; border-radius: 6px; padding: 4px 8px; font-size: 0.75rem; overflow: hidden; } .ds-schedule-time { font-family: 'JetBrains Mono', monospace; font-size: 0.6875rem; font-weight: 500; color: #1C1A1A; display: block; } .ds-schedule-loc { font-family: Inter, system-ui, sans-serif; font-size: 0.6875rem; color: #5C5858; display: block; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }"
+		},
+		{
+			"name": "Column Header",
+			"kind": "custom",
+			"refersTo": "column-header",
+			"description": "Section header for each of the three layout columns. Uppercase label with bottom border.",
+			"html": "<h2 class=\"ds-column-header\">COURSES</h2>",
+			"css": ".ds-column-header { font-family: Inter, system-ui, sans-serif; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; color: #5C5858; margin: 0; padding-bottom: 8px; border-bottom: 1px solid #D9DBDD; }"
+		}
+	],
+	"narrative": {
+		"northStar": "The Timetable",
+		"overview": "Grid-forward, data-dense but scannable. The schedule IS the interface — minimal chrome, maximum information. Like a train station departure board or an airline timetable: utilitarian beauty derived from clarity, not decoration. The tool gets out of the way so students can scan, compare, and decide in seconds.\n\nThis is a product surface through and through. Design serves the workflow: fetch courses, set constraints, generate schedules, compare results. Every pixel of ornamentation must earn its place by making schedules easier to parse. The personality is clean, fast, trustworthy — system-native in feel, predictable in behavior. No learning curve.\n\nThe system explicitly rejects SaaS marketing clichés: no gradient text, no glassmorphism, no hero sections, no side-stripe card borders, no eyebrow kickers above every section. It also rejects institutional clunk — no 2005-era university portal aesthetics, no government-table density, no beige. Apple Reminders/Calendar is the reference for platform-native familiarity: the tool should feel like it belongs, not like it was dropped in from a different universe.",
+		"keyCharacteristics": [
+			"Data-first hierarchy: schedule grids dominate; controls and chrome recede",
+			"Restrained color: one accent (UPD maroon), used at ≤10% of any screen",
+			"System-native type: Inter for UI, JetBrains Mono for precision data (CRNs, times, course codes)",
+			"Flat at rest, subtle shadow on hover — depth as state response, not decoration",
+			"Lightweight and breathable: generous padding, light borders, rounded corners. Cards feel like paper slips, not heavy containers."
+		],
+		"rules": [
+			{
+				"name": "The Ten Percent Rule",
+				"body": "The maroon accent occupies ≤10% of any visible surface. Never a full-width maroon banner, never a maroon background section. Its power comes from restraint — a single primary button, a selected chip, a priority dot. If maroon is the dominant color on screen, you've used too much.",
+				"section": "colors"
+			},
+			{
+				"name": "The No-Cream Rule",
+				"body": "The page background is cool off-white (#F5F6F7), not warm. No bg-yellow-50, bg-warm-gray, bg-stone-50, bg-amber-50, or any tint in the 40–100° hue range. Warmth comes from the maroon accent and imagery, not from the body background.",
+				"section": "colors"
+			},
+			{
+				"name": "The Mono Precision Rule",
+				"body": "Any data that benefits from character-level alignment — CRNs, time ranges, course codes, numerical slot counts — must use JetBrains Mono. Never set CRNs in Inter. The mono voice is the signal of precision; mixing it with proportional text creates visual noise.",
+				"section": "typography"
+			},
+			{
+				"name": "The No-Kicker Rule",
+				"body": "Section headers use the Label style (uppercase, tracked, semibold) but never as a tiny eyebrow (text-[10px] tracking-[0.15em]) floating above body text. Labels are structural, not decorative. One per section, never stacked.",
+				"section": "typography"
+			},
+			{
+				"name": "The Flat-By-Default Rule",
+				"body": "Surfaces are flat at rest. Shadows appear only as a response to state (hover, focus, active). If a static card has a shadow, something is wrong — it should be a border or a background shift instead.",
+				"section": "elevation"
+			}
+		],
+		"dos": [
+			"Do use maroon only for UI chrome — buttons, selected states, focus rings, priority indicators. Never for data content.",
+			"Do use JetBrains Mono for CRNs, course codes, schedule times, and slot counts. Character-aligned data demands monospace.",
+			"Do keep cards flat at rest. Shadow only on hover. Static shadows are heavy.",
+			"Do use the 3-column grid for all primary content. The layout IS the navigation — don't add a nav bar.",
+			"Do use tonal layering (Paper → Surface) to separate content areas. The background shift does the work borders used to do.",
+			"Do keep body text at 14px minimum. Schedule data is dense; small text punishes scanning.",
+			"Do use the Label style (uppercase, tracked, semibold, 12px) for structural section headers. One per section, never stacked."
+		],
+		"donts": [
+			"Don't use SaaS marketing clichés — no gradient text, no glassmorphism, no hero sections, no eyebrow kickers above every section, no numbered section markers.",
+			"Don't use side-stripe borders (border-left > 1px) as decoration. One exception: 3px maroon left accent on selected cards and active rows.",
+			"Don't use warm-tinted backgrounds (bg-yellow-50, bg-stone-50, bg-amber-50, or any hue in the 40–100° range).",
+			"Don't use maroon as a background wash or full-width banner. The Ten Percent Rule: maroon occupies ≤10% of any visible surface.",
+			"Don't use dark backgrounds or dark mode. Light mode only for ambient-light readability.",
+			"Don't set body text below 14px. Schedule data is inherently dense.",
+			"Don't animate layout properties. Use transform and opacity.",
+			"Don't gate content behind reveal animations. All content must be visible in the default state."
+		]
+	}
 }

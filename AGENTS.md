@@ -56,6 +56,25 @@ pnpm build    # production build
 - No multi-format auto-detection — fixed column indices assumed
 - `ALLOWED_PROGRAMS` hardcoded, not configurable via UI
 
+### Design Context
+
+**Creative North Star:** "The Timetable" — grid-forward, data-dense, utilitarian. The schedule IS the interface. See `DESIGN.md` for full visual spec, `PRODUCT.md` for strategic context.
+
+**Key visual rules (extracted from DESIGN.md):**
+- **Ten Percent Rule**: UPD Maroon (`#7B1113`) occupies ≤10% of any screen. Primary buttons, selected chips, focus rings only.
+- **No-Cream Rule**: Page bg is cool off-white (`#F5F6F7`). Never warm-tinted neutrals (40–100° hue).
+- **Mono Precision Rule**: CRNs, times, course codes → JetBrains Mono. Never proportional.
+- **Flat-By-Default Rule**: No static shadows. Shadows only on hover/focus.
+- **No-Kicker Rule**: Label style for section headers, never tiny tracked eyebrows.
+- **No dark mode**. Light mode only. Body text ≥14px.
+- **No SaaS clichés**: no gradient text, glassmorphism, hero sections, side-stripe borders.
+
+**Color palette:** Maroon `#7B1113` · Paper `#F5F6F7` · Surface `#FFFFFF` · Ink `#1C1A1A` · Ink Muted `#5C5858` · Border `#D9DBDD`
+
+**Typography:** Inter (UI) · JetBrains Mono (CRNs, times, codes)
+
+**Components:** Rounded-lg (12px) buttons · Rounded-md (8px) cards · Rounded-sm (6px) inputs · Rounded-full chips · Maroon-subtle (`#F1E5E5`) hover states · 3px maroon left accent for selected state
+
 ### Svelte MCP Tools
 
 When writing Svelte code, use the Svelte MCP server tools: `list-sections` first, then `get-documentation` for relevant sections, and `svelte-autofixer` to validate before sending code.

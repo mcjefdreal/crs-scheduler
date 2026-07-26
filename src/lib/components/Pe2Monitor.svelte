@@ -103,7 +103,7 @@
 		<div>
 			<h2 class="text-sm font-semibold tracking-wide text-emerald-800 uppercase">PE 2 Classes</h2>
 			<p class="mt-0.5 text-xs text-emerald-600">
-				{visibleCount} {showAllPe2 ? 'section' : 'open section'}{visibleCount === 1 ? '' : 's'}
+				{visibleCount} {showAllPe2 ? 'section' : 'section'}{visibleCount === 1 ? '' : 's'}
 				{#if pe2FetchedAt}
 					• updated <span class="font-mono">{new Date(pe2FetchedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
 				{/if}

@@ -110,7 +110,6 @@
 	onMount(async () => {
 		courses = await db.courses.toArray();
 		loadPrefs();
-		startPe2Monitor();
 		if (compactQuery) {
 			isCompact = compactQuery.matches;
 			compactQuery.addEventListener('change', (e) => (isCompact = e.matches));

@@ -67,12 +67,14 @@
 	}
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
-	class="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 p-4 backdrop-blur-sm"
+	class="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 p-4"
 	onclick={onclose}
+	onkeydown={(e) => e.key === 'Escape' && onclose()}
 	role="dialog"
 	aria-modal="true"
+	tabindex="-1"
 	aria-labelledby="compare-title"
 >
 	<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->

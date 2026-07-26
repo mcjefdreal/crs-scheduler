@@ -21,12 +21,14 @@
 	--color-excluded: #b45309;
 	--color-excluded-bg: #fffbeb;
 	--color-excluded-border: #fde68a;
-	--color-zeroslot: #047857;
-	--color-zeroslot-bg: #ecfdf5;
-	--color-zeroslot-border: #a7f3d0;
-	--color-zerocourse: #6d28d9;
-	--color-zerocourse-bg: #f5f3ff;
-	--color-zerocourse-border: #ddd6fe;
+	--color-success: #047857;
+	--color-success-bg: #ecfdf5;
+	--color-success-border: #a7f3d0;
+
+	/* Zero-slot sections sidebar */
+	--color-zeroslot: #6d28d9;
+	--color-zeroslot-bg: #f5f3ff;
+	--color-zeroslot-border: #ddd6fe;
 
 	/* Semantic */
 	--color-danger: #b91c1c;

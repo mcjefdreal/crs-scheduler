@@ -18,17 +18,17 @@
 	--color-border-hover: #bfc1c3;
 
 	/* Feature tones (used for excluded/zero-slot/empty-course sidebars) */
-	--color-excluded: #6b4f20;
-	--color-excluded-bg: #fff9f0;
-	--color-excluded-border: #e6d3b0;
+	--color-excluded: #5C4A38;
+	--color-excluded-bg: #F4EFEA;
+	--color-excluded-border: #DDD5CB;
 	--color-success: #2d5c42;
 	--color-success-bg: #e9f5ee;
 	--color-success-border: #b7d8c2;
 
 	/* Zero-slot sections sidebar */
-	--color-zeroslot: #4e3a73;
-	--color-zeroslot-bg: #f6f2fb;
-	--color-zeroslot-border: #dad0e8;
+	--color-zeroslot: #4A5568;
+	--color-zeroslot-bg: #F0F3F5;
+	--color-zeroslot-border: #D3D8DE;
 
 	/* Semantic */
 	--color-danger: #7b2b2b;

@@ -12,15 +12,16 @@
 	const END_HOUR = 19;
 	const HOURS = END_HOUR - START_HOUR;
 
+	// Muted course color palette (course code hash → consistent hue)
 	const COLORS = [
-		{ bg: 'bg-blue-100', border: 'border-blue-300', text: 'text-blue-900' },
-		{ bg: 'bg-emerald-100', border: 'border-emerald-300', text: 'text-emerald-900' },
-		{ bg: 'bg-amber-100', border: 'border-amber-300', text: 'text-amber-900' },
-		{ bg: 'bg-rose-100', border: 'border-rose-300', text: 'text-rose-900' },
-		{ bg: 'bg-violet-100', border: 'border-violet-300', text: 'text-violet-900' },
-		{ bg: 'bg-cyan-100', border: 'border-cyan-300', text: 'text-cyan-900' },
-		{ bg: 'bg-orange-100', border: 'border-orange-300', text: 'text-orange-900' },
-		{ bg: 'bg-indigo-100', border: 'border-indigo-300', text: 'text-indigo-900' }
+		{ bg: 'bg-[#E8EFF5]', border: 'border-[#B8CDDD]', text: 'text-[#1E3A5F]' },
+		{ bg: 'bg-[#E5EFE9]', border: 'border-[#B0CFB7]', text: 'text-[#1F4A35]' },
+		{ bg: 'bg-[#F5EDDF]', border: 'border-[#D9C496]', text: 'text-[#5C4117]' },
+		{ bg: 'bg-[#F2E2E3]', border: 'border-[#D4A5A8]', text: 'text-[#5A1F22]' },
+		{ bg: 'bg-[#EAE5F0]', border: 'border-[#BFB1D1]', text: 'text-[#3A2A5C]' },
+		{ bg: 'bg-[#E2EEF0]', border: 'border-[#A9C8CD]', text: 'text-[#1B4651]' },
+		{ bg: 'bg-[#F4E8E0]', border: 'border-[#D6B69F]', text: 'text-[#5C3318]' },
+		{ bg: 'bg-[#E6E7EE]', border: 'border-[#B6BACB]', text: 'text-[#222A4C]' }
 	];
 
 	interface Block {
@@ -67,22 +68,24 @@
 	);
 </script>
 
-<div class="overflow-hidden rounded-lg border border-slate-200 bg-white pb-4 text-slate-700">
+<div class="overflow-hidden rounded-md border border-border bg-surface pb-4 text-ink">
 	<!-- Header -->
-	<div class="grid grid-cols-[4rem_repeat(6,1fr)] border-b border-slate-200 bg-slate-50">
-		<div class="border-r border-slate-200"></div>
+	<div class="grid grid-cols-[4rem_repeat(6,1fr)] border-b border-border bg-paper">
+		<div class="border-r border-border"></div>
 		{#each DAYS as day}
-			<div class="py-2 text-center text-xs font-semibold tracking-wide text-slate-600">{day}</div>
+			<div class="py-2 text-center text-xs font-semibold tracking-wide text-ink-muted uppercase">
+				{day}
+			</div>
 		{/each}
 	</div>
 
 	<!-- Body -->
 	<div class="grid grid-cols-[4rem_repeat(6,1fr)]">
 		<!-- Time labels -->
-		<div class="relative border-r border-slate-200 bg-slate-50" style="height: {HOURS * 48}px">
+		<div class="relative border-r border-border bg-paper" style="height: {HOURS * 48}px">
 			{#each { length: HOURS + 1 } as _, i}
 				<div
-					class="absolute right-1.5 -translate-y-1/2 text-[10px] font-medium text-slate-400"
+					class="absolute right-1.5 -translate-y-1/2 font-mono text-[10px] font-medium text-ink-muted"
 					style="top: {(i / HOURS) * 100}%"
 				>
 					{formatTime((START_HOUR + i) * 60)}
@@ -92,11 +95,11 @@
 
 		<!-- Day columns -->
 		{#each DAYS as _, dayIdx}
-			<div class="relative border-r border-slate-100" style="height: {HOURS * 48}px">
+			<div class="relative border-r border-border" style="height: {HOURS * 48}px">
 				<!-- Hour grid lines -->
 				{#each { length: HOURS }, i}
 					<div
-						class="absolute right-0 left-0 border-t border-slate-100"
+						class="absolute right-0 left-0 border-t border-border"
 						style="top: {((i + 1) / HOURS) * 100}%"
 					></div>
 				{/each}
@@ -104,12 +107,12 @@
 				<!-- Meeting blocks -->
 				{#each blocks.filter((b) => b.day === dayIdx) as block}
 					<div
-						class="absolute inset-x-1 overflow-hidden rounded border px-1 py-0.5 text-[10px] leading-tight shadow-sm {block
+						class="absolute inset-x-1 overflow-hidden rounded-sm border px-1.5 py-0.5 text-[10px] leading-tight transition {block
 							.color.bg} {block.color.border} {block.color.text}"
 						style="top: {Math.max(0, block.top)}%; height: {Math.max(4, block.height)}%;"
 					>
 						<div class="truncate font-semibold">{block.section.code}</div>
-						<div class="truncate opacity-90">
+						<div class="truncate font-mono opacity-90">
 							{formatTime(block.meeting.startMin)}–{formatTime(block.meeting.endMin)}
 						</div>
 						<div class="truncate opacity-75">{block.meeting.room}</div>

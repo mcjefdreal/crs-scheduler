@@ -1,1 +1,96 @@
 @import 'tailwindcss';
+
+/* ------------------------------------------------------------------ */
+/* Design tokens (Tailwind v4 @theme) — see DESIGN.md                */
+/* ------------------------------------------------------------------ */
+@theme {
+	/* Primary (UPD maroon) */
+	--color-maroon: #7b1113;
+	--color-maroon-hover: #680e11;
+	--color-maroon-subtle: #f1e5e5;
+
+	/* Neutral surfaces */
+	--color-paper: #f5f6f7;
+	--color-surface: #ffffff;
+	--color-ink: #1c1a1a;
+	--color-ink-muted: #5c5858;
+	--color-border: #d9dbdd;
+	--color-border-hover: #bfc1c3;
+
+	/* Feature tones (used for excluded/zero-slot/empty-course sidebars) */
+	--color-excluded: #b45309;
+	--color-excluded-bg: #fffbeb;
+	--color-excluded-border: #fde68a;
+	--color-zeroslot: #047857;
+	--color-zeroslot-bg: #ecfdf5;
+	--color-zeroslot-border: #a7f3d0;
+	--color-zerocourse: #6d28d9;
+	--color-zerocourse-bg: #f5f3ff;
+	--color-zerocourse-border: #ddd6fe;
+
+	/* Semantic */
+	--color-danger: #b91c1c;
+	--color-danger-bg: #fef2f2;
+	--color-danger-border: #fecaca;
+
+	/* Typography */
+	--font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+
+	/* Radius scale */
+	--radius-sm: 6px;
+	--radius-md: 8px;
+	--radius-lg: 12px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Fonts (Inter, JetBrains Mono) — self-hosted via Bunny CDN         */
+/* ------------------------------------------------------------------ */
+@font-face {
+	font-family: 'Inter';
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url('https://fonts.bunny.net/inter/files/inter-latin-wght-normal.woff2') format('woff2-variations');
+}
+
+@font-face {
+	font-family: 'JetBrains Mono';
+	font-style: normal;
+	font-weight: 100 800;
+	font-display: swap;
+	src: url('https://fonts.bunny.net/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2') format('woff2-variations');
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                              */
+/* ------------------------------------------------------------------ */
+html {
+	font-family: var(--font-sans);
+	font-feature-settings: 'cv11', 'ss01', 'ss03';
+	font-variant-numeric: tabular-nums;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+}
+
+body {
+	background-color: var(--color-paper);
+	color: var(--color-ink);
+}
+
+table,
+.font-mono {
+	font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}

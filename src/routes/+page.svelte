@@ -16,6 +16,10 @@
 	import RefreshDiff from '$lib/components/RefreshDiff.svelte';
 	import Pe2Monitor from '$lib/components/Pe2Monitor.svelte';
 
+	const compactQuery = typeof window !== 'undefined'
+		? window.matchMedia('(max-width: 639px)')
+		: null;
+
 	let courses = $state<Course[]>([]);
 	let courseName = $state('');
 	let courseNameError = $state('');
@@ -24,6 +28,7 @@
 	let schedules = $state<Schedule[]>([]);
 	let lockedConflict = $state(false);
 	let expandedSchedule = $state<number | null>(null);
+	let isCompact = $state(compactQuery?.matches ?? false);
 	let showInstructions = $state(false);
 	let showExcluded = $state(false);
 	let showZeroSlot = $state(false);
@@ -48,6 +53,7 @@
 	let showDiff = $state(false);
 	let expandedCourseId = $state<string | null>(null);
 	let sectionSearch = $state('');
+	let expandedMobileSection = $state<'courses' | 'excluded' | 'zeroslot' | null>(null);
 	let diffData = $state<{
 		added: Array<{ crn: number; code: string; courseName: string }>;
 		removed: Array<{ crn: number; code: string; courseName: string }>;
@@ -104,6 +110,11 @@
 	onMount(async () => {
 		courses = await db.courses.toArray();
 		loadPrefs();
+		startPe2Monitor();
+		if (compactQuery) {
+			isCompact = compactQuery.matches;
+			compactQuery.addEventListener('change', (e) => (isCompact = e.matches));
+		}
 	});
 
 	const totalSections = $derived(courses.reduce((sum, c) => sum + c.sections.length, 0));
@@ -604,7 +615,7 @@
 
 <main class="flex min-h-screen flex-col">
 	<header class="border-b border-border bg-surface">
-		<div class="mx-auto flex max-w-[95vw] items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+		<div class="mx-auto flex max-w-[95vw] items-center justify-between px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
 			<div class="flex items-center gap-3">
 				<div class="flex h-8 w-8 items-center justify-center rounded-md bg-maroon text-surface">
 				<svg
@@ -633,22 +644,64 @@
 		</div>
 	</header>
 
-	<div class="mx-auto max-w-[95vw] px-4 py-8 sm:px-6 lg:px-8">
-		<div class="grid gap-8 lg:grid-cols-[1fr_1fr_2fr]">
+	<div class="mx-auto w-[90vw] px-4 py-4 sm:px-6 sm:py-6 lg:max-w-[95vw] lg:px-8 lg:py-8 max-lg:pb-24">
+		<div class="grid gap-4 sm:gap-6 lg:gap-8 lg:grid-cols-[1fr_1fr_2fr]">
 			<!-- Sidebar -->
 			<section class="min-w-0 space-y-6">
 				<!-- Courses section -->
-				<section class="rounded-md border border-border bg-surface p-5">
-					<div class="mb-4 flex items-center justify-between">
-						<h2 class="text-sm font-semibold tracking-wide text-ink-muted uppercase">Courses</h2>
-						<div class="flex items-center gap-2">
-							<button
-								onclick={refreshAllCourses}
-								disabled={isFetching || isGenerating}
-								class="text-sm font-medium text-maroon hover:text-maroon-hover disabled:text-ink-muted"
-							>
-								Refresh All
-							</button>
+			<section class="rounded-md border border-border bg-surface p-5">
+				<!-- Mobile collapse header -->
+				<div class="mb-4 flex items-center justify-between lg:hidden">
+					<button
+						onclick={() => expandedMobileSection = expandedMobileSection === 'courses' ? null : 'courses'}
+						class="flex min-w-0 items-center gap-2 text-left"
+						aria-expanded={expandedMobileSection === 'courses'}
+					>
+						<svg
+							class="h-4 w-4 shrink-0 text-ink-muted transition-transform {expandedMobileSection ===
+							'courses'
+								? 'rotate-180'
+								: ''}"
+							aria-hidden="true"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							viewBox="0 0 24 24"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+							/>
+						</svg>
+						<span class="text-sm font-semibold text-ink">Courses</span>
+						<span class="text-xs text-ink-muted">
+							({courses.length} course{courses.length === 1 ? '' : 's'} • {totalSections} section{totalSections ===
+								1
+									? ''
+									: 's'})
+						</span>
+					</button>
+					<button
+						onclick={refreshAllCourses}
+						disabled={isFetching || isGenerating}
+						class="text-sm font-medium text-maroon hover:text-maroon-hover disabled:text-ink-muted"
+					>
+						Refresh All
+					</button>
+				</div>
+
+				<!-- Desktop header -->
+				<div class="mb-4 hidden items-center justify-between lg:flex">
+					<h2 class="text-sm font-semibold tracking-wide text-ink-muted uppercase">Courses</h2>
+					<div class="flex items-center gap-2">
+						<button
+							onclick={refreshAllCourses}
+							disabled={isFetching || isGenerating}
+							class="text-sm font-medium text-maroon hover:text-maroon-hover disabled:text-ink-muted"
+						>
+							Refresh All
+						</button>
 							<span class="text-xs text-ink-muted"
 								>{courses.length} course{courses.length === 1 ? '' : 's'} • {totalSections} section{totalSections ===
 								1
@@ -657,6 +710,7 @@
 							>
 						</div>
 					</div>
+					<div class="{expandedMobileSection === 'courses' ? 'block' : 'hidden'} lg:block">
 					{#if refreshProgress}
 						<div class="mb-3 rounded-md bg-maroon-subtle p-3 text-sm text-maroon">
 							{refreshProgress}
@@ -849,7 +903,8 @@
 							{/each}
 						</ul>
 					{/if}
-				</section>
+				</div>
+			</section>
 
 				<!-- PE 2 monitor -->
 				<Pe2Monitor />
@@ -858,7 +913,44 @@
 				<section>
 					{#if totalExcluded > 0}
 						<section class="rounded-md border border-excluded-border bg-excluded-bg p-5">
-							<div class="mb-3 flex items-center justify-between">
+							<!-- Mobile collapse header -->
+							<div class="mb-3 flex items-center justify-between lg:hidden">
+								<button
+									onclick={() => {
+										if (expandedMobileSection === 'excluded') {
+											expandedMobileSection = null;
+										} else {
+											expandedMobileSection = 'excluded';
+											saveShowExcluded(true);
+										}
+									}}
+									class="flex min-w-0 items-center gap-2 text-left"
+									aria-expanded={expandedMobileSection === 'excluded'}
+								>
+									<svg
+										class="h-4 w-4 shrink-0 text-excluded transition-transform {expandedMobileSection ===
+										'excluded'
+											? 'rotate-180'
+											: ''}"
+										aria-hidden="true"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										viewBox="0 0 24 24"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+										/>
+									</svg>
+									<span class="text-sm font-semibold text-excluded">Excluded Sections</span>
+									<span class="text-xs text-excluded">({totalExcluded})</span>
+								</button>
+							</div>
+
+							<!-- Desktop header -->
+							<div class="mb-3 hidden items-center justify-between lg:flex">
 								<h2 class="text-sm font-semibold tracking-wide text-excluded uppercase">
 									Excluded ({totalExcluded})
 								</h2>
@@ -869,6 +961,7 @@
 									{showExcluded ? 'Hide' : 'Show'}
 								</button>
 							</div>
+							<div class="{expandedMobileSection === 'excluded' ? 'block' : 'hidden'} lg:block">
 						{#if showExcluded}
 							<div class="mb-2">
 								<label for="excluded-search" class="sr-only">Filter excluded sections</label>
@@ -923,26 +1016,64 @@
 														</svg>
 													{/if}
 												</button>
-												<button
-													onclick={async () => {
-														await toggleSectionExclusion(section.courseId, section.crn, false);
-													}}
-													class="rounded-md bg-maroon px-2 py-0.5 text-xs font-medium text-surface hover:bg-maroon-hover"
-												>
-													Include
-												</button>
-											</div>
-										</li>
-									{/each}
-								</ul>
-							{/if}
-						</section>
+										<button
+											onclick={async () => {
+												await toggleSectionExclusion(section.courseId, section.crn, false);
+											}}
+											class="rounded-md bg-maroon px-2 py-0.5 text-xs font-medium text-surface hover:bg-maroon-hover"
+										>
+											Include
+										</button>
+									</div>
+								</li>
+							{/each}
+						</ul>
+					{/if}
+				</div>
+				</section>
 					{/if}
 
 				<!-- Zero-slot sections -->
 				{#if totalZeroSlot > 0}
 					<section class="mt-6 rounded-md border border-zeroslot-border bg-zeroslot-bg p-5">
-						<div class="mb-3 flex items-center justify-between">
+						<!-- Mobile collapse header -->
+						<div class="mb-3 flex items-center justify-between lg:hidden">
+							<button
+								onclick={() => {
+									if (expandedMobileSection === 'zeroslot') {
+										expandedMobileSection = null;
+									} else {
+										expandedMobileSection = 'zeroslot';
+										saveShowZeroSlot(true);
+									}
+								}}
+								class="flex min-w-0 items-center gap-2 text-left"
+								aria-expanded={expandedMobileSection === 'zeroslot'}
+							>
+								<svg
+									class="h-4 w-4 shrink-0 text-zeroslot transition-transform {expandedMobileSection ===
+									'zeroslot'
+										? 'rotate-180'
+										: ''}"
+									aria-hidden="true"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+									/>
+								</svg>
+								<span class="text-sm font-semibold text-zeroslot">Zero Slots</span>
+								<span class="text-xs text-zeroslot">({totalZeroSlot})</span>
+							</button>
+						</div>
+
+						<!-- Desktop header -->
+						<div class="mb-3 hidden items-center justify-between lg:flex">
 							<h2 class="text-sm font-semibold tracking-wide text-zeroslot uppercase">
 								Zero Slots ({totalZeroSlot})
 							</h2>
@@ -953,6 +1084,7 @@
 								{showZeroSlot ? 'Hide' : 'Show'}
 							</button>
 						</div>
+						<div class="{expandedMobileSection === 'zeroslot' ? 'block' : 'hidden'} lg:block">
 						<p class="mb-3 text-sm text-zeroslot">
 							Sections with 0 slots remaining. Toggle to include in schedule generation.
 						</p>
@@ -1015,16 +1147,17 @@
 											</button>
 										</div>
 									</li>
-								{:else}
-									<li class="rounded-sm border border-dashed border-zeroslot-border bg-zeroslot-bg/50 py-3 text-center text-sm text-zeroslot">
-										No sections match "{zeroSlotSearch}"
-									</li>
-								{/each}
-							</ul>
-						{/if}
-					</section>
-				{/if}
+							{:else}
+								<li class="rounded-sm border border-dashed border-zeroslot-border bg-zeroslot-bg/50 py-3 text-center text-sm text-zeroslot">
+									No sections match "{zeroSlotSearch}"
+								</li>
+							{/each}
+						</ul>
+					{/if}
+				</div>
 				</section>
+			{/if}
+			</section>
 			</section>
 			<aside class="min-w-0 space-y-6">
 				<div class="space-y-4">
@@ -1422,7 +1555,7 @@
 									<h3 class="mb-3 text-xs font-semibold tracking-wide text-ink-muted uppercase">
 										Sections
 									</h3>
-									<div class="grid gap-3 sm:grid-cols-2">
+									<div class="grid gap-3 grid-cols-2">
 										{#each schedule.sections as section}
 											<div
 									class="rounded-md border border-border p-3 bg-surface {lockedCrns.includes(
@@ -1513,6 +1646,31 @@
 			</section>
 		</div>
 	</div>
+
+	{#if courses.length > 0}
+		<div
+			class="fixed bottom-0 left-0 right-0 z-30 border-t border-border bg-paper p-3 lg:hidden"
+			style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom))"
+		>
+			<button
+				onclick={handleGenerate}
+				disabled={!canGenerate || isGenerating}
+				class="flex w-full items-center justify-center gap-2 rounded-lg bg-maroon px-4 py-3 text-sm font-semibold text-surface hover:bg-maroon-hover disabled:cursor-not-allowed disabled:opacity-50"
+			>
+				{#if isGenerating}
+					<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+						<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+					</svg>
+					<span>Generating...</span>
+				{:else if schedules.length > 0}
+					<span>Re-generate</span>
+				{:else}
+					<span>Generate Schedules</span>
+				{/if}
+			</button>
+		</div>
+	{/if}
 
 	<footer class="border-t border-border bg-surface">
 		<div class="mx-auto max-w-[95vw] px-4 py-6 text-center text-xs text-ink-muted sm:px-6 lg:px-8">

@@ -1027,8 +1027,9 @@
 				</section>
 			</section>
 			<aside class="min-w-0 space-y-6">
-				<!-- Add Course section -->
-				<section class="rounded-md border border-border bg-surface p-5">
+				<div class="space-y-4">
+					<!-- Add Course section -->
+					<section class="rounded-md border border-border border-t-2 border-t-maroon bg-surface p-6">
 					<h2 class="mb-4 text-sm font-semibold tracking-wide text-ink-muted uppercase">
 						Add Course
 					</h2>
@@ -1092,8 +1093,8 @@
 				</section>
 
 				<!-- Preferences section -->
-				<section class="rounded-md border border-border bg-surface p-5">
-					<h2 class="mb-4 text-sm font-semibold tracking-wide text-ink-muted uppercase">
+				<section class="rounded-md border border-border bg-surface p-4 space-y-3">
+					<h2 class="mb-0 text-sm font-semibold tracking-wide text-ink-muted uppercase">
 						Preferences
 					</h2>
 					<div>
@@ -1210,6 +1211,7 @@
 						</p>
 					</div>
 				</section>
+				</div>
 
 				{#if lockedCrns.length > 0}
 					<div class="rounded-md border border-maroon-subtle bg-maroon-subtle p-3">
@@ -1325,29 +1327,38 @@
 						</div>
 					</div>
 
-					<div class="relative mb-3">
-					<svg
-						class="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-muted"
-						aria-hidden="true"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						viewBox="0 0 24 24"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-						/>
-					</svg>
-					<label for="schedule-filter" class="sr-only">Filter schedules</label>
-					<input
-						id="schedule-filter"
-						type="text"
-						placeholder="Filter by instructor, code, or CRN..."
-						bind:value={scheduleFilter}
-						class="w-full rounded-sm border border-border-hover py-2 pr-3 pl-10 text-sm transition outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
-					/>
+					<div class="mb-3 flex items-center justify-between gap-3">
+						<div class="relative min-w-0 flex-1">
+							<svg
+								class="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-muted"
+								aria-hidden="true"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								viewBox="0 0 24 24"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+								/>
+							</svg>
+							<label for="schedule-filter" class="sr-only">Filter schedules</label>
+							<input
+								id="schedule-filter"
+								type="text"
+								placeholder="Filter by instructor, code, or CRN..."
+								bind:value={scheduleFilter}
+								class="w-full rounded-sm border border-border-hover py-2 pr-3 pl-10 text-sm transition outline-none focus:border-maroon focus:ring-2 focus:ring-maroon focus:ring-offset-0"
+							/>
+						</div>
+						<button
+							onclick={handleGenerate}
+							disabled={!canGenerate || isGenerating}
+							class="shrink-0 rounded-lg bg-maroon px-3 py-1.5 text-xs font-semibold text-surface hover:bg-maroon-hover disabled:opacity-50"
+						>
+							{isGenerating ? 'Generating...' : 'Re-generate'}
+						</button>
 					</div>
 
 					{#if schedules.length > 0 && minGapMinutes && minGapMinutes > 0 && filteredSchedules.length === 0}

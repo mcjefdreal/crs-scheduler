@@ -1192,7 +1192,7 @@ onclick={() => removeCourse(course.id)}
 				<div class="space-y-4">
 					<!-- Add Course section -->
 					<section
-						class="rounded-md border border-l-[3px] border-border border-l-maroon bg-surface p-6"
+						class="rounded-md border border-border bg-surface p-6"
 					>
 						<h2 class="mb-4 text-sm font-semibold tracking-wide text-ink-muted uppercase">
 							Add Course

@@ -1385,7 +1385,7 @@ class="rounded-full px-3 py-1.5 text-xs font-medium transition active:scale-[0.9
 
 				{#if lockedCrns.length > 0}
 					<div class="rounded-md border border-maroon-subtle bg-maroon-subtle p-3">
-						<div class="mb-2 flex items-center justify-between">
+					<div class="mb-2 flex flex-wrap items-center justify-between gap-2">
 							<span class="text-sm font-medium text-maroon"
 								>{lockedCrns.length} section{lockedCrns.length === 1 ? '' : 's'} locked</span
 							>
@@ -1612,9 +1612,10 @@ class="rounded-full px-3 py-1.5 text-xs font-medium transition active:scale-[0.9
 					{#each filteredSchedules as schedule, idx (idx)}
 						<article class="overflow-hidden rounded-md border border-border bg-surface">
 							<div
-								class="flex items-center justify-between border-b border-border bg-paper px-5 py-3"
+								class="flex flex-col gap-2 border-b border-border bg-paper px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5"
 							>
-								<div class="flex items-center gap-3">
+								<div class="flex items-center justify-between gap-2">
+									<div class="flex items-center gap-3">
 									<label class="flex cursor-pointer items-center py-1">
 										<input
 											type="checkbox"
@@ -1645,7 +1646,7 @@ class="rounded-full px-3 py-1.5 text-xs font-medium transition active:scale-[0.9
 								</button>
 							</div>
 
-							<div class="p-5">
+							<div class="p-3 sm:p-5">
 								<TimelineGrid sections={schedule.sections} />
 							</div>
 
@@ -1654,7 +1655,7 @@ class="rounded-full px-3 py-1.5 text-xs font-medium transition active:scale-[0.9
 									<h3 class="mb-3 text-xs font-semibold tracking-wide text-ink-muted uppercase">
 										Sections
 									</h3>
-									<div class="grid grid-cols-2 gap-3">
+									<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
 										{#each schedule.sections as section (section.crn)}
 											<div
 												class="rounded-md border border-border bg-surface p-3 {lockedCrns.includes(

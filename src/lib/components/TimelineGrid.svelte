@@ -68,9 +68,9 @@
 	);
 </script>
 
-<div class="overflow-hidden rounded-md border border-border bg-surface pb-4 text-ink">
+<div class="overflow-x-auto rounded-md border border-border bg-surface pb-4 text-ink">
 	<!-- Header -->
-	<div class="grid grid-cols-[4rem_repeat(6,1fr)] border-b border-border bg-paper">
+	<div class="grid min-w-[480px] grid-cols-[3rem_repeat(6,1fr)] border-b border-border bg-paper sm:grid-cols-[4rem_repeat(6,1fr)]">
 		<div class="border-r border-border"></div>
 		{#each DAYS as day (day)}
 			<div class="py-2 text-center text-xs font-semibold tracking-wide text-ink-muted uppercase">
@@ -80,7 +80,7 @@
 	</div>
 
 	<!-- Body -->
-	<div class="grid grid-cols-[4rem_repeat(6,1fr)]">
+	<div class="grid min-w-[480px] grid-cols-[3rem_repeat(6,1fr)] sm:grid-cols-[4rem_repeat(6,1fr)]">
 		<!-- Time labels -->
 		<div class="relative border-r border-border bg-paper" style="height: {HOURS * 48}px">
 			{#each { length: HOURS + 1 } as _, i (i)}

@@ -106,9 +106,9 @@
 
 				<!-- Meeting blocks -->
 				{#each blocks.filter((b) => b.day === dayIdx) as block, blockIdx (blockIdx)}
-					<!-- 10px text intentional: block is 48px/hr grid cell; 14px floor cannot fit 2-3 lines of meeting data. Contrast validated ≥8:1 -->
+					<!-- 12px text: 48px/hr grid cell; 14px floor cannot fit 2-3 lines of meeting data. Contrast validated ≥8:1 -->
 					<div
-						class="absolute inset-x-1 overflow-hidden rounded-sm border px-1.5 py-0.5 text-[10px] leading-tight transition {block
+						class="absolute inset-x-1 overflow-hidden rounded-sm border px-1.5 py-0.5 text-[12px] leading-tight transition {block
 							.color.bg} {block.color.border} {block.color.text}"
 						style="top: {Math.max(0, block.top)}%; height: {Math.max(4, block.height)}%;"
 					>

@@ -36,7 +36,7 @@
 >
 	<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
 	<div
-		class="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-md border border-border bg-surface shadow-sm"
+		class="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-md border border-border bg-surface"
 		onclick={(e) => e.stopPropagation()}
 	>
 		<div class="flex items-center justify-between border-b border-border px-6 py-4">
@@ -169,7 +169,7 @@
 		<div class="border-t border-border px-6 py-4">
 			<button
 				onclick={onclose}
-				class="w-full rounded-md bg-maroon px-4 py-2.5 text-sm font-semibold text-surface shadow-sm transition hover:bg-maroon-hover focus:ring-2 focus:ring-maroon focus:ring-offset-2 focus:outline-none"
+				class="w-full rounded-md bg-maroon px-4 py-2.5 text-sm font-semibold text-surface transition hover:bg-maroon-hover focus:ring-2 focus:ring-maroon focus:ring-offset-2 focus:outline-none"
 			>
 				Done
 			</button>

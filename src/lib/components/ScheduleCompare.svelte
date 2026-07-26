@@ -79,7 +79,7 @@
 >
 	<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
 	<div
-		class="flex max-h-[90vh] w-full max-w-6xl flex-col overflow-hidden rounded-md border border-border bg-surface shadow-sm"
+		class="flex max-h-[90vh] w-full max-w-6xl flex-col overflow-hidden rounded-md border border-border bg-surface"
 		onclick={(e) => e.stopPropagation()}
 	>
 		<div class="flex items-center justify-between border-b border-border px-6 py-4">
@@ -143,7 +143,7 @@
 										</div>
 										{#if isDifferent}
 											<span
-												class="mt-0.5 shrink-0 rounded-full bg-excluded-bg px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-excluded uppercase"
+												class="mt-0.5 shrink-0 rounded-full bg-excluded-bg px-1.5 py-0.5 text-xs font-semibold tracking-wide text-excluded uppercase"
 												title="Section differs from the other schedules"
 											>
 												Differs

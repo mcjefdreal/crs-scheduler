@@ -194,11 +194,14 @@
 		<div
 			class="rounded-md border border-dashed border-border-hover bg-paper py-6 text-center"
 		>
-			<p class="text-sm font-medium text-ink-muted">
-				{isPe2Fetching ? 'Loading…' : 'No open PE 2 classes'}
-			</p>
-			{#if !isPe2Fetching}
-				<p class="mt-1 text-xs text-ink-muted">Click Refresh to check availability.</p>
+			{#if pe2FetchedAt === null}
+				<p class="text-sm font-medium text-ink-muted">Check PE 2 availability</p>
+				<p class="mt-1 text-xs text-ink-muted">Click Refresh to see open sections.</p>
+			{:else}
+				<p class="text-sm font-medium text-ink-muted">No open PE 2 classes</p>
+				<p class="mt-1 text-xs text-ink-muted">
+					Check back later or enable 'Show all' to see full sections.
+				</p>
 			{/if}
 		</div>
 	{:else}

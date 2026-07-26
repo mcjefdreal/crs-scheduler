@@ -1302,8 +1302,8 @@ class="min-w-0 flex-1 rounded-sm border border-border-hover px-3 py-2 text-sm tr
 							<p class="mt-1 text-xs text-ink-muted">Minutes between classes on the same day</p>
 						</div>
 
-						<div>
-							<label class="mb-1 block text-sm font-medium text-ink">Prefer no classes on</label>
+						<fieldset class="space-y-2">
+							<legend class="text-sm font-medium text-ink">Prefer no classes on</legend>
 							<div class="flex gap-1">
 								{#each ['M', 'Tu', 'W', 'Th', 'F', 'S'] as day, i (day)}
 									<button
@@ -1318,10 +1318,10 @@ class="rounded-full px-3 py-1.5 text-xs font-medium transition active:scale-[0.9
 									</button>
 								{/each}
 							</div>
-							<p class="mt-1 text-xs text-ink-muted">
+							<p class="text-xs text-ink-muted">
 								Schedules with classes on selected days get a score penalty
 							</p>
-						</div>
+						</fieldset>
 
 						<div>
 							<label for="exclude-instructor" class="mb-1 block text-sm font-medium text-ink"
@@ -1486,16 +1486,56 @@ class="rounded-full px-3 py-1.5 text-xs font-medium transition active:scale-[0.9
 					</div>
 				{/if}
 
-				{#if schedules.length === 0 && !lockedConflict}
-					<div
-						class="flex h-64 flex-col items-center justify-center rounded-md border border-dashed border-border-hover bg-surface text-center"
-					>
-						<p class="text-sm font-medium text-ink-muted">Click Generate to see schedules</p>
-						<p class="mt-1 max-w-xs text-xs text-ink-muted">
-							Add all your courses first, then run the scheduler to find conflict-free combinations.
-						</p>
+			{#if isGenerating && schedules.length === 0}
+				<div class="space-y-6">
+					<!-- Skeleton "Top schedules" header -->
+					<div class="h-6 w-32 animate-pulse rounded-sm bg-border"></div>
+
+					<!-- Skeleton TimelineGrid -->
+					<div class="space-y-2 rounded-md border border-border bg-surface p-4">
+						{#each [80, 60, 75, 50] as width}
+							<div
+								class="h-4 animate-pulse rounded-sm bg-border"
+								style="width: {width}%"
+							></div>
+						{/each}
+						<div class="mt-3 grid grid-cols-6 gap-1">
+							{#each [1, 2, 3, 4, 5, 6]}
+								<div class="h-20 animate-pulse rounded-sm bg-paper"></div>
+							{/each}
+						</div>
 					</div>
-				{/if}
+
+					<!-- Skeleton schedule cards -->
+					{#each [1, 2] as _card}
+						<div class="space-y-3 rounded-md border border-border bg-surface p-5">
+							<div class="flex items-center justify-between">
+								<div class="h-5 w-16 animate-pulse rounded-sm bg-border"></div>
+								<div class="h-4 w-24 animate-pulse rounded-sm bg-border"></div>
+							</div>
+							<div class="space-y-2">
+								{#each [100, 85, 70] as pct}
+									<div
+										class="h-4 animate-pulse rounded-sm bg-border"
+										style="width: {pct}%"
+									></div>
+								{/each}
+							</div>
+						</div>
+					{/each}
+
+					<p class="text-sm text-ink-muted">Generating schedule combinations...</p>
+				</div>
+			{:else if schedules.length === 0 && !lockedConflict}
+				<div
+					class="flex h-64 flex-col items-center justify-center rounded-md border border-dashed border-border-hover bg-surface text-center"
+				>
+					<p class="text-sm font-medium text-ink-muted">Click Generate to see schedules</p>
+					<p class="mt-1 max-w-xs text-xs text-ink-muted">
+						Add all your courses first, then run the scheduler to find conflict-free combinations.
+					</p>
+				</div>
+			{/if}
 
 				{#if schedules.length > 0}
 					<div class="mb-2 flex items-center justify-between">
